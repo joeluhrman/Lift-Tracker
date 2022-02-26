@@ -1,4 +1,5 @@
 Pages to have:
+    initial page to choose profile or create one
     user profile 
     page displaying workout history
     page to create and save a workout to the workout history
