@@ -1,0 +1,12 @@
+Pages to have:
+    user profile 
+    page displaying workout history
+    page to create and save a workout to the workout history
+    page to edit workout
+    page to view all exercises/search/create new exercises
+
+Functionality:
+    create and save profile
+    create and save workouts
+    edit workouts
+    create and save new exercises
