@@ -9,5 +9,9 @@ Pages to have:
 Functionality:
     create and save profile
     create and save workouts
+    create and save workout templates
     edit workouts
     create and save new exercises
+
+
+data for each user stored in Profiles/username/history, custom exercises, workout templates, etc
