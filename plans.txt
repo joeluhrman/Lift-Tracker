@@ -15,3 +15,4 @@ Functionality:
 
 
 data for each user stored in Profiles/username/history, custom exercises, workout templates, etc
+    Maybe just have a single text file for each user
