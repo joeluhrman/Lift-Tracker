@@ -24,7 +24,7 @@ func main() {
 	http.Handle("/", fs)
 
 	log.Println("Listening on :" + port + "...")
-	err := http.ListenAndServe(port, nil)
+	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
