@@ -2,7 +2,10 @@
 
 package backend
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 type MuscleGroup string
 
@@ -60,12 +63,16 @@ func SaveWorkoutEntry(username string, workout WorkoutEntry) error {
 
 	defer f.Close()
 
-	text := workout.Date + ";" + workout.Notes
+	text := workout.Date + ";"
+	for i := 0; i < len(workout.Exercises); i++ {
+		name := workout.Exercises[i].Type.Name
+		sets := workout.Exercises[i].Sets
+		reps := workout.Exercises[i].Reps
+		notes := workout.Exercises[i].Notes
+		text += name + "|" + fmt.Sprint(sets) + "|" + fmt.Sprint(reps) + "|" + notes + ";"
+	}
+	text += workout.Notes
 
-	_, err = f.WriteString(text)
+	_, err = f.WriteString(text + "\n")
 	return err
-}
-
-func saveWorkoutEntry(username string, workout WorkoutEntry) {
-	//file, err := os.OpenFile()
 }
