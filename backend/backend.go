@@ -16,9 +16,9 @@ const (
 )
 
 type SetGrp struct {
+	Weight int
 	Number int
 	Reps   int
-	Weight int
 }
 
 type ExerciseType struct {
@@ -27,12 +27,13 @@ type ExerciseType struct {
 }
 
 type ExerciseEntry struct {
-	Type  ExerciseType
+	Name  string
 	Sets  []SetGrp
 	Notes string
 }
 
 type WorkoutTemplate struct {
+	Name      string
 	Exercises []ExerciseEntry
 }
 
@@ -55,6 +56,32 @@ func CreateProfile(username string) error {
 	return err
 }
 
+func ExercisesToFileFormat(exercises []ExerciseEntry) string {
+	var text string
+	for i := 0; i < len(exercises); i++ {
+		name := exercises[i].Name
+		text += ";" + name
+
+		for j := 0; j < len(exercises[i].Sets); j++ {
+			number := exercises[i].Sets[j].Number
+			weight := exercises[i].Sets[j].Weight
+			reps := exercises[i].Sets[j].Reps
+			divider := "|"
+			if j > 0 {
+				divider = "/"
+			}
+			text += divider + fmt.Sprint(weight) + "," + fmt.Sprint(number) + "," + fmt.Sprint(reps)
+		}
+
+		if exercises[i].Notes != "" {
+			text += "|" + exercises[i].Notes
+		}
+
+	}
+
+	return text
+}
+
 func SaveWorkoutEntry(username string, workout WorkoutEntry) error {
 	path, err := os.Getwd()
 	if err != nil {
@@ -68,26 +95,26 @@ func SaveWorkoutEntry(username string, workout WorkoutEntry) error {
 
 	defer f.Close()
 
-	text := workout.Date
+	text := workout.Date + ExercisesToFileFormat(workout.Exercises) + ";" + workout.Notes
 
-	for i := 0; i < len(workout.Exercises); i++ {
-		name := workout.Exercises[i].Type.Name
-		text += ";" + name
+	_, err = f.WriteString(text + "\n")
+	return err
+}
 
-		for j := 0; j < len(workout.Exercises[i].Sets); j++ {
-			number := workout.Exercises[i].Sets[j].Number
-			weight := workout.Exercises[i].Sets[j].Weight
-			reps := workout.Exercises[i].Sets[j].Reps
-			divider := "|"
-			if j > 0 {
-				divider = "/"
-			}
-			text += divider + fmt.Sprint(weight) + "," + fmt.Sprint(number) + "," + fmt.Sprint(reps)
-		}
-
-		text += "|" + workout.Exercises[i].Notes
+func SaveWorkoutTemplate(username string, workout WorkoutTemplate) error {
+	path, err := os.Getwd()
+	if err != nil {
+		return err
 	}
-	text += ";" + workout.Notes
+	filepath := path + "/profiles/" + username + "/workouttemplates.txt"
+	f, err := os.OpenFile(filepath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	text := workout.Name + ";" + ExercisesToFileFormat(workout.Exercises)
 
 	_, err = f.WriteString(text + "\n")
 	return err
