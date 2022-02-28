@@ -15,20 +15,25 @@ const (
 	Pull MuscleGroup = "Pull"
 )
 
+type SetGrp struct {
+	Number int
+	Reps   int
+	Weight int
+}
+
 type ExerciseType struct {
 	Name   string
 	MscGrp MuscleGroup
 }
 
-type WorkoutTemplate struct {
-	Exercises []ExerciseEntry
-}
-
 type ExerciseEntry struct {
 	Type  ExerciseType
-	Sets  int
-	Reps  int
+	Sets  []SetGrp
 	Notes string
+}
+
+type WorkoutTemplate struct {
+	Exercises []ExerciseEntry
 }
 
 type WorkoutEntry struct {
@@ -63,15 +68,26 @@ func SaveWorkoutEntry(username string, workout WorkoutEntry) error {
 
 	defer f.Close()
 
-	text := workout.Date + ";"
+	text := workout.Date
+
 	for i := 0; i < len(workout.Exercises); i++ {
 		name := workout.Exercises[i].Type.Name
-		sets := workout.Exercises[i].Sets
-		reps := workout.Exercises[i].Reps
-		notes := workout.Exercises[i].Notes
-		text += name + "|" + fmt.Sprint(sets) + "|" + fmt.Sprint(reps) + "|" + notes + ";"
+		text += ";" + name
+
+		for j := 0; j < len(workout.Exercises[i].Sets); j++ {
+			number := workout.Exercises[i].Sets[j].Number
+			weight := workout.Exercises[i].Sets[j].Weight
+			reps := workout.Exercises[i].Sets[j].Reps
+			divider := "|"
+			if j > 0 {
+				divider = "/"
+			}
+			text += divider + fmt.Sprint(weight) + "," + fmt.Sprint(number) + "," + fmt.Sprint(reps)
+		}
+
+		text += "|" + workout.Exercises[i].Notes
 	}
-	text += workout.Notes
+	text += ";" + workout.Notes
 
 	_, err = f.WriteString(text + "\n")
 	return err

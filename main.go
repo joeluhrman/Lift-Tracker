@@ -30,17 +30,18 @@ func main() {
 	testEntry.Notes = "oh yeah now we're talkin pal"
 	testEntry.Exercises = make([]backend.ExerciseEntry, 3)
 	testEntry.Exercises[0].Type.Name = "Squat"
-	testEntry.Exercises[0].Sets = 3
-	testEntry.Exercises[0].Reps = 5
-	testEntry.Exercises[0].Notes = "went well"
 	testEntry.Exercises[1].Type.Name = "Bench"
-	testEntry.Exercises[1].Sets = 3
-	testEntry.Exercises[1].Reps = 5
-	testEntry.Exercises[1].Notes = "good"
 	testEntry.Exercises[2].Type.Name = "Deadlift"
-	testEntry.Exercises[2].Sets = 3
-	testEntry.Exercises[2].Reps = 5
-	testEntry.Exercises[2].Notes = "oh yeah"
+	testEntry.Exercises[0].Sets = make([]backend.SetGrp, 1)
+	testEntry.Exercises[1].Sets = make([]backend.SetGrp, 1)
+	testEntry.Exercises[2].Sets = make([]backend.SetGrp, 2)
+	testEntry.Exercises[0].Sets[0] = backend.SetGrp{Number: 3, Reps: 5, Weight: 315}
+	testEntry.Exercises[1].Sets[0] = backend.SetGrp{Number: 3, Reps: 5, Weight: 225}
+	testEntry.Exercises[2].Sets[1] = backend.SetGrp{Number: 1, Reps: 5, Weight: 355}
+	testEntry.Exercises[2].Sets[0] = backend.SetGrp{Number: 1, Reps: 3, Weight: 385}
+	testEntry.Exercises[0].Notes = "nice"
+	testEntry.Exercises[1].Notes = "good"
+	testEntry.Exercises[2].Notes = "two words"
 
 	err := backend.SaveWorkoutEntry("joe", testEntry)
 	if err != nil {
