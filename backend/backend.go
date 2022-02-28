@@ -15,15 +15,15 @@ const (
 	Pull MuscleGroup = "Pull"
 )
 
+type ExerciseType struct {
+	Name   string
+	MscGrp MuscleGroup
+}
+
 type SetGrp struct {
 	Weight int
 	Number int
 	Reps   int
-}
-
-type ExerciseType struct {
-	Name   string
-	MscGrp MuscleGroup
 }
 
 type ExerciseEntry struct {
@@ -32,15 +32,21 @@ type ExerciseEntry struct {
 	Notes string
 }
 
-type WorkoutTemplate struct {
-	Name      string
-	Exercises []ExerciseEntry
-}
-
 type WorkoutEntry struct {
+	Name      string
 	Date      string
 	Exercises []ExerciseEntry
 	Notes     string
+}
+
+type ExerciseTemplate struct {
+	Name string
+	Sets []SetGrp
+}
+
+type WorkoutTemplate struct {
+	Name      string
+	Exercises []ExerciseEntry
 }
 
 type Profile struct {
