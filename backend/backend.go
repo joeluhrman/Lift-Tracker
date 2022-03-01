@@ -14,8 +14,9 @@ const (
 	PUSH MuscleGroup = "Push"
 	PULL MuscleGroup = "Pull"
 
-	WORKHISTORY   string = "workouthistory.txt"
-	WORKTEMPLATES string = "workouttemplates.txt"
+	EXERCISETEMPLATES string = "exercisetemplates.txt"
+	WORKHISTORY       string = "workouthistory.txt"
+	WORKTEMPLATES     string = "workouttemplates.txt"
 )
 
 type SetGrp struct {
@@ -82,6 +83,26 @@ func exercisesToFileFormat(exercises []Exercise, isTemplate bool) string {
 	}
 
 	return text
+}
+
+func SaveExercise(username string, exercise *Exercise) error {
+	path, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	filepath := path + "/profiles/" + username + "/" + EXERCISETEMPLATES
+	f, err := os.OpenFile(filepath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	text := exercise.Name + "|" + string(exercise.MscGrp)
+
+	_, err = f.WriteString(text + "\n")
+	return err
 }
 
 // saves a workout to a text file and omits some data if saving a template

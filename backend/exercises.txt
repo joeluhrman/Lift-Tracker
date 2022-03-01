@@ -1,0 +1,5 @@
+Barbell Bench press|Push
+Barbell Overhead press|Push
+Barbell Squat|Legs
+Barbell Conventional Deadlift|Pull
+Barbell Sumo Deadlift|Pull

@@ -68,7 +68,7 @@ func main() {
 	testWorkout.Exercises[2].Sets = make([]backend.SetGrp, 1)
 	testWorkout.Exercises[2].Sets[0] = backend.SetGrp{Weight: 185, NumSets: 3, Reps: 5}
 
-	err = backend.SaveWorkout("joe", &testWorkout, true)
+	err = backend.SaveExercise("joe", &testWorkout.Exercises[0])
 	if err != nil {
 		fmt.Println(err)
 	}

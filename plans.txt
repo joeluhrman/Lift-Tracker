@@ -10,7 +10,7 @@ Backend Functionality:
     create and save profile             done
     create and save workouts            done
     create and save workout templates   done
-    create and save new exercises
+    create and save new exercises       done
     edit workouts
     
 
@@ -19,3 +19,4 @@ data for each user stored in Profiles/username/history, custom exercises, workou
 
 TO DO
     may have to deal with data not being present for some of the structs, maybe not 
+    standardize usage of pointers to structs somehow
