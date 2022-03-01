@@ -43,22 +43,32 @@ func main() {
 	testEntry.Exercises[1].Notes = "good"
 	testEntry.Exercises[2].Notes = "two words"*/
 
-	var testTemplate backend.WorkoutTemplate
-	testTemplate.Name = "Max day"
-	testTemplate.Exercises = make([]backend.ExerciseEntry, 3)
-	testTemplate.Exercises[0].Name = "Bench"
-	testTemplate.Exercises[1].Name = "Chins"
-	testTemplate.Exercises[2].Name = "Rows"
-	testTemplate.Exercises[0].Sets = make([]backend.SetGrp, 3)
-	testTemplate.Exercises[0].Sets[0] = backend.SetGrp{Weight: 275, Number: 1, Reps: 1}
-	testTemplate.Exercises[0].Sets[1] = backend.SetGrp{Weight: 295, Number: 1, Reps: 1}
-	testTemplate.Exercises[0].Sets[1] = backend.SetGrp{Weight: 315, Number: 1, Reps: 1}
-	testTemplate.Exercises[1].Sets = make([]backend.SetGrp, 1)
-	testTemplate.Exercises[1].Sets[0] = backend.SetGrp{Weight: 0, Number: 3, Reps: 8}
-	testTemplate.Exercises[2].Sets = make([]backend.SetGrp, 1)
-	testTemplate.Exercises[2].Sets[0] = backend.SetGrp{Weight: 185, Number: 3, Reps: 5}
+	var testWorkout backend.Workout
+	testWorkout.Name = "Max day"
+	testWorkout.Date = "12/02/2020"
+	testWorkout.Notes = "workout notes"
+	testWorkout.Exercises = make([]backend.Exercise, 3)
 
-	err = backend.SaveWorkoutTemplate("joe", testTemplate)
+	testWorkout.Exercises[0].Name = "Bench"
+	testWorkout.Exercises[1].Name = "Chins"
+	testWorkout.Exercises[2].Name = "Rows"
+	testWorkout.Exercises[0].MscGrp = backend.PUSH
+	testWorkout.Exercises[1].MscGrp = backend.PULL
+	testWorkout.Exercises[2].MscGrp = backend.PULL
+	testWorkout.Exercises[0].Notes = "good"
+	testWorkout.Exercises[1].Notes = "yesah"
+	testWorkout.Exercises[2].Notes = "great"
+
+	testWorkout.Exercises[0].Sets = make([]backend.SetGrp, 3)
+	testWorkout.Exercises[0].Sets[0] = backend.SetGrp{Weight: 275, NumSets: 1, Reps: 1}
+	testWorkout.Exercises[0].Sets[1] = backend.SetGrp{Weight: 295, NumSets: 1, Reps: 1}
+	testWorkout.Exercises[0].Sets[2] = backend.SetGrp{Weight: 315, NumSets: 1, Reps: 1}
+	testWorkout.Exercises[1].Sets = make([]backend.SetGrp, 1)
+	testWorkout.Exercises[1].Sets[0] = backend.SetGrp{Weight: 0, NumSets: 3, Reps: 8}
+	testWorkout.Exercises[2].Sets = make([]backend.SetGrp, 1)
+	testWorkout.Exercises[2].Sets[0] = backend.SetGrp{Weight: 185, NumSets: 3, Reps: 5}
+
+	err = backend.SaveWorkout("joe", &testWorkout, true)
 	if err != nil {
 		fmt.Println(err)
 	}

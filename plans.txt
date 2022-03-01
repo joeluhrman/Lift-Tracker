@@ -9,11 +9,13 @@ Pages to have:
 Backend Functionality:
     create and save profile             done
     create and save workouts            done
-    create and save workout templates
-    edit workouts
+    create and save workout templates   done
     create and save new exercises
+    edit workouts
+    
 
 
 data for each user stored in Profiles/username/history, custom exercises, workout templates, etc
 
 TO DO
+    may have to deal with data not being present for some of the structs, maybe not 
