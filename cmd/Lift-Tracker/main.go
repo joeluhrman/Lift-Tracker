@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/joeluhrman/Lift-Tracker/internal/pkg/controller"
 )
 
 const (
@@ -10,6 +11,6 @@ const (
 
 func main() {
 	engine := gin.Default()
-
-	engine.Run()
+	controller.SetupEndpoints(engine)
+	engine.Run(PORT)
 }
