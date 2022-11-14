@@ -1,2 +1,2 @@
 # Lift-Tracker
-Web-App to track lifting history and progress
+Golang/React web-app to track lifting progress
