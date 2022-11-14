@@ -1,7 +1,7 @@
 {
   "proxy": "http://localhost:8080",
 
-  "name": "lift-tracker_frontend",
+  "name": "reactjs",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
