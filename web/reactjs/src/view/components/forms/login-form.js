@@ -1,4 +1,4 @@
-import { SubmitLoginForm } from "../../../event-handlers/login/login-handlers"
+import { SubmitLoginForm } from "../../../event-handlers/login-handlers"
 
 const LoginForm = () => {
     return (
