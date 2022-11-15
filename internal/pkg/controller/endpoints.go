@@ -4,13 +4,15 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joeluhrman/Lift-Tracker/internal/pkg/controller/handlers"
 )
 
 const (
 	END_API = "/api"
 	END_V1  = "/v1"
 
-	END_LOGIN = "/login"
+	END_POST_CREATE_ACCOUNT = "/create-account"
+	END_POST_LOGIN          = "/login"
 )
 
 func SetupEndpoints(engine *gin.Engine) {
@@ -24,8 +26,7 @@ func SetupEndpoints(engine *gin.Engine) {
 	{
 		v1 := api.Group(END_V1)
 
-		v1.GET(END_LOGIN, func(ctx *gin.Context) {
-			ctx.JSON(200, gin.H{"msg": "test"})
-		})
+		v1.POST(END_POST_CREATE_ACCOUNT, handlers.CreateAccount)
+		v1.POST(END_POST_LOGIN, handlers.Login)
 	}
 }
