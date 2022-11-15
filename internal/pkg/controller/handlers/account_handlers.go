@@ -21,7 +21,7 @@ func CreateAccount(ctx *gin.Context) {
 	username := ctx.PostForm("username")
 	password := ctx.PostForm("password")
 
-	err := cred_reqs.CheckUsernameMeetsRequirements(username)
+	err := cred_reqs.CheckUsername(username)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatusJSON(CREATE_ACC_CRED_REQS_NOT_MET, gin.H{
@@ -30,7 +30,7 @@ func CreateAccount(ctx *gin.Context) {
 		return
 	}
 
-	err = cred_reqs.CheckPasswordMeetsRequirements(password)
+	err = cred_reqs.CheckPassword(password)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatusJSON(CREATE_ACC_CRED_REQS_NOT_MET, gin.H{

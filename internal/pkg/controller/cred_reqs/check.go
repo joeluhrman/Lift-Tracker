@@ -7,7 +7,8 @@ var (
 	ERR_PASSWORD_NOT_COMPLEX = errors.New("Password did not meet the complexity requirements")
 )
 
-func CheckUsernameMeetsRequirements(username string) error {
+// Checks that a username meets the requirements. Returns error if does not.
+func CheckUsername(username string) error {
 	var err error
 
 	if username == "" {
@@ -17,7 +18,8 @@ func CheckUsernameMeetsRequirements(username string) error {
 	return err
 }
 
-func CheckPasswordMeetsRequirements(password string) error {
+// Checks that a password meets the requirements. Returns error if does not.
+func CheckPassword(password string) error {
 	var err error
 
 	if password == "" {
