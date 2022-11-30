@@ -1,7 +1,7 @@
-build: clean
+build: 
 	go build -o Lift-Tracker.exe
 
-run: clean build
+run: build
 	./Lift-Tracker.exe
 
 clean:
