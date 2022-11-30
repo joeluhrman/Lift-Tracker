@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"errors"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -16,17 +17,30 @@ type Config struct {
 	Path   string
 }
 
-func Init(cfg *Config) error {
+func MustInit(cfg *Config) {
 	if conn != nil {
 		panic(errors.New("db cannot be initialized more than once"))
 	}
 
-	var err error
-	conn, err = sql.Open(cfg.Driver, cfg.Path)
+	_, err := os.Stat(cfg.Path)
+	if err != nil {
+		file, err := os.Create(cfg.Path)
+		if err != nil {
+			panic(err)
+		}
 
-	return err
+		file.Close()
+	}
+
+	conn, err = sql.Open(cfg.Driver, cfg.Path)
+	if err != nil {
+		panic(err)
+	}
 }
 
-func Close() error {
-	return conn.Close()
+func MustClose() {
+	err := conn.Close()
+	if err != nil {
+		panic(err)
+	}
 }
