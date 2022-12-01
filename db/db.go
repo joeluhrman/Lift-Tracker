@@ -20,7 +20,7 @@ type URL struct {
 	APIKey   string
 }
 
-func (url *URL) String() string {
+func (url *URL) string() string {
 	return "postgresql://" + url.Username + ":" + url.APIKey +
 		"@" + url.Host + "/" + url.Username + "/" + url.DBName
 }
@@ -46,7 +46,7 @@ func MustInit(cfg *Config) {
 	}
 
 	var err error
-	conn, err = sql.Open(cfg.Driver, cfg.URL.String())
+	conn, err = sql.Open(cfg.Driver, cfg.URL.string())
 	if err != nil {
 		panic(err)
 	}

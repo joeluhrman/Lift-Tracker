@@ -2,7 +2,10 @@ module github.com/joeluhrman/Lift-Tracker
 
 go 1.19
 
-require github.com/jackc/pgx/v5 v5.1.1
+require (
+	github.com/go-chi/chi v1.5.4
+	github.com/jackc/pgx/v5 v5.1.1
+)
 
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
