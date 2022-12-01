@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	server *Server
+	router *chi.Mux
 )
 
 type Config struct {
@@ -16,34 +16,20 @@ type Config struct {
 	Middlewares []func(http.Handler) http.Handler
 }
 
-type Server struct {
-	router *chi.Mux
-	port   string
-}
-
-func (server *Server) useMiddlewares(middlewares []func(http.Handler) http.Handler) {
+func useMiddlewares(r *chi.Mux, middlewares []func(http.Handler) http.Handler) {
 	for i := range middlewares {
-		server.router.Use(middlewares[i])
+		r.Use(middlewares[i])
 	}
-}
-
-func newServer(cfg *Config) *Server {
-	server := &Server{
-		router: chi.NewRouter(),
-		port:   cfg.Port,
-	}
-
-	server.useMiddlewares(cfg.Middlewares)
-
-	return server
 }
 
 func MustStart(cfg *Config) {
-	if server != nil {
+	if router != nil {
 		panic(errors.New("server cannot be started more than once"))
 	}
 
-	server = newServer(cfg)
+	router := chi.NewRouter()
 
-	http.ListenAndServe(server.port, server.router)
+	useMiddlewares(router, cfg.Middlewares)
+
+	http.ListenAndServe(cfg.Port, router)
 }
