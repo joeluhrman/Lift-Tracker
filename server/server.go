@@ -45,5 +45,5 @@ func MustStart(cfg *Config) {
 
 	server = newServer(cfg)
 
-	http.ListenAndServe(":"+server.port, server.router)
+	http.ListenAndServe(server.port, server.router)
 }

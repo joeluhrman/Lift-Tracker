@@ -11,20 +11,38 @@ import (
 
 func main() {
 	const (
-		dbDriver     = "pgx"
-		dbApiKeyPath = "./db/api_key.txt"
-
-		serverPort = "3000"
+		serverPort = ":3000"
 	)
 
 	var (
-		dbApiKey = string(mustReadFile(dbApiKeyPath))
-		dbURL    = db.NewURL("Lift-Tracker", "db.bit.io" /*dbPort,*/, "jaluhrman", dbApiKey)
+		isProd   bool
+		dbType   db.DBType
+		dbDriver string
+		dbPath   string
 	)
 
+	if len(os.Args) > 1 {
+		isProd = os.Args[1] == "-prod"
+	}
+
+	if isProd {
+		dbApiKey := string(mustReadFile("./db/api_key.txt"))
+		url := db.NewPostgresqlURL("Lift-Tracker", "db.bit.io", "jaluhrman", dbApiKey)
+
+		dbType = db.PGSQL
+		dbDriver = "pgx"
+		dbPath = url.String()
+
+	} else {
+		dbType = db.SQLite
+		dbDriver = "sqlite3"
+		dbPath = "./test.db"
+	}
+
 	db.MustInit(&db.Config{
+		Type:   dbType,
 		Driver: dbDriver,
-		URL:    dbURL,
+		Path:   dbPath,
 	})
 
 	defer db.MustClose()
