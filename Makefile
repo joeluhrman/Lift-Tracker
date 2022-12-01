@@ -7,10 +7,5 @@ run: build
 clean:
 	go clean
 
-cleandb:
-	del *.db
-
-cleanall: clean cleandb
-
 test: 
 	go test ./... -v -cover
