@@ -1,6 +1,7 @@
 package db
 
-type UserCredentials struct {
+type User struct {
+	ID       int
 	username string
 	password string
 }

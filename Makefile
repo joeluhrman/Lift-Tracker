@@ -1,10 +1,10 @@
 build: 
-	go build -o Lift-Tracker.exe
+	go build -o ./Lift-Tracker.exe
 
-run: build
+runtest: build
 	./Lift-Tracker.exe
 
-run-prod: build
+runprod: build
 	./Lift-Tracker.exe -prod
 
 clean:

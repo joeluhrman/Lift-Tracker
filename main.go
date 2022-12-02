@@ -9,6 +9,25 @@ import (
 	"github.com/joeluhrman/Lift-Tracker/server"
 )
 
+var (
+	prodDBApiKey = string(mustReadFile("./db/api_key.txt"))
+	prodDBURL    = db.NewPostgresqlURL(
+		"Lift-Tracker",
+		"db.bit.io",
+		"",
+		"jaluhrman",
+		prodDBApiKey)
+
+	testDBApiKey = string(mustReadFile("./db/api_key_test.txt"))
+	testDBURL    = db.NewPostgresqlURL(
+		"Lift-Tracker-Test",
+		"db.bit.io",
+		"",
+		"jaluhrman",
+		testDBApiKey,
+	)
+)
+
 func main() {
 	const (
 		serverPort = ":3000"
@@ -16,9 +35,8 @@ func main() {
 
 	var (
 		isProd   bool
-		dbType   db.DBType
-		dbDriver string
 		dbPath   string
+		dbDriver = "pgx"
 	)
 
 	if len(os.Args) > 1 {
@@ -26,21 +44,13 @@ func main() {
 	}
 
 	if isProd {
-		dbApiKey := string(mustReadFile("./db/api_key.txt"))
-		url := db.NewPostgresqlURL("Lift-Tracker", "db.bit.io", "jaluhrman", dbApiKey)
-
-		dbType = db.PGSQL
-		dbDriver = "pgx"
-		dbPath = url.String()
+		dbPath = prodDBURL.String()
 
 	} else {
-		dbType = db.SQLite
-		dbDriver = "sqlite3"
-		dbPath = "./test.db"
+		dbPath = testDBURL.String()
 	}
 
-	db.MustInit(&db.Config{
-		Type:   dbType,
+	db.MustConnect(&db.Config{
 		Driver: dbDriver,
 		Path:   dbPath,
 	})
