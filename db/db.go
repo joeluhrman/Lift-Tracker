@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"errors"
+	"log"
 
 	_ "github.com/jackc/pgx/v5"
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -28,6 +29,13 @@ func MustConnect(cfg *Config) {
 	if err != nil {
 		panic(err)
 	}
+
+	err = conn.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	log.Printf("connected to database %s", cfg.Path)
 }
 
 func MustClose() {
