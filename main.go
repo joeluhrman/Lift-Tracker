@@ -7,10 +7,11 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/joeluhrman/Lift-Tracker/db"
 	"github.com/joeluhrman/Lift-Tracker/server"
+	"github.com/joeluhrman/Lift-Tracker/utils"
 )
 
 var (
-	testDBApiKey = string(mustReadFile("./db/api_key_test.txt"))
+	testDBApiKey = string(utils.MustReadFile("./db/api_key_test.txt"))
 
 	TestDBConfig = &db.Config{
 		Driver: "pgx",
@@ -48,13 +49,4 @@ func main() {
 	defer db.MustClose()
 
 	server.MustStart(serverConfig)
-}
-
-func mustReadFile(path string) []byte {
-	bytes, err := os.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-
-	return bytes
 }

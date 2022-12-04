@@ -9,7 +9,6 @@ runprod: build
 
 clean:
 	go clean
-	del *.db
 
 test: 
 	go clean -testcache
