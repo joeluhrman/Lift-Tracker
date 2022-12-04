@@ -36,26 +36,3 @@ func MustClose() {
 		panic(err)
 	}
 }
-
-type PostgresqlURL struct {
-	DBName   string
-	Host     string
-	Port     string
-	Username string
-	APIKey   string
-}
-
-func (url *PostgresqlURL) String() string {
-	return "postgresql://" + url.Username + ":" + url.APIKey +
-		"@" + url.Host + url.Port + "/" + url.Username + "/" + url.DBName
-}
-
-func NewPostgresqlURL(dbName string, host string, port string, username string, apiKey string) *PostgresqlURL {
-	return &PostgresqlURL{
-		DBName:   dbName,
-		Host:     host,
-		Port:     port,
-		Username: username,
-		APIKey:   apiKey,
-	}
-}

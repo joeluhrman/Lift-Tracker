@@ -10,33 +10,26 @@ import (
 )
 
 var (
-	prodDBApiKey = string(mustReadFile("./db/api_key.txt"))
-	prodDBURL    = db.NewPostgresqlURL(
-		"Lift-Tracker",
-		"db.bit.io",
-		"",
-		"jaluhrman",
-		prodDBApiKey)
-
 	testDBApiKey = string(mustReadFile("./db/api_key_test.txt"))
-	testDBURL    = db.NewPostgresqlURL(
-		"Lift-Tracker-Test",
-		"db.bit.io",
-		"",
-		"jaluhrman",
-		testDBApiKey,
-	)
+
+	TestDBConfig = &db.Config{
+		Driver: "pgx",
+		Path:   "postgresql://jaluhrman:" + testDBApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test",
+	}
+
+	TestServerConfig = &server.Config{
+		Port: ":3000",
+		Middlewares: []func(http.Handler) http.Handler{
+			middleware.Logger,
+		},
+	}
 )
 
 func main() {
-	const (
-		serverPort = ":3000"
-	)
-
 	var (
-		isProd   bool
-		dbPath   string
-		dbDriver = "pgx"
+		isProd       bool
+		dbConfig     *db.Config
+		serverConfig *server.Config
 	)
 
 	if len(os.Args) > 1 {
@@ -44,25 +37,17 @@ func main() {
 	}
 
 	if isProd {
-		dbPath = prodDBURL.String()
-
+		dbConfig = TestDBConfig
+		serverConfig = TestServerConfig
 	} else {
-		dbPath = testDBURL.String()
+		dbConfig = TestDBConfig
+		serverConfig = TestServerConfig
 	}
 
-	db.MustConnect(&db.Config{
-		Driver: dbDriver,
-		Path:   dbPath,
-	})
-
+	db.MustConnect(dbConfig)
 	defer db.MustClose()
 
-	server.MustStart(&server.Config{
-		Port: serverPort,
-		Middlewares: []func(http.Handler) http.Handler{
-			middleware.Logger,
-		},
-	})
+	server.MustStart(serverConfig)
 }
 
 func mustReadFile(path string) []byte {
