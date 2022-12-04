@@ -1,29 +1,10 @@
 package main
 
 import (
-	"net/http"
 	"os"
 
-	"github.com/go-chi/chi/middleware"
 	"github.com/joeluhrman/Lift-Tracker/db"
 	"github.com/joeluhrman/Lift-Tracker/server"
-	"github.com/joeluhrman/Lift-Tracker/utils"
-)
-
-var (
-	testDBApiKey = string(utils.MustReadFile("./db/api_key_test.txt"))
-
-	TestDBConfig = &db.Config{
-		Driver: "pgx",
-		Path:   "postgresql://jaluhrman:" + testDBApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test",
-	}
-
-	TestServerConfig = &server.Config{
-		Port: ":3000",
-		Middlewares: []func(http.Handler) http.Handler{
-			middleware.Logger,
-		},
-	}
 )
 
 func main() {
@@ -38,11 +19,11 @@ func main() {
 	}
 
 	if isProd {
-		dbConfig = TestDBConfig
-		serverConfig = TestServerConfig
+		dbConfig = db.TestDBConfig
+		serverConfig = server.TestServerConfig
 	} else {
-		dbConfig = TestDBConfig
-		serverConfig = TestServerConfig
+		dbConfig = db.TestDBConfig
+		serverConfig = server.TestServerConfig
 	}
 
 	db.MustConnect(dbConfig)

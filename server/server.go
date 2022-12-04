@@ -5,21 +5,23 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
 var (
 	router *chi.Mux
+
+	TestServerConfig = &Config{
+		Port: ":3000",
+		Middlewares: []func(http.Handler) http.Handler{
+			middleware.Logger,
+		},
+	}
 )
 
 type Config struct {
 	Port        string
 	Middlewares []func(http.Handler) http.Handler
-}
-
-func useMiddlewares(r *chi.Mux, middlewares []func(http.Handler) http.Handler) {
-	for i := range middlewares {
-		r.Use(middlewares[i])
-	}
 }
 
 func MustStart(cfg *Config) {
@@ -32,4 +34,10 @@ func MustStart(cfg *Config) {
 	useMiddlewares(router, cfg.Middlewares)
 
 	http.ListenAndServe(cfg.Port, router)
+}
+
+func useMiddlewares(r *chi.Mux, middlewares []func(http.Handler) http.Handler) {
+	for i := range middlewares {
+		r.Use(middlewares[i])
+	}
 }

@@ -3,30 +3,26 @@ package db
 import (
 	"os"
 	"testing"
-
-	"github.com/joeluhrman/Lift-Tracker/utils"
 )
 
-var (
-	testDBApiKey = string(utils.MustReadFile("./api_key_test.txt"))
-
-	TestDBConfig = &Config{
-		Driver: "pgx",
-		Path:   "postgresql://jaluhrman:" + testDBApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test",
-	}
-)
-
-func clearTables() {
+func clearAllTables() {
 	_, err := conn.Exec("DELETE FROM users")
 	if err != nil {
 		panic(err)
 	}
 }
 
+func clearTable(tName string) {
+	_, err := conn.Exec("DELETE FROM " + tName)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func TestMain(m *testing.M) {
+	os.Chdir("..")
 	MustConnect(TestDBConfig)
-	clearTables()
+	clearAllTables()
 	code := m.Run()
-	clearTables()
 	os.Exit(code)
 }
