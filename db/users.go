@@ -1,7 +1,13 @@
 package db
 
 type User struct {
-	ID       int
+	id       int
 	username string
 	password string
+
+	isAdmin bool
+}
+
+func CreateUser(user *User) {
+
 }
