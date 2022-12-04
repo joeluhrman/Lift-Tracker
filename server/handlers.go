@@ -1,10 +1,11 @@
 package server
 
 import (
-	"log"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/joeluhrman/Lift-Tracker/db"
 )
 
 const (
@@ -19,5 +20,11 @@ func setupEndpoints(r *chi.Mux) {
 }
 
 func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
-	log.Println("placeholder")
+	user := &db.User{}
+
+	err := json.NewDecoder(r.Body).Decode(user)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("bleh"))
+	}
 }

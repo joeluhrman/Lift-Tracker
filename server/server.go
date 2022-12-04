@@ -32,6 +32,7 @@ func MustStart(cfg *Config) {
 	router := chi.NewRouter()
 
 	useMiddlewares(router, cfg.Middlewares)
+	setupEndpoints(router)
 
 	http.ListenAndServe(cfg.Port, router)
 }
