@@ -3,12 +3,13 @@ package db
 import (
 	"os"
 	"testing"
+
+	_ "github.com/joeluhrman/Lift-Tracker/testing"
 )
 
 func clearAllTables() {
-	_, err := conn.Exec("DELETE FROM users")
-	if err != nil {
-		panic(err)
+	for _, table := range tables {
+		clearTable(table)
 	}
 }
 
@@ -20,7 +21,6 @@ func clearTable(tName string) {
 }
 
 func TestMain(m *testing.M) {
-	os.Chdir("..")
 	MustConnect(TestDBConfig)
 	clearAllTables()
 	code := m.Run()

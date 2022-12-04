@@ -14,11 +14,12 @@ var (
 	conn *sql.DB
 
 	testDBApiKey = string(utils.MustReadFile("./api_keys/api_key_test.txt"))
-
 	TestDBConfig = &Config{
 		Driver: "pgx",
 		Path:   "postgresql://jaluhrman:" + testDBApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test",
 	}
+
+	tables = []string{tableUser}
 )
 
 type Config struct {
