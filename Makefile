@@ -4,9 +4,6 @@ build:
 runtest: build
 	./Lift-Tracker.exe
 
-runprod: build
-	./Lift-Tracker.exe -prod
-
 clean:
 	go clean
 

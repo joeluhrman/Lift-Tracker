@@ -7,19 +7,14 @@ import (
 
 	_ "github.com/jackc/pgx/v5"
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/joeluhrman/Lift-Tracker/utils"
+)
+
+const (
+	tableUser = "users"
 )
 
 var (
 	conn *sql.DB
-
-	testDBApiKey = string(utils.MustReadFile("./api_keys/api_key_test.txt"))
-	TestDBConfig = &Config{
-		Driver: "pgx",
-		Path:   "postgresql://jaluhrman:" + testDBApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test",
-	}
-
-	tables = []string{tableUser}
 )
 
 type Config struct {
@@ -51,4 +46,27 @@ func MustClose() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+type User struct {
+	Id       int    `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	IsAdmin  bool   `json:"is_admin"`
+}
+
+func NewUser(username string, password string, isAdmin bool) *User {
+	return &User{
+		Username: username,
+		Password: password,
+		IsAdmin:  isAdmin,
+	}
+}
+
+func InsertUser(user *User) error {
+	statement := "INSERT INTO " + tableUser + " (username, password, is_admin) VALUES ($1, $2, $3)"
+
+	_, err := conn.Exec(statement, user.Username, user.Password, user.IsAdmin)
+
+	return err
 }

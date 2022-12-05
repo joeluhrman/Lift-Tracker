@@ -1,10 +1,20 @@
 package server
 
 import (
+	"net/http"
 	"os"
 	"testing"
 
-	_ "github.com/joeluhrman/Lift-Tracker/testing"
+	"github.com/go-chi/chi/middleware"
+)
+
+var (
+	testServerConfig = &Config{
+		Port: ":3000",
+		Middlewares: []func(http.Handler) http.Handler{
+			middleware.Logger,
+		},
+	}
 )
 
 func TestMain(m *testing.M) {
@@ -13,5 +23,5 @@ func TestMain(m *testing.M) {
 }
 
 func Test_MustStart_Smoke(t *testing.T) {
-	MustStart(TestServerConfig)
+	MustStart(testServerConfig)
 }
