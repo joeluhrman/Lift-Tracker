@@ -20,6 +20,14 @@ func HashPassword(password string) (string, error) {
 	return string(hash), err
 }
 
-func CheckPassword(password string, hash string) bool {
+func PasswordIsValid(password string, hash string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
+}
+
+func PasswordMeetsRequirements(password string) bool {
+	if password == "" {
+		return false
+	}
+
+	return true
 }
