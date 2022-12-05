@@ -11,7 +11,7 @@ import (
 
 const (
 	routeApiV1   = "/api/v1"
-	endCreateAcc = "create-account"
+	endCreateAcc = "/create-account"
 )
 
 type apiError struct {
