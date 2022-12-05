@@ -10,13 +10,13 @@ import (
 )
 
 const (
-	ROUTE_API_V1   = "/api/v1"
-	END_CREATE_ACC = "create-account"
+	routeApiV1   = "/api/v1"
+	endCreateAcc = "create-account"
 )
 
 func setupEndpoints(r *chi.Mux) {
-	r.Route("/api/v1", func(r chi.Router) {
-		r.Post("/create-account", handleCreateAccount)
+	r.Route(routeApiV1, func(r chi.Router) {
+		r.Post(endCreateAcc, handleCreateAccount)
 	})
 }
 
