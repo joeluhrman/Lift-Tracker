@@ -23,12 +23,23 @@ func (e apiError) Error() string {
 	return e.Err
 }
 
+func newApiError(status int, err string) apiError {
+	return apiError{
+		Status: status,
+		Err:    err,
+	}
+}
+
 type apiFunc func(http.ResponseWriter, *http.Request) error
 
 func makeHTTPHandler(f apiFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := f(w, r); err != nil {
-			writeJSON(w, http.StatusInternalServerError, apiError{Err: "internal server"})
+			if e, ok := err.(apiError); ok {
+				writeJSON(w, e.Status, e.Err)
+			} else {
+				writeJSON(w, http.StatusInternalServerError, err)
+			}
 		}
 	}
 }
@@ -41,37 +52,33 @@ func writeJSON(w http.ResponseWriter, status int, v any) error {
 
 func setupEndpoints(r *chi.Mux) {
 	r.Route(routeApiV1, func(r chi.Router) {
-		r.Post(endCreateAcc, handleCreateAccount)
+		r.Post(endCreateAcc, makeHTTPHandler(handleCreateAccount))
 	})
 }
 
-func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
+func handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
 	user := &db.User{}
 
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		return newApiError(http.StatusBadRequest, err.Error())
 	}
 
 	if !utils.PasswordMeetsRequirements(user.Password) {
-		w.WriteHeader(http.StatusNotAcceptable)
-		return
+		return newApiError(http.StatusNotAcceptable, err.Error())
 	}
 
 	user.Password, err = utils.HashPassword(user.Password)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return newApiError(http.StatusInternalServerError, err.Error())
 	}
 
 	user.IsAdmin = false
 
 	err = db.InsertUser(user)
 	if err != nil {
-		w.WriteHeader(http.StatusConflict)
-		return
+		return newApiError(http.StatusConflict, err.Error())
 	}
 
-	w.WriteHeader(http.StatusAccepted)
+	return writeJSON(w, http.StatusAccepted, nil)
 }
