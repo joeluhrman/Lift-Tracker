@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/joeluhrman/Lift-Tracker/db"
+	"github.com/joeluhrman/Lift-Tracker/utils"
 )
 
 const (
@@ -25,6 +26,22 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("bleh"))
+		return
 	}
+
+	user.IsAdmin = false
+
+	user.Password, err = utils.HashPassword(user.Password)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = db.InsertUser(user)
+	if err != nil {
+		w.WriteHeader(http.StatusConflict)
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
 }

@@ -19,7 +19,7 @@ func NewUser(username string, password string, isAdmin bool) *User {
 	}
 }
 
-func CreateUser(user *User) error {
+func InsertUser(user *User) error {
 	statement := "INSERT INTO " + tableUser + " (username, password, is_admin) VALUES ($1, $2, $3)"
 
 	_, err := conn.Exec(statement, user.Username, user.Password, user.IsAdmin)
