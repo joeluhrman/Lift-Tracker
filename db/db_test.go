@@ -3,12 +3,10 @@ package db
 import (
 	"os"
 	"testing"
-
-	"github.com/joeluhrman/Lift-Tracker/utils"
 )
 
 var (
-	testDBApiKey = string(utils.MustReadFile("./api_keys/api_key_test.txt"))
+	testDBApiKey = string(MustReadFile("./api_keys/api_key_test.txt"))
 	testDBConfig = &Config{
 		Driver: "pgx",
 		Path:   "postgresql://jaluhrman:" + testDBApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test",

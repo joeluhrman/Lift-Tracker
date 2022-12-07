@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"log"
+	"os"
 
 	_ "github.com/jackc/pgx/v5"
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -46,6 +47,15 @@ func MustClose() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func MustReadFile(path string) []byte {
+	bytes, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+
+	return bytes
 }
 
 type User struct {

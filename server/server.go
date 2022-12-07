@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/joeluhrman/Lift-Tracker/db"
-	"github.com/joeluhrman/Lift-Tracker/utils"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -41,6 +41,23 @@ func useMiddlewares(r *chi.Mux, middlewares []func(http.Handler) http.Handler) {
 	for i := range middlewares {
 		r.Use(middlewares[i])
 	}
+}
+
+func HashPassword(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(hash), err
+}
+
+func PasswordMatchesHash(password string, hash string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
+}
+
+func PasswordMeetsRequirements(password string) bool {
+	if password == "" {
+		return false
+	}
+
+	return true
 }
 
 type apiError struct {
@@ -93,11 +110,11 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
 		return newApiError(http.StatusBadRequest, err.Error())
 	}
 
-	if !utils.PasswordMeetsRequirements(user.Password) {
+	if !PasswordMeetsRequirements(user.Password) {
 		return newApiError(http.StatusNotAcceptable, err.Error())
 	}
 
-	user.Password, err = utils.HashPassword(user.Password)
+	user.Password, err = HashPassword(user.Password)
 	if err != nil {
 		return newApiError(http.StatusInternalServerError, err.Error())
 	}
