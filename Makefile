@@ -2,7 +2,7 @@ build:
 	go build -o ./Lift-Tracker.exe
 
 runtest: build
-	./Lift-Tracker.exe
+	./Lift-Tracker.exe 
 
 clean:
 	go clean

@@ -1,31 +1,27 @@
 package main
 
 import (
-	"net/http"
+	"flag"
 
 	"github.com/go-chi/chi/middleware"
-	"github.com/joeluhrman/Lift-Tracker/db"
 	"github.com/joeluhrman/Lift-Tracker/server"
+	"github.com/joeluhrman/Lift-Tracker/storage"
 )
 
 func main() {
 	var (
-		dbApiKey = string(db.MustReadFile("./api_keys/api_key_test.txt"))
-		dbConfig = &db.Config{
-			Driver: "pgx",
-			Path:   "postgresql://jaluhrman:" + dbApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test",
-		}
+		pgDriver = "pgx"
+		pgApiKey = string(storage.MustReadFile("./api_keys/api_key_test.txt"))
+		pgURL    = "postgresql://jaluhrman:" + pgApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test"
 
-		serverConfig = &server.Config{
-			Port: ":3000",
-			Middlewares: []func(http.Handler) http.Handler{
-				middleware.Logger,
-			},
-		}
+		listenaddr = flag.String("listenaddr", ":3000", "the port the server should listen on")
 	)
+	flag.Parse()
 
-	db.MustConnect(dbConfig)
-	defer db.MustClose()
+	pgStore := storage.NewPostgresStorage(pgDriver, pgURL)
+	pgStore.MustConnect()
+	defer pgStore.MustClose()
 
-	server.MustStart(serverConfig)
+	server := server.New(*listenaddr, pgStore, middleware.Logger)
+	server.MustStart()
 }
