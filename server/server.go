@@ -75,7 +75,7 @@ func makeHTTPHandler(f apiFunc) http.HandlerFunc {
 				writeJSON(w, e.Status, e.Err)
 				return
 			}
-			w.WriteHeader(http.StatusInternalServerError)
+			writeJSON(w, http.StatusInternalServerError, err.Error())
 		}
 	}
 }
