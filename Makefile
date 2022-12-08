@@ -9,4 +9,4 @@ clean:
 
 test: 
 	go clean -testcache
-	go test ./... -v -cover
+	go test ./... -cover
