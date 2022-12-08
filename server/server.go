@@ -17,8 +17,8 @@ const (
 type middleware func(http.Handler) http.Handler
 
 type Server struct {
-	port        string
 	router      *chi.Mux
+	port        string
 	middlewares []middleware
 	storage     storage.Storage
 }
