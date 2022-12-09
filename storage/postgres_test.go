@@ -36,13 +36,26 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func Test_InsertUser_Valid(t *testing.T) {
-	user := types.NewUser("jaluhrman", "123", false)
+func Test_InsertUser(t *testing.T) {
+	defer testPGStorage.clearTable(tableUser)
 
-	err := testPGStorage.InsertUser(user, false)
-	if err != nil {
-		t.Error(err)
-	}
+	// Success case
+	func() {
+		user := types.NewUser("jaluhrman", "123", false)
 
-	testPGStorage.clearTable(tableUser)
+		err := testPGStorage.InsertUser(user, false)
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+
+	// username already exists
+	func() {
+		user := types.NewUser("jaluhrman", "123", false)
+
+		err := testPGStorage.InsertUser(user, false)
+		if err == nil {
+			t.Error("should have produced an error when username already taken")
+		}
+	}()
 }
