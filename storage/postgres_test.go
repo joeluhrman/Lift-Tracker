@@ -13,7 +13,7 @@ var (
 	testPGURL     = "postgresql://jaluhrman:" + testPGApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test"
 	testPGStorage = NewPostgresStorage(testPGDriver, testPGURL)
 
-	tables = []string{tableUser}
+	tables = []string{pgTableUser}
 )
 
 func (p *PostgresStorage) clearAllTables() {
@@ -37,7 +37,7 @@ func TestMain(m *testing.M) {
 }
 
 func Test_InsertUser(t *testing.T) {
-	defer testPGStorage.clearTable(tableUser)
+	defer testPGStorage.clearTable(pgTableUser)
 
 	// Success case
 	func() {

@@ -4,3 +4,8 @@ CREATE TABLE IF NOT EXISTS users (
     password    TEXT NOT NULL,
     is_admin    BOOLEAN
 );
+
+CREATE TABLE IF NOT EXISTS sessions (
+    user_id     INTEGER PRIMARY KEY,
+    token       TEXT UNIQUE
+);

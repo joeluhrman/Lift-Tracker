@@ -14,6 +14,7 @@ import (
 const (
 	routeApiV1   = "/api/v1"
 	endCreateAcc = "/create-account"
+	endLogin     = "/login"
 )
 
 type middleware func(http.Handler) http.Handler
@@ -49,6 +50,7 @@ func (s *Server) MustStart() {
 func (s *Server) setupEndpoints() {
 	s.router.Route(routeApiV1, func(r chi.Router) {
 		r.Post(endCreateAcc, makeHTTPHandler(s.handleCreateAccount))
+		r.Post(endLogin, makeHTTPHandler(s.handleLogin))
 	})
 }
 
@@ -111,4 +113,8 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 	}
 
 	return writeJSON(w, http.StatusAccepted, nil)
+}
+
+func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
+	return writeJSON(w, http.StatusOK, nil)
 }

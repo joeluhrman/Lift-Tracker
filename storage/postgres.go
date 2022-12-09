@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	tableUser = "users"
+	pgTableUser    = "users"
+	pgTableSession = "sessions"
 )
 
 type PostgresStorage struct {
@@ -50,9 +51,15 @@ func (p *PostgresStorage) MustClose() {
 }
 
 func (p *PostgresStorage) InsertUser(user *types.User, isAdmin bool) error {
-	statement := "INSERT INTO " + tableUser + " (username, password, is_admin) VALUES ($1, $2, $3)"
-
+	statement := "INSERT INTO " + pgTableUser + " (username, password, is_admin) VALUES ($1, $2, $3)"
 	_, err := p.conn.Exec(statement, user.Username, user.Password, isAdmin)
+
+	return err
+}
+
+func (p *PostgresStorage) InsertSession(s *types.Session) error {
+	statement := "INSERT INTO " + pgTableSession + " (user_id, token) VALUES ($1, $2)"
+	_, err := p.conn.Exec(statement, s.UserID, s.Token)
 
 	return err
 }

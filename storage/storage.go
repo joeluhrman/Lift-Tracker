@@ -8,6 +8,7 @@ import (
 
 type Storage interface {
 	InsertUser(user *types.User, isAdmin bool) error
+	InsertSession(s *types.Session) error
 }
 
 // not sure where to put this, can't put in main package because need for testing unfortunately

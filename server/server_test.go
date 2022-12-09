@@ -22,6 +22,10 @@ func (t *testStorage) InsertUser(user *types.User, isAdmin bool) error {
 	return nil
 }
 
+func (t *testStorage) InsertSession(s *types.Session) error {
+	return nil
+}
+
 var (
 	ts *testStorage
 )
