@@ -49,6 +49,8 @@ func (p *PostgresStorage) MustClose() {
 	if err != nil {
 		panic(err)
 	}
+
+	log.Printf("connection to database %s successfuly close", p.url)
 }
 
 func (p *PostgresStorage) InsertUser(user *types.User, isAdmin bool) error {
