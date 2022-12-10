@@ -98,11 +98,14 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 		return newApiError(http.StatusBadRequest, err.Error())
 	}
 
-	if !PasswordMeetsRequirements(user.Password) {
+	// not actually hashed yet but that's the name of the field unfortunately
+	password := user.HashedPassword
+
+	if !storage.PasswordMeetsRequirements(password) {
 		return newApiError(http.StatusNotAcceptable, errors.New("password does not meet requirements").Error())
 	}
 
-	user.Password, err = HashPassword(user.Password)
+	user.HashedPassword, err = storage.HashPassword(password)
 	if err != nil {
 		return newApiError(http.StatusInternalServerError, err.Error())
 	}
@@ -116,5 +119,22 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
+	userProvided := &types.User{}
+
+	err := json.NewDecoder(r.Body).Decode(userProvided)
+	if err != nil {
+		return newApiError(http.StatusBadRequest, err.Error())
+	}
+
+	username := userProvided.Username
+	password := userProvided.HashedPassword
+
+	_, err = s.storage.AuthenticateUser(username, password)
+	if err != nil {
+		return newApiError(http.StatusUnauthorized, err.Error())
+	}
+
+	// create session
+
 	return writeJSON(w, http.StatusOK, nil)
 }

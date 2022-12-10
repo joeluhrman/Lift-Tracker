@@ -26,6 +26,10 @@ func (t *testStorage) InsertSession(s *types.Session) error {
 	return nil
 }
 
+func (t *testStorage) AuthenticateUser(username string, password string) (int, error) {
+	return 1, nil
+}
+
 var (
 	ts *testStorage
 )

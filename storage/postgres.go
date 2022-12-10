@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 
 	_ "github.com/jackc/pgx/v5"
@@ -51,8 +52,8 @@ func (p *PostgresStorage) MustClose() {
 }
 
 func (p *PostgresStorage) InsertUser(user *types.User, isAdmin bool) error {
-	statement := "INSERT INTO " + pgTableUser + " (username, password, is_admin) VALUES ($1, $2, $3)"
-	_, err := p.conn.Exec(statement, user.Username, user.Password, isAdmin)
+	statement := "INSERT INTO " + pgTableUser + " (username, hashed_password, is_admin) VALUES ($1, $2, $3)"
+	_, err := p.conn.Exec(statement, user.Username, user.HashedPassword, isAdmin)
 
 	return err
 }
@@ -62,4 +63,23 @@ func (p *PostgresStorage) InsertSession(s *types.Session) error {
 	_, err := p.conn.Exec(statement, s.UserID, s.Token)
 
 	return err
+}
+
+func (p *PostgresStorage) AuthenticateUser(username string, password string) (int, error) {
+	var (
+		userID         int
+		hashedPassword string
+	)
+
+	statement := "SELECT id, hashed_password FROM " + pgTableUser + " WHERE username = $1"
+	row := p.conn.QueryRow(statement, username)
+	if err := row.Scan(&userID, &hashedPassword); err != nil {
+		return 0, err
+	}
+
+	if !passwordMatchesHash(password, hashedPassword) {
+		return 0, errors.New("incorrect password")
+	}
+
+	return userID, nil
 }

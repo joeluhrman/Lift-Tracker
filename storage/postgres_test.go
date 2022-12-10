@@ -8,22 +8,30 @@ import (
 )
 
 var (
-	testPGDriver  = "pgx"
-	testPGApiKey  = string(MustReadFile("../api_keys/api_key_test.txt"))
-	testPGURL     = "postgresql://jaluhrman:" + testPGApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test"
-	testPGStorage = NewPostgresStorage(testPGDriver, testPGURL)
+	testPGDriver = "pgx"
+	testPGApiKey = string(MustReadFile("../api_keys/api_key_test.txt"))
+	testPGURL    = "postgresql://jaluhrman:" + testPGApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test"
+
+	testPGStorage = &testPostgresStorage{
+		PostgresStorage: NewPostgresStorage(testPGDriver, testPGURL),
+	}
 
 	tables = []string{pgTableUser}
 )
 
-func (p *PostgresStorage) clearAllTables() {
+// wrapper for test methods to avoid confusion
+type testPostgresStorage struct {
+	*PostgresStorage
+}
+
+func (t *testPostgresStorage) clearAllTables() {
 	for _, table := range tables {
-		p.clearTable(table)
+		t.clearTable(table)
 	}
 }
 
-func (p *PostgresStorage) clearTable(tName string) {
-	_, err := p.conn.Exec("DELETE FROM " + tName)
+func (t *testPostgresStorage) clearTable(tName string) {
+	_, err := t.conn.Exec("DELETE FROM " + tName)
 	if err != nil {
 		panic(err)
 	}
@@ -58,4 +66,36 @@ func Test_InsertUser(t *testing.T) {
 			t.Error("should have produced an error when username already taken")
 		}
 	}()
+}
+
+func Test_AuthenticateUser(t *testing.T) {
+	defer testPGStorage.clearTable(pgTableUser)
+
+	// username does not exist
+	func() {
+		_, err := testPGStorage.AuthenticateUser("jaluhrman", "gabagool")
+		if err == nil {
+			t.Error("error should have been returned when username does not exist")
+		}
+	}()
+
+	hashedPassword, _ := HashPassword("password")
+	testPGStorage.InsertUser(types.NewUser("jaluhrman", hashedPassword, false), false)
+
+	// bad password
+	func() {
+		_, err := testPGStorage.AuthenticateUser("jaluhrman", "wrong")
+		if err == nil {
+			t.Error("error should have been returned when password incorrect")
+		}
+	}()
+
+	// success case
+	func() {
+		_, err := testPGStorage.AuthenticateUser("jaluhrman", "password")
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+
 }
