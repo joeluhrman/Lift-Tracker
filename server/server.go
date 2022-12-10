@@ -6,6 +6,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi"
 	"github.com/joeluhrman/Lift-Tracker/storage"
@@ -119,8 +120,15 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 	return writeJSON(w, http.StatusAccepted, nil)
 }
 
+func sessionToCookie(s *types.Session) *http.Cookie {
+	return &http.Cookie{
+		Name:  strconv.Itoa(s.UserID),
+		Value: s.Token,
+	}
+}
+
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
-	userProvided := &types.User{}
+	var userProvided *types.User
 
 	err := json.NewDecoder(r.Body).Decode(userProvided)
 	if err != nil {
@@ -130,12 +138,18 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 	username := userProvided.Username
 	password := userProvided.HashedPassword
 
-	_, err = s.storage.AuthenticateUser(username, password)
+	userID, err := s.storage.AuthenticateUser(username, password)
 	if err != nil {
 		return newApiError(http.StatusUnauthorized, err.Error())
 	}
 
-	// create session
+	session := types.NewSession(userID)
+	err = s.storage.InsertSession(session)
+	if err != nil {
+		return newApiError(http.StatusInternalServerError, err.Error())
+	}
+
+	http.SetCookie(w, sessionToCookie(session))
 
 	return writeJSON(w, http.StatusOK, nil)
 }

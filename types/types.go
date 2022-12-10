@@ -1,7 +1,11 @@
 // Contains types used across multiple packages.
 package types
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type User struct {
 	ID             int    `json:"id"`
@@ -29,7 +33,9 @@ type Session struct {
 	UpdatedAt time.Time
 }
 
-func NewSession(token string, userID int) *Session {
+func NewSession(userID int) *Session {
+	token := uuid.New().String()
+
 	return &Session{
 		Token:  token,
 		UserID: userID,

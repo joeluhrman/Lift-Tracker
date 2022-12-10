@@ -7,6 +7,8 @@ require (
 	github.com/jackc/pgx/v5 v5.1.1
 )
 
+require github.com/google/uuid v1.3.0 // indirect
+
 require (
 	// indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
