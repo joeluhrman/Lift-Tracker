@@ -1,3 +1,4 @@
+// Contains functionality for creating/starting a Server and handling HTTP requests.
 package server
 
 import (

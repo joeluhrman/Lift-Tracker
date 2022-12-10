@@ -1,3 +1,4 @@
+// Contains types used across multiple packages.
 package types
 
 import "time"

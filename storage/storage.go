@@ -1,3 +1,4 @@
+// Contains Storage interface with methods for database access and the Postgres implementation.
 package storage
 
 import (
