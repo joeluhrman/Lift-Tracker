@@ -26,6 +26,8 @@ func NewUser(username string, hashedPassword string, isAdmin bool) *User {
 	}
 }
 
+const SessionKey = "session"
+
 type Session struct {
 	UserID int
 	Token  string
@@ -45,7 +47,7 @@ func NewSession(userID int) *Session {
 
 func (s *Session) Cookie() *http.Cookie {
 	return &http.Cookie{
-		Name:  "session",
+		Name:  SessionKey,
 		Value: s.Token,
 	}
 }

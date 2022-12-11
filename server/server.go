@@ -14,8 +14,10 @@ import (
 
 const (
 	routeApiV1   = "/api/v1"
-	endCreateAcc = "/create-account"
+	endCreateAcc = "/user"
 	endLogin     = "/login"
+
+	errCodeBadJSON = http.StatusBadRequest
 )
 
 type middleware func(http.Handler) http.Handler
@@ -96,7 +98,7 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
-		return newApiError(http.StatusBadRequest, err.Error())
+		return newApiError(errCodeBadJSON, err.Error())
 	}
 
 	// not actually hashed yet but that's the name of the field unfortunately
@@ -124,7 +126,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 
 	err := json.NewDecoder(r.Body).Decode(userProvided)
 	if err != nil {
-		return newApiError(http.StatusBadRequest, err.Error())
+		return newApiError(errCodeBadJSON, err.Error())
 	}
 
 	username := userProvided.Username

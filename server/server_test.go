@@ -69,14 +69,13 @@ func Test_handleCreateAccount(t *testing.T) {
 	method := http.MethodPost
 	endpoint := routeApiV1 + endCreateAcc
 	successCode := http.StatusAccepted
-	badJSONCode := http.StatusBadRequest
 	badPasswordCode := http.StatusNotAcceptable
 
 	// Bad JSON
 	func() {
 		rec := sendMockHTTPRequest(method, endpoint, nil, s.router)
-		if rec.Code != badJSONCode {
-			t.Errorf(wrongCodef, rec.Code, badJSONCode)
+		if rec.Code != errCodeBadJSON {
+			t.Errorf(wrongCodef, rec.Code, errCodeBadJSON)
 		}
 	}()
 
@@ -106,3 +105,17 @@ func Test_handleCreateAccount(t *testing.T) {
 		}
 	}()
 }
+
+/*func Test_handleLogin(t *testing.T) {
+	s := newTestServer()
+	method := http.MethodPost
+	endpoint := routeApiV1 + endLogin
+
+	// bad json
+	func() {
+		rec := sendMockHTTPRequest(method, endpoint, nil, s.router)
+		if rec.Code != errCodeBadJSON {
+			t.Errorf(wrongCodef, rec.Code, errCodeBadJSON)
+		}
+	}()
+}*/
