@@ -44,7 +44,7 @@ func NewSession(userID int) *Session {
 	}
 }
 
-func (s *Session) ToCookie() *http.Cookie {
+func (s *Session) Cookie() *http.Cookie {
 	return &http.Cookie{
 		Name:  strconv.Itoa(s.UserID),
 		Value: s.Token,

@@ -141,7 +141,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 		return newApiError(http.StatusInternalServerError, err.Error())
 	}
 
-	http.SetCookie(w, session.ToCookie())
+	http.SetCookie(w, session.Cookie())
 
 	return writeJSON(w, http.StatusOK, nil)
 }
