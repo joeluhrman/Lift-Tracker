@@ -2,6 +2,8 @@
 package types
 
 import (
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -39,5 +41,12 @@ func NewSession(userID int) *Session {
 	return &Session{
 		Token:  token,
 		UserID: userID,
+	}
+}
+
+func (s *Session) ToCookie() *http.Cookie {
+	return &http.Cookie{
+		Name:  strconv.Itoa(s.UserID),
+		Value: s.Token,
 	}
 }

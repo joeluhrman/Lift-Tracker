@@ -6,7 +6,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/chi"
 	"github.com/joeluhrman/Lift-Tracker/storage"
@@ -120,13 +119,6 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 	return writeJSON(w, http.StatusAccepted, nil)
 }
 
-func sessionToCookie(s *types.Session) *http.Cookie {
-	return &http.Cookie{
-		Name:  strconv.Itoa(s.UserID),
-		Value: s.Token,
-	}
-}
-
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 	var userProvided *types.User
 
@@ -149,7 +141,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 		return newApiError(http.StatusInternalServerError, err.Error())
 	}
 
-	http.SetCookie(w, sessionToCookie(session))
+	http.SetCookie(w, session.ToCookie())
 
 	return writeJSON(w, http.StatusOK, nil)
 }
