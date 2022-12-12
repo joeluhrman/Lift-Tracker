@@ -16,6 +16,7 @@ const (
 	routeApiV1   = "/api/v1"
 	endCreateAcc = "/user"
 	endLogin     = "/login"
+	endLogout    = "/logout"
 
 	codeSuccLogin     = http.StatusOK
 	codeSuccCreateAcc = http.StatusAccepted
@@ -57,6 +58,7 @@ func (s *Server) setupEndpoints() {
 	s.router.Route(routeApiV1, func(r chi.Router) {
 		r.Post(endCreateAcc, makeHTTPHandler(s.handleCreateAccount))
 		r.Post(endLogin, makeHTTPHandler(s.handleLogin))
+		r.Post(endLogout, s.handleLogout)
 	})
 }
 
@@ -150,4 +152,13 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 	setSession(session, w)
 
 	return writeJSON(w, codeSuccLogin, nil)
+}
+
+func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:  types.SessionKey,
+		Value: "",
+	})
+
+	writeJSON(w, http.StatusOK, nil)
 }

@@ -18,33 +18,38 @@ const (
 )
 
 var (
-	testServer = newTestServer(&testPGStorage{})
+	testServer = newTestServer(&testStorage{}, nil)
 )
 
-func newTestServer(storage storage.Storage) *Server {
+type testStorage struct{}
+
+func (t *testStorage) InsertUser(user *types.User, isAdmin bool) error {
+	return nil
+}
+
+func (t *testStorage) InsertSession(s *types.Session) error {
+	return nil
+}
+
+func (t *testStorage) DeleteSessionByUserID(userID int) error {
+	return nil
+}
+
+func (t *testStorage) AuthenticateUser(username string, password string) (int, error) {
+	return 1, nil
+}
+
+func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
 	s := New("", storage, nil)
 	s.router = chi.NewRouter()
+
+	for _, middleware := range middlewares {
+		s.router.Use(middleware)
+	}
+
 	s.setupEndpoints()
 
 	return s
-}
-
-type testPGStorage struct{}
-
-func (t *testPGStorage) InsertUser(user *types.User, isAdmin bool) error {
-	return nil
-}
-
-func (t *testPGStorage) InsertSession(s *types.Session) error {
-	return nil
-}
-
-func (t *testPGStorage) DeleteSessionByUserID(userID int) error {
-	return nil
-}
-
-func (t *testPGStorage) AuthenticateUser(username string, password string) (int, error) {
-	return 1, nil
 }
 
 func sendMockHTTPRequest(method string, endpoint string, data *bytes.Buffer, router *chi.Mux) *httptest.ResponseRecorder {
@@ -151,4 +156,21 @@ func Test_handleLogin(t *testing.T) {
 			t.Error("session cookie was not set")
 		}
 	}()
+}
+
+func Test_handleLogout(t *testing.T) {
+	const (
+		method = http.MethodPost
+		userID = 1
+	)
+
+	// cookies reset correctly
+	/*	func() {
+		server := newTestServer(&testStorage{})
+
+		rec := sendMockHTTPRequest(method, endLogin, nil, server.router)
+		if rec.Code != http.StatusOK {
+			t.Errorf(wrongCodef, rec.Code, http.StatusOK)
+		}
+	}()*/
 }
