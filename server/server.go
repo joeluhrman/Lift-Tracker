@@ -121,6 +121,10 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 	return writeJSON(w, codeSuccCreateAcc, nil)
 }
 
+func setSession(s *types.Session, w http.ResponseWriter) {
+	http.SetCookie(w, s.Cookie())
+}
+
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 	user := &types.User{}
 
@@ -140,7 +144,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 		return newApiError(http.StatusInternalServerError, err.Error())
 	}
 
-	http.SetCookie(w, session.Cookie())
+	setSession(session, w)
 
 	return writeJSON(w, codeSuccLogin, nil)
 }
