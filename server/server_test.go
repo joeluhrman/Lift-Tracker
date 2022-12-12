@@ -74,8 +74,8 @@ func Test_handleCreateAccount(t *testing.T) {
 	// Bad JSON
 	func() {
 		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.router)
-		if rec.Code != errCodeBadJSON {
-			t.Errorf(wrongCodef, rec.Code, errCodeBadJSON)
+		if rec.Code != codeErrBadJSON {
+			t.Errorf(wrongCodef, rec.Code, codeErrBadJSON)
 		}
 	}()
 
@@ -113,16 +113,24 @@ func Test_handleLogin(t *testing.T) {
 	// bad json
 	func() {
 		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.router)
-		if rec.Code != errCodeBadJSON {
-			t.Errorf(wrongCodef, rec.Code, errCodeBadJSON)
+		if rec.Code != codeErrBadJSON {
+			t.Errorf(wrongCodef, rec.Code, codeErrBadJSON)
 		}
 	}()
 
 	// success case
 	func() {
-		//	loginInfo := &types.User{
-		//		Username:       "jaluhrman",
-		//		HashedPassword: "123",
-		//	}
+		loginInfo := &types.User{
+			Username:       "jaluhrman",
+			HashedPassword: "123",
+		}
+
+		json, _ := json.Marshal(loginInfo)
+		body := bytes.NewBuffer(json)
+
+		rec := sendMockHTTPRequest(method, endpoint, body, testServer.router)
+		if rec.Code != codeSuccLogin {
+			t.Errorf(wrongCodef, rec.Code, codeSuccLogin)
+		}
 	}()
 }
