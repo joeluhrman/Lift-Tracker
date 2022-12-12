@@ -17,8 +17,10 @@ const (
 	endCreateAcc = "/user"
 	endLogin     = "/login"
 
+	codeSuccLogin     = http.StatusOK
+	codeSuccCreateAcc = http.StatusAccepted
+
 	codeErrBadJSON = http.StatusBadRequest
-	codeSuccLogin  = http.StatusOK
 )
 
 type middleware func(http.Handler) http.Handler
@@ -116,7 +118,7 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 		return newApiError(http.StatusConflict, err.Error())
 	}
 
-	return writeJSON(w, http.StatusAccepted, nil)
+	return writeJSON(w, codeSuccCreateAcc, nil)
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
