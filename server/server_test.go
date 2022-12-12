@@ -129,8 +129,23 @@ func Test_handleLogin(t *testing.T) {
 		body := bytes.NewBuffer(json)
 
 		rec := sendMockHTTPRequest(method, endpoint, body, testServer.router)
+
+		// check correct response code
 		if rec.Code != codeSuccLogin {
 			t.Errorf(wrongCodef, rec.Code, codeSuccLogin)
+		}
+
+		// check session cookie has been set correctly
+		sessionSet := false
+		cookies := rec.Result().Cookies()
+		for _, cookie := range cookies {
+			if cookie.Name == types.SessionKey && cookie.Value != "" {
+				sessionSet = true
+			}
+		}
+
+		if !sessionSet {
+			t.Error("session cookie was not set")
 		}
 	}()
 }
