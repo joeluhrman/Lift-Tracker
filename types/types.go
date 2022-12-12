@@ -8,6 +8,11 @@ import (
 	"github.com/google/uuid"
 )
 
+type Metadata struct {
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
 type User struct {
 	ID             int    `json:"id"`
 	Username       string `json:"username"`
@@ -15,8 +20,7 @@ type User struct {
 	HashedPassword string `json:"hashed_password"`
 	IsAdmin        bool   `json:"is_admin"`
 
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Metadata
 }
 
 func NewUser(username string, password string) *User {
@@ -32,8 +36,7 @@ type Session struct {
 	UserID int
 	Token  string
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Metadata
 }
 
 func NewSession(userID int) *Session {
@@ -58,6 +61,8 @@ type Workout struct {
 	Name      string
 	Exercises []Exercise
 	Notes     string
+
+	Metadata
 }
 
 type Exercise struct {
@@ -66,6 +71,8 @@ type Exercise struct {
 	Name      string
 	SetGroups []SetGroup
 	Notes     string
+
+	Metadata
 }
 
 type SetGroup struct {
@@ -75,4 +82,6 @@ type SetGroup struct {
 	Sets   int
 	Reps   int
 	Weight int
+
+	Metadata
 }
