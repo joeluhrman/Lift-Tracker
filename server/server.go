@@ -94,7 +94,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) error {
 }
 
 func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
-	var user *types.User
+	user := &types.User{}
 
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
@@ -119,7 +119,7 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
-	var user *types.User
+	user := &types.User{}
 
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {

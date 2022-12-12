@@ -81,8 +81,9 @@ func Test_AuthenticateUser(t *testing.T) {
 		}
 	}()
 
-	hashedPassword, _ := HashPassword("password")
-	testPGStorage.InsertUser(types.NewUser("jaluhrman", hashedPassword), false)
+	user := types.NewUser("jaluhrman", "password")
+	user.HashedPassword, _ = HashPassword(user.Password)
+	testPGStorage.InsertUser(user, false)
 
 	// bad password
 	func() {

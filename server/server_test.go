@@ -21,6 +21,14 @@ var (
 	testServer = newTestServer(&testPGStorage{})
 )
 
+func newTestServer(storage storage.Storage) *Server {
+	s := New("", storage, nil)
+	s.router = chi.NewRouter()
+	s.setupEndpoints()
+
+	return s
+}
+
 type testPGStorage struct{}
 
 func (t *testPGStorage) InsertUser(user *types.User, isAdmin bool) error {
@@ -33,14 +41,6 @@ func (t *testPGStorage) InsertSession(s *types.Session) error {
 
 func (t *testPGStorage) AuthenticateUser(username string, password string) (int, error) {
 	return 1, nil
-}
-
-func newTestServer(storage storage.Storage) *Server {
-	s := New("", storage, nil)
-	s.router = chi.NewRouter()
-	s.setupEndpoints()
-
-	return s
 }
 
 func sendMockHTTPRequest(method string, endpoint string, data *bytes.Buffer, router *chi.Mux) *httptest.ResponseRecorder {
