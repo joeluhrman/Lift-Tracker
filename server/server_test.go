@@ -39,6 +39,10 @@ func (t *testPGStorage) InsertSession(s *types.Session) error {
 	return nil
 }
 
+func (t *testPGStorage) DeleteSessionByUserID(userID int) error {
+	return nil
+}
+
 func (t *testPGStorage) AuthenticateUser(username string, password string) (int, error) {
 	return 1, nil
 }

@@ -100,5 +100,28 @@ func Test_AuthenticateUser(t *testing.T) {
 			t.Error(err)
 		}
 	}()
+}
 
+func Test_InsertSession(t *testing.T) {
+	defer testPGStorage.clearTable(pgTableSession)
+
+	const (
+		userID = 1
+	)
+
+	// success case
+	func() {
+		err := testPGStorage.InsertSession(types.NewSession(userID))
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+
+	// user id already exists
+	func() {
+		err := testPGStorage.InsertSession(types.NewSession(userID))
+		if err == nil {
+			t.Error("error should have been returned when session useID already exists")
+		}
+	}()
 }

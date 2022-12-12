@@ -8,5 +8,6 @@ import (
 type Storage interface {
 	InsertUser(user *types.User, isAdmin bool) error
 	InsertSession(s *types.Session) error
+	DeleteSessionByUserID(userID int) error
 	AuthenticateUser(username string, password string) (int, error)
 }

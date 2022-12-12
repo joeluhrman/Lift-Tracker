@@ -138,6 +138,9 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 		return newApiError(http.StatusUnauthorized, err.Error())
 	}
 
+	// delete old session from db, don't need to check error
+	s.storage.DeleteSessionByUserID(userID)
+
 	session := types.NewSession(userID)
 	err = s.storage.InsertSession(session)
 	if err != nil {

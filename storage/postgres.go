@@ -67,6 +67,13 @@ func (p *PostgresStorage) InsertSession(s *types.Session) error {
 	return err
 }
 
+func (p *PostgresStorage) DeleteSessionByUserID(userID int) error {
+	statement := "DELETE FROM " + pgTableSession + " WHERE user_id = $1"
+	_, err := p.conn.Exec(statement, userID)
+
+	return err
+}
+
 func (p *PostgresStorage) AuthenticateUser(username string, password string) (int, error) {
 	var (
 		userID         int
