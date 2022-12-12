@@ -16,7 +16,7 @@ var (
 		PostgresStorage: NewPostgresStorage(testPGDriver, testPGURL),
 	}
 
-	tables = []string{pgTableUser}
+	tables = []string{pgTableUser, pgTableSession}
 )
 
 // wrapper for test methods to avoid confusion
@@ -122,6 +122,23 @@ func Test_InsertSession(t *testing.T) {
 		err := testPGStorage.InsertSession(types.NewSession(userID))
 		if err == nil {
 			t.Error("error should have been returned when session useID already exists")
+		}
+	}()
+}
+
+func Test_DeleteSessionByUserID(t *testing.T) {
+	defer testPGStorage.clearTable(pgTableSession)
+
+	const (
+		userID = 5
+	)
+
+	// success case
+	func() {
+		testPGStorage.InsertSession(types.NewSession(userID))
+		err := testPGStorage.DeleteSessionByUserID(userID)
+		if err != nil {
+			t.Error(err)
 		}
 	}()
 }

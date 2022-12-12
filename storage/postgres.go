@@ -60,20 +60,6 @@ func (p *PostgresStorage) InsertUser(user *types.User, isAdmin bool) error {
 	return err
 }
 
-func (p *PostgresStorage) InsertSession(s *types.Session) error {
-	statement := "INSERT INTO " + pgTableSession + " (user_id, token) VALUES ($1, $2)"
-	_, err := p.conn.Exec(statement, s.UserID, s.Token)
-
-	return err
-}
-
-func (p *PostgresStorage) DeleteSessionByUserID(userID int) error {
-	statement := "DELETE FROM " + pgTableSession + " WHERE user_id = $1"
-	_, err := p.conn.Exec(statement, userID)
-
-	return err
-}
-
 func (p *PostgresStorage) AuthenticateUser(username string, password string) (int, error) {
 	var (
 		userID         int
@@ -91,4 +77,18 @@ func (p *PostgresStorage) AuthenticateUser(username string, password string) (in
 	}
 
 	return userID, nil
+}
+
+func (p *PostgresStorage) InsertSession(s *types.Session) error {
+	statement := "INSERT INTO " + pgTableSession + " (user_id, token) VALUES ($1, $2)"
+	_, err := p.conn.Exec(statement, s.UserID, s.Token)
+
+	return err
+}
+
+func (p *PostgresStorage) DeleteSessionByUserID(userID int) error {
+	statement := "DELETE FROM " + pgTableSession + " WHERE user_id = $1"
+	_, err := p.conn.Exec(statement, userID)
+
+	return err
 }
