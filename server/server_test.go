@@ -143,7 +143,6 @@ func Test_handleLogin(t *testing.T) {
 				sessionSet = true
 			}
 		}
-
 		if !sessionSet {
 			t.Error("session cookie was not set")
 		}
