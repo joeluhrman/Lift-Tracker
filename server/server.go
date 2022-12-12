@@ -94,21 +94,18 @@ func writeJSON(w http.ResponseWriter, status int, v any) error {
 }
 
 func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
-	user := &types.User{}
+	var user *types.User
 
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
 		return newApiError(errCodeBadJSON, err.Error())
 	}
 
-	// not actually hashed yet but that's the name of the field unfortunately
-	password := user.HashedPassword
-
-	if !storage.PasswordMeetsRequirements(password) {
+	if !storage.PasswordMeetsRequirements(user.Password) {
 		return newApiError(http.StatusNotAcceptable, errors.New("password does not meet requirements").Error())
 	}
 
-	user.HashedPassword, err = storage.HashPassword(password)
+	user.HashedPassword, err = storage.HashPassword(user.Password)
 	if err != nil {
 		return newApiError(http.StatusInternalServerError, err.Error())
 	}
@@ -122,17 +119,14 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
-	var userProvided *types.User
+	var user *types.User
 
-	err := json.NewDecoder(r.Body).Decode(userProvided)
+	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
 		return newApiError(errCodeBadJSON, err.Error())
 	}
 
-	username := userProvided.Username
-	password := userProvided.HashedPassword
-
-	userID, err := s.storage.AuthenticateUser(username, password)
+	userID, err := s.storage.AuthenticateUser(user.Username, user.Password)
 	if err != nil {
 		return newApiError(http.StatusUnauthorized, err.Error())
 	}

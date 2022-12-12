@@ -49,7 +49,8 @@ func Test_InsertUser(t *testing.T) {
 
 	// Success case
 	func() {
-		user := types.NewUser("jaluhrman", "123", false)
+		user := types.NewUser("jaluhrman", "123")
+		user.HashedPassword, _ = HashPassword(user.Password)
 
 		err := testPGStorage.InsertUser(user, false)
 		if err != nil {
@@ -59,7 +60,8 @@ func Test_InsertUser(t *testing.T) {
 
 	// username already exists
 	func() {
-		user := types.NewUser("jaluhrman", "123", false)
+		user := types.NewUser("jaluhrman", "123")
+		user.HashedPassword, _ = HashPassword(user.Password)
 
 		err := testPGStorage.InsertUser(user, false)
 		if err == nil {
@@ -80,7 +82,7 @@ func Test_AuthenticateUser(t *testing.T) {
 	}()
 
 	hashedPassword, _ := HashPassword("password")
-	testPGStorage.InsertUser(types.NewUser("jaluhrman", hashedPassword, false), false)
+	testPGStorage.InsertUser(types.NewUser("jaluhrman", hashedPassword), false)
 
 	// bad password
 	func() {

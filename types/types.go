@@ -11,6 +11,7 @@ import (
 type User struct {
 	ID             int    `json:"id"`
 	Username       string `json:"username"`
+	Password       string `json:"password"` // not stored in db, just used for login
 	HashedPassword string `json:"hashed_password"`
 	IsAdmin        bool   `json:"is_admin"`
 
@@ -18,11 +19,10 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewUser(username string, hashedPassword string, isAdmin bool) *User {
+func NewUser(username string, password string) *User {
 	return &User{
-		Username:       username,
-		HashedPassword: hashedPassword,
-		IsAdmin:        isAdmin,
+		Username: username,
+		Password: password,
 	}
 }
 
