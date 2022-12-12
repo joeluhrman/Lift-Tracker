@@ -51,3 +51,28 @@ func (s *Session) Cookie() *http.Cookie {
 		Value: s.Token,
 	}
 }
+
+type Workout struct {
+	ID        int
+	UserID    int
+	Name      string
+	Exercises []Exercise
+	Notes     string
+}
+
+type Exercise struct {
+	ID        int
+	WorkoutID int
+	Name      string
+	SetGroups []SetGroup
+	Notes     string
+}
+
+type SetGroup struct {
+	ID         int
+	ExerciseID int
+
+	Sets   int
+	Reps   int
+	Weight int
+}
