@@ -178,5 +178,16 @@ func Test_handleLogout(t *testing.T) {
 		if rec.Code != http.StatusOK {
 			t.Errorf(wrongCodef, rec.Code, http.StatusOK)
 		}
+
+		cookieReset := false
+		cookies := rec.Result().Cookies()
+		for _, cookie := range cookies {
+			if cookie.Name == types.SessionKey && cookie.Value == "" {
+				cookieReset = true
+			}
+		}
+		if !cookieReset {
+			t.Error("session cookie was not reset")
+		}
 	}()
 }
