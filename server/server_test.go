@@ -160,17 +160,23 @@ func Test_handleLogin(t *testing.T) {
 
 func Test_handleLogout(t *testing.T) {
 	const (
-		method = http.MethodPost
-		userID = 1
+		method   = http.MethodPost
+		endpoint = routeApiV1 + endLogout
+		userID   = 1
 	)
 
 	// cookies reset correctly
-	/*	func() {
-		server := newTestServer(&testStorage{})
+	func() {
+		server := newTestServer(&testStorage{}, []middleware{func(next http.Handler) http.Handler {
+			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				setSession(types.NewSession(userID), w)
+				next.ServeHTTP(w, r)
+			})
+		}})
 
-		rec := sendMockHTTPRequest(method, endLogin, nil, server.router)
+		rec := sendMockHTTPRequest(method, endpoint, nil, server.router)
 		if rec.Code != http.StatusOK {
 			t.Errorf(wrongCodef, rec.Code, http.StatusOK)
 		}
-	}()*/
+	}()
 }
