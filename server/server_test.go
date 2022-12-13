@@ -43,6 +43,10 @@ func (t *testStorage) DeleteSessionByToken(token string) error {
 	return nil
 }
 
+func (t *testStorage) AuthenticateSession(token string) (int, error) {
+	return 1, nil
+}
+
 func (t *testStorage) InsertWorkout(w *types.Workout) error {
 	return nil
 }

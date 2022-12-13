@@ -165,6 +165,29 @@ func Test_DeleteSessionByToken(t *testing.T) {
 	}()
 }
 
+func Test_AuthenticateSession(t *testing.T) {
+	// doesn't exist
+	func() {
+		_, err := testPGStorage.AuthenticateSession("random")
+		if err == nil {
+			t.Error("error should have been returned when session doesn't exist")
+		}
+	}()
+
+	// success case
+	func() {
+		s := types.NewSession(1)
+		testPGStorage.InsertSession(s)
+		id, err := testPGStorage.AuthenticateSession(s.Token)
+		if err != nil {
+			t.Error(err)
+		}
+		if id != 1 {
+			t.Error("returned user id was not correct")
+		}
+	}()
+}
+
 func Test_InsertWorkout(t *testing.T) {
 	defer testPGStorage.clearAllTables()
 

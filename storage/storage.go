@@ -12,6 +12,7 @@ type Storage interface {
 	InsertSession(s *types.Session) error
 	DeleteSessionByUserID(userID int) error
 	DeleteSessionByToken(token string) error
+	AuthenticateSession(token string) (int, error)
 
 	InsertWorkout(w *types.Workout) error
 }

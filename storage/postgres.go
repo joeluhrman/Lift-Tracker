@@ -89,6 +89,15 @@ func (p *PostgresStorage) InsertSession(s *types.Session) error {
 	return err
 }
 
+func (p *PostgresStorage) AuthenticateSession(token string) (int, error) {
+	var userID int
+
+	statement := "SELECT user_id FROM " + pgTableSession + " WHERE token = $1"
+	err := p.conn.QueryRow(statement, token).Scan(&userID)
+
+	return userID, err
+}
+
 func (p *PostgresStorage) DeleteSessionByUserID(userID int) error {
 	statement := "DELETE FROM " + pgTableSession + " WHERE user_id = $1"
 	_, err := p.conn.Exec(statement, userID)

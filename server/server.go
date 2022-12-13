@@ -2,6 +2,7 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"log"
@@ -133,6 +134,24 @@ func getSessionToken(r *http.Request) (string, error) {
 	}
 
 	return cookie.Value, nil
+}
+
+func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token, err := getSessionToken(r)
+		if err != nil {
+			writeJSON(w, http.StatusUnauthorized, err.Error())
+			return
+		}
+
+		userID, err := s.storage.AuthenticateSession(token)
+		if err != nil {
+			writeJSON(w, http.StatusUnauthorized, err.Error())
+		}
+
+		ctx := context.WithValue(r.Context(), "user_id", userID)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
