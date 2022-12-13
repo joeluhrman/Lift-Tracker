@@ -106,6 +106,10 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 		return newApiError(codeErrBadJSON, err.Error())
 	}
 
+	if !storage.UsernameMeetsRequirements(user.Username) {
+		return newApiError(http.StatusNotAcceptable, errors.New("username does not meet requirements").Error())
+	}
+
 	if !storage.PasswordMeetsRequirements(user.Password) {
 		return newApiError(http.StatusNotAcceptable, errors.New("password does not meet requirements").Error())
 	}

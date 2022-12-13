@@ -17,6 +17,10 @@ func passwordMatchesHash(password string, hash string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) == nil
 }
 
+func UsernameMeetsRequirements(username string) bool {
+	return len(username) > 2
+}
+
 func PasswordMeetsRequirements(password string) bool {
 	if password == "" {
 		return false
