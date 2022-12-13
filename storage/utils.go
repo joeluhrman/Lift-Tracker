@@ -22,11 +22,7 @@ func UsernameMeetsRequirements(username string) bool {
 }
 
 func PasswordMeetsRequirements(password string) bool {
-	if password == "" {
-		return false
-	}
-
-	return true
+	return password != ""
 }
 
 // not sure where to put this, can't put in main package because need for testing unfortunately
