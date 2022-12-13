@@ -27,6 +27,10 @@ func (t *testStorage) InsertUser(user *types.User, isAdmin bool) error {
 	return nil
 }
 
+func (t *testStorage) AuthenticateUser(username string, password string) (int, error) {
+	return 1, nil
+}
+
 func (t *testStorage) InsertSession(s *types.Session) error {
 	return nil
 }
@@ -35,8 +39,8 @@ func (t *testStorage) DeleteSessionByUserID(userID int) error {
 	return nil
 }
 
-func (t *testStorage) AuthenticateUser(username string, password string) (int, error) {
-	return 1, nil
+func (t *testStorage) DeleteSessionByToken(token string) error {
+	return nil
 }
 
 func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
@@ -169,7 +173,7 @@ func Test_handleLogout(t *testing.T) {
 	func() {
 		server := newTestServer(&testStorage{}, []middleware{func(next http.Handler) http.Handler {
 			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				setSession(types.NewSession(userID), w)
+				r.AddCookie(types.NewSession(userID).Cookie())
 				next.ServeHTTP(w, r)
 			})
 		}})

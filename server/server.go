@@ -58,7 +58,7 @@ func (s *Server) setupEndpoints() {
 	s.router.Route(routeApiV1, func(r chi.Router) {
 		r.Post(endCreateAcc, makeHTTPHandler(s.handleCreateAccount))
 		r.Post(endLogin, makeHTTPHandler(s.handleLogin))
-		r.Post(endLogout, s.handleLogout)
+		r.Post(endLogout, makeHTTPHandler(s.handleLogout))
 	})
 }
 
@@ -127,6 +127,15 @@ func setSession(s *types.Session, w http.ResponseWriter) {
 	http.SetCookie(w, s.Cookie())
 }
 
+func getSessionToken(r *http.Request) (string, error) {
+	cookie, err := r.Cookie(types.SessionKey)
+	if err != nil {
+		return "", err
+	}
+
+	return cookie.Value, nil
+}
+
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 	user := &types.User{}
 
@@ -140,8 +149,10 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 		return newApiError(http.StatusUnauthorized, err.Error())
 	}
 
-	// delete old session from db, don't need to check error
-	s.storage.DeleteSessionByUserID(userID)
+	err = s.storage.DeleteSessionByUserID(userID)
+	if err != nil {
+		return newApiError(http.StatusInternalServerError, err.Error())
+	}
 
 	session := types.NewSession(userID)
 	err = s.storage.InsertSession(session)
@@ -154,11 +165,21 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 	return writeJSON(w, codeSuccLogin, nil)
 }
 
-func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) error {
+	token, err := getSessionToken(r)
+	if err != nil {
+		return newApiError(http.StatusNotFound, err.Error())
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:  types.SessionKey,
 		Value: "",
 	})
 
-	writeJSON(w, http.StatusOK, nil)
+	err = s.storage.DeleteSessionByToken(token)
+	if err != nil {
+		return newApiError(http.StatusInternalServerError, err.Error())
+	}
+
+	return writeJSON(w, http.StatusOK, nil)
 }

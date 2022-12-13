@@ -92,3 +92,10 @@ func (p *PostgresStorage) DeleteSessionByUserID(userID int) error {
 
 	return err
 }
+
+func (p *PostgresStorage) DeleteSessionByToken(token string) error {
+	statement := "DELETE FROM " + pgTableSession + " WHERE token = $1"
+	_, err := p.conn.Exec(statement, token)
+
+	return err
+}

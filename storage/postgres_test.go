@@ -142,3 +142,23 @@ func Test_DeleteSessionByUserID(t *testing.T) {
 		}
 	}()
 }
+
+func Test_DeleteSessionByToken(t *testing.T) {
+	defer testPGStorage.clearTable(pgTableSession)
+
+	const (
+		userID = 3
+	)
+
+	// success case
+	func() {
+		s := types.NewSession(userID)
+		token := s.Token
+
+		testPGStorage.InsertSession(s)
+		err := testPGStorage.DeleteSessionByToken(token)
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+}
