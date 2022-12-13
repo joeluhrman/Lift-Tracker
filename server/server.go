@@ -14,10 +14,11 @@ import (
 )
 
 const (
-	routeApiV1   = "/api/v1"
-	endCreateAcc = "/user"
-	endLogin     = "/login"
-	endLogout    = "/logout"
+	routeApiV1 = "/api/v1"
+	endUser    = "/user"
+	endLogin   = "/login"
+	endLogout  = "/logout"
+	endWorkout = "/workout"
 )
 
 type middleware func(http.Handler) http.Handler
@@ -52,9 +53,13 @@ func (s *Server) MustStart() {
 
 func (s *Server) setupEndpoints() {
 	s.router.Route(routeApiV1, func(r chi.Router) {
-		r.Post(endCreateAcc, makeHTTPHandler(s.handleCreateAccount))
+		// no auth required
+		r.Post(endUser, makeHTTPHandler(s.handleCreateAccount))
 		r.Post(endLogin, makeHTTPHandler(s.handleLogin))
 		r.Post(endLogout, makeHTTPHandler(s.handleLogout))
+
+		// session auth required
+		r.With(s.middlewareAuthSession).Post(endWorkout, makeHTTPHandler(s.handleCreateWorkout))
 	})
 }
 
@@ -200,4 +205,8 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return writeJSON(w, http.StatusOK, nil)
+}
+
+func (s *Server) handleCreateWorkout(w http.ResponseWriter, r *http.Request) error {
+	return writeJSON(w, http.StatusCreated, nil)
 }

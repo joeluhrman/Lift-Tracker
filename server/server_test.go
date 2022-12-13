@@ -88,7 +88,7 @@ func TestMain(m *testing.M) {
 
 func Test_handleCreateAccount(t *testing.T) {
 	method := http.MethodPost
-	endpoint := routeApiV1 + endCreateAcc
+	endpoint := routeApiV1 + endUser
 	successCode := http.StatusAccepted
 	badJSONCode := http.StatusBadRequest
 	badPasswordCode := http.StatusNotAcceptable
@@ -202,6 +202,21 @@ func Test_handleLogout(t *testing.T) {
 		}
 		if !cookieReset {
 			t.Error("session cookie was not reset")
+		}
+	}()
+}
+
+func Test_handleCreateWorkout(t *testing.T) {
+	const (
+		method   = http.MethodPost
+		endpoint = routeApiV1 + endWorkout
+	)
+
+	// user not logged in
+	func() {
+		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.router)
+		if rec.Code != http.StatusUnauthorized {
+			t.Errorf(wrongCodef, rec.Code, http.StatusUnauthorized)
 		}
 	}()
 }
