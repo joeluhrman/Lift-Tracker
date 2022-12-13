@@ -43,6 +43,10 @@ func (t *testStorage) DeleteSessionByToken(token string) error {
 	return nil
 }
 
+func (t *testStorage) InsertWorkout(w *types.Workout) error {
+	return nil
+}
+
 func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
 	s := New("", storage, nil)
 	s.router = chi.NewRouter()

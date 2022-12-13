@@ -11,8 +11,11 @@ import (
 )
 
 const (
-	pgTableUser    = "users"
-	pgTableSession = "sessions"
+	pgTableUser     = "users"
+	pgTableSession  = "sessions"
+	pgTableSetgroup = "setgroups"
+	pgTableExercise = "exercises"
+	pgTableWorkout  = "workouts"
 )
 
 type PostgresStorage struct {
@@ -98,4 +101,43 @@ func (p *PostgresStorage) DeleteSessionByToken(token string) error {
 	_, err := p.conn.Exec(statement, token)
 
 	return err
+}
+
+func (p *PostgresStorage) InsertWorkout(w *types.Workout) error {
+	statement := "INSERT INTO " + pgTableWorkout +
+		" (user_id, name, time, notes) VALUES ($1, $2, $3, $4) " +
+		"RETURNING id"
+
+	err := p.conn.QueryRow(statement, w.UserID, w.Name, w.Time, w.Notes).Scan(&w.ID)
+	if err != nil {
+		return err
+	}
+
+	for _, e := range w.Exercises {
+		e.WorkoutID = w.ID
+
+		statement := "INSERT INTO " + pgTableExercise +
+			" (workout_id, name, notes) VALUES ($1, $2, $3) " +
+			"RETURNING id"
+
+		err := p.conn.QueryRow(statement, e.WorkoutID, e.Name, e.Notes).Scan(&e.ID)
+		if err != nil {
+			return err
+		}
+
+		for _, s := range e.Setgroups {
+			s.ExerciseID = e.ID
+
+			statement := "INSERT INTO " + pgTableSetgroup +
+				" (exercise_id, weight, sets, reps) VALUES ($1, $2, $3, $4) " +
+				"RETURNING id"
+
+			err := p.conn.QueryRow(statement, s.ExerciseID, s.Weight, s.Sets, s.Reps).Scan(&s.ID)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }

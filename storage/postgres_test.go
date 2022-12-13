@@ -2,7 +2,9 @@ package storage
 
 import (
 	"os"
+	"strconv"
 	"testing"
+	"time"
 
 	"github.com/joeluhrman/Lift-Tracker/types"
 )
@@ -16,7 +18,7 @@ var (
 		PostgresStorage: NewPostgresStorage(testPGDriver, testPGURL),
 	}
 
-	tables = []string{pgTableUser, pgTableSession}
+	tables = []string{pgTableUser, pgTableSession, pgTableSetgroup, pgTableExercise, pgTableWorkout}
 )
 
 // wrapper for test methods to avoid confusion
@@ -157,6 +159,31 @@ func Test_DeleteSessionByToken(t *testing.T) {
 
 		testPGStorage.InsertSession(s)
 		err := testPGStorage.DeleteSessionByToken(token)
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+}
+
+func Test_InsertWorkout(t *testing.T) {
+	defer testPGStorage.clearAllTables()
+
+	// success case
+	func() {
+		exercises := make([]*types.Exercise, 5)
+		for i := 0; i < len(exercises); i++ {
+			setgroups := make([]*types.Setgroup, 5)
+			for i := 0; i < len(setgroups); i++ {
+				setgroups[i] = types.NewSetgroup(0, i, i, i)
+			}
+
+			name := types.ExerciseName("exercise " + strconv.Itoa(i))
+			notes := "notes " + strconv.Itoa(i)
+			exercises[i] = types.NewExercise(0, name, setgroups, notes)
+		}
+
+		w := types.NewWorkout(1, "test_workout", time.Now(), exercises, "test notes")
+		err := testPGStorage.InsertWorkout(w)
 		if err != nil {
 			t.Error(err)
 		}

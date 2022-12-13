@@ -54,3 +54,67 @@ func (s *Session) Cookie() *http.Cookie {
 		Value: s.Token,
 	}
 }
+
+type Setgroup struct {
+	ID         int
+	ExerciseID int
+
+	Weight int
+	Sets   int
+	Reps   int
+
+	Metadata
+}
+
+func NewSetgroup(exerciseID, weight, sets, reps int) *Setgroup {
+	return &Setgroup{
+		ExerciseID: exerciseID,
+		Weight:     weight,
+		Sets:       sets,
+		Reps:       reps,
+	}
+}
+
+type ExerciseName string
+
+type Exercise struct {
+	ID        int
+	WorkoutID int
+
+	Name      ExerciseName
+	Setgroups []*Setgroup
+	Notes     string
+
+	Metadata
+}
+
+func NewExercise(workoutID int, name ExerciseName, setgroups []*Setgroup, notes string) *Exercise {
+	return &Exercise{
+		WorkoutID: workoutID,
+		Name:      name,
+		Setgroups: setgroups,
+		Notes:     notes,
+	}
+}
+
+type Workout struct {
+	ID     int
+	UserID int
+
+	Name      string
+	Time      time.Time
+	Exercises []*Exercise
+	Notes     string
+
+	Metadata
+}
+
+func NewWorkout(userID int, name string, time time.Time, exercises []*Exercise, notes string) *Workout {
+	return &Workout{
+		UserID:    userID,
+		Name:      name,
+		Time:      time,
+		Exercises: exercises,
+		Notes:     notes,
+	}
+}
