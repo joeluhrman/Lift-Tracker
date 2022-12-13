@@ -17,11 +17,6 @@ const (
 	endCreateAcc = "/user"
 	endLogin     = "/login"
 	endLogout    = "/logout"
-
-	codeSuccLogin     = http.StatusOK
-	codeSuccCreateAcc = http.StatusAccepted
-
-	codeErrBadJSON = http.StatusBadRequest
 )
 
 type middleware func(http.Handler) http.Handler
@@ -103,7 +98,7 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
-		return newApiError(codeErrBadJSON, err.Error())
+		return newApiError(http.StatusBadRequest, err.Error())
 	}
 
 	if !storage.UsernameMeetsRequirements(user.Username) {
@@ -124,7 +119,7 @@ func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) err
 		return newApiError(http.StatusConflict, err.Error())
 	}
 
-	return writeJSON(w, codeSuccCreateAcc, nil)
+	return writeJSON(w, http.StatusAccepted, nil)
 }
 
 func setSession(s *types.Session, w http.ResponseWriter) {
@@ -145,7 +140,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
-		return newApiError(codeErrBadJSON, err.Error())
+		return newApiError(http.StatusBadRequest, err.Error())
 	}
 
 	userID, err := s.storage.AuthenticateUser(user.Username, user.Password)
@@ -166,7 +161,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 
 	setSession(session, w)
 
-	return writeJSON(w, codeSuccLogin, nil)
+	return writeJSON(w, http.StatusOK, nil)
 }
 
 func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) error {

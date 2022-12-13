@@ -86,13 +86,14 @@ func Test_handleCreateAccount(t *testing.T) {
 	method := http.MethodPost
 	endpoint := routeApiV1 + endCreateAcc
 	successCode := http.StatusAccepted
+	badJSONCode := http.StatusBadRequest
 	badPasswordCode := http.StatusNotAcceptable
 
 	// Bad JSON
 	func() {
 		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.router)
-		if rec.Code != codeErrBadJSON {
-			t.Errorf(wrongCodef, rec.Code, codeErrBadJSON)
+		if rec.Code != badJSONCode {
+			t.Errorf(wrongCodef, rec.Code, badJSONCode)
 		}
 	}()
 
@@ -126,12 +127,13 @@ func Test_handleCreateAccount(t *testing.T) {
 func Test_handleLogin(t *testing.T) {
 	method := http.MethodPost
 	endpoint := routeApiV1 + endLogin
+	badJSONCode := http.StatusBadRequest
 
 	// bad json
 	func() {
 		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.router)
-		if rec.Code != codeErrBadJSON {
-			t.Errorf(wrongCodef, rec.Code, codeErrBadJSON)
+		if rec.Code != badJSONCode {
+			t.Errorf(wrongCodef, rec.Code, badJSONCode)
 		}
 	}()
 
@@ -148,8 +150,8 @@ func Test_handleLogin(t *testing.T) {
 		rec := sendMockHTTPRequest(method, endpoint, body, testServer.router)
 
 		// check correct response code
-		if rec.Code != codeSuccLogin {
-			t.Errorf(wrongCodef, rec.Code, codeSuccLogin)
+		if rec.Code != http.StatusOK {
+			t.Errorf(wrongCodef, rec.Code, http.StatusOK)
 		}
 
 		// check session cookie has been set correctly
