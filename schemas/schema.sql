@@ -56,6 +56,18 @@ CREATE TABLE IF NOT EXISTS workouts (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS default_exercises (
+  id            SERIAL PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS custom_exercises (
+  id            SERIAL PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS custom_workouts (
+  id            SERIAL PRIMARY KEY
+);
+
 CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON users
 FOR EACH ROW
