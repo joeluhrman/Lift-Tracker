@@ -54,12 +54,12 @@ func (s *Server) MustStart() {
 func (s *Server) setupEndpoints() {
 	s.router.Route(routeApiV1, func(r chi.Router) {
 		// no auth required
-		r.Post(endUser, makeHTTPHandler(s.handleCreateAccount))
-		r.Post(endLogin, makeHTTPHandler(s.handleLogin))
-		r.Post(endLogout, makeHTTPHandler(s.handleLogout))
+		r.Post(endUser, makeHandler(s.handleCreateAccount))
+		r.Post(endLogin, makeHandler(s.handleLogin))
+		r.Post(endLogout, makeHandler(s.handleLogout))
 
 		// session auth required
-		r.With(s.middlewareAuthSession).Post(endWorkout, makeHTTPHandler(s.handleCreateWorkout))
+		r.With(s.middlewareAuthSession).Post(endWorkout, makeHandler(s.handleCreateWorkout))
 	})
 }
 
@@ -79,16 +79,16 @@ func newApiError(status int, err string) apiError {
 	}
 }
 
-type apiFunc func(http.ResponseWriter, *http.Request) error
+type apiHandler func(http.ResponseWriter, *http.Request) error
 
-func makeHTTPHandler(f apiFunc) http.HandlerFunc {
+func makeHandler(f apiHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := f(w, r); err != nil {
 			if e, ok := err.(apiError); ok {
 				writeJSON(w, e.Status, e.Err)
-				return
+			} else {
+				writeJSON(w, http.StatusInternalServerError, err.Error())
 			}
-			writeJSON(w, http.StatusInternalServerError, err.Error())
 		}
 	}
 }
