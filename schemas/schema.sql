@@ -58,14 +58,23 @@ CREATE TABLE IF NOT EXISTS workouts (
 
 CREATE TABLE IF NOT EXISTS default_exercises (
   id            SERIAL PRIMARY KEY
+
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS custom_exercises (
   id            SERIAL PRIMARY KEY
+
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS custom_workouts (
   id            SERIAL PRIMARY KEY
+
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TRIGGER set_timestamp
@@ -90,5 +99,20 @@ EXECUTE PROCEDURE trigger_set_timestamp();
 
 CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON workouts
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON default_exercises
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON custom_exercises
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON custom_workouts
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
