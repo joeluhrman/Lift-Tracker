@@ -200,7 +200,7 @@ func Test_InsertWorkout(t *testing.T) {
 				setgroups[i] = types.NewSetgroup(0, i, i, i)
 			}
 
-			name := types.ExerciseName("exercise " + strconv.Itoa(i))
+			name := "exercise " + strconv.Itoa(i)
 			notes := "notes " + strconv.Itoa(i)
 			exercises[i] = types.NewExercise(0, name, setgroups, notes)
 		}

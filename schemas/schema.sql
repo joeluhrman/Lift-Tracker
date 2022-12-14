@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS exercises (
   id            SERIAL PRIMARY KEY,
   workout_id    INTEGER NOT NULL,
   name          TEXT,
+  ppl_types     TEXT[], 
   notes         TEXT, 
 
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),

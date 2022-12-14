@@ -75,20 +75,41 @@ func NewSetgroup(exerciseID, weight, sets, reps int) *Setgroup {
 	}
 }
 
-type ExerciseName string
+type pplType string
+
+const (
+	pplPush pplType = "PUSH"
+	pplPull pplType = "PULL"
+	pplLegs pplType = "LEGS"
+)
+
+var (
+	pplTypes = []pplType{pplPush, pplPull, pplLegs}
+)
+
+func IsPPLType(s string) bool {
+	for _, v := range pplTypes {
+		if s == string(v) {
+			return true
+		}
+	}
+
+	return false
+}
 
 type Exercise struct {
 	ID        int
 	WorkoutID int
 
-	Name      ExerciseName
+	Name      string
+	PPLTypes  []pplType
 	Setgroups []*Setgroup
 	Notes     string
 
 	Metadata
 }
 
-func NewExercise(workoutID int, name ExerciseName, setgroups []*Setgroup, notes string) *Exercise {
+func NewExercise(workoutID int, name string, setgroups []*Setgroup, notes string) *Exercise {
 	return &Exercise{
 		WorkoutID: workoutID,
 		Name:      name,
