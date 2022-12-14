@@ -87,7 +87,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func Test_handleCreateAccount(t *testing.T) {
+func Test_handleCreateUser(t *testing.T) {
 	method := http.MethodPost
 	endpoint := routeApiV1 + endUser
 	successCode := http.StatusAccepted

@@ -54,7 +54,7 @@ func (s *Server) MustStart() {
 func (s *Server) setupEndpoints() {
 	s.router.Route(routeApiV1, func(r chi.Router) {
 		// no auth required
-		r.Post(endUser, makeHandler(s.handleCreateAccount))
+		r.Post(endUser, makeHandler(s.handleCreateUser))
 		r.Post(endLogin, makeHandler(s.handleLogin))
 		r.Post(endLogout, makeHandler(s.handleLogout))
 
@@ -99,7 +99,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) error {
 	return json.NewEncoder(w).Encode(v)
 }
 
-func (s *Server) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) error {
 	user := &types.User{}
 
 	err := json.NewDecoder(r.Body).Decode(user)
