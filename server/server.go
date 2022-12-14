@@ -208,5 +208,23 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (s *Server) handleCreateWorkout(w http.ResponseWriter, r *http.Request) error {
+	userID, ok := r.Context().Value("user_id").(int)
+	if !ok {
+		return newApiError(http.StatusInternalServerError, "internal server error")
+	}
+
+	workout := &types.Workout{}
+
+	err := json.NewDecoder(r.Body).Decode(workout)
+	if err != nil {
+		return newApiError(http.StatusBadRequest, err.Error())
+	}
+
+	workout.UserID = userID
+
+	if err = s.storage.InsertWorkout(workout); err != nil {
+		return newApiError(http.StatusInternalServerError, err.Error())
+	}
+
 	return writeJSON(w, http.StatusCreated, nil)
 }

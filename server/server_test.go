@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/joeluhrman/Lift-Tracker/storage"
@@ -210,6 +211,7 @@ func Test_handleCreateWorkout(t *testing.T) {
 	const (
 		method   = http.MethodPost
 		endpoint = routeApiV1 + endWorkout
+		userID   = 1
 	)
 
 	// user not logged in
@@ -217,6 +219,34 @@ func Test_handleCreateWorkout(t *testing.T) {
 		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.router)
 		if rec.Code != http.StatusUnauthorized {
 			t.Errorf(wrongCodef, rec.Code, http.StatusUnauthorized)
+		}
+	}()
+
+	session := types.NewSession(userID)
+	server := newTestServer(&testStorage{}, []middleware{func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			r.AddCookie(session.Cookie())
+			next.ServeHTTP(w, r)
+		})
+	}})
+
+	// bad json
+	func() {
+		rec := sendMockHTTPRequest(method, endpoint, nil, server.router)
+		if rec.Code != http.StatusBadRequest {
+			t.Errorf(wrongCodef, rec.Code, http.StatusBadRequest)
+		}
+	}()
+
+	// success case
+	func() {
+		workout := types.NewWorkout(userID, "name", time.Now(), nil, "notes")
+		json, _ := json.Marshal(workout)
+		body := bytes.NewBuffer(json)
+
+		rec := sendMockHTTPRequest(method, endpoint, body, server.router)
+		if rec.Code != http.StatusCreated {
+			t.Errorf(wrongCodef, rec.Code, http.StatusCreated)
 		}
 	}()
 }
