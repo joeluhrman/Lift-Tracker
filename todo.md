@@ -9,3 +9,4 @@
         2. default_exercises, default_workouts -> default templates shared across all users
         3. custom_exercises, custom_workouts -> user-made templates 
     c. Logged exercises and workouts must match either a default or custom template at the time of logging 
+4. Make it more clear in code what deals with logged vs default vs custom exercises/workouts/whatever

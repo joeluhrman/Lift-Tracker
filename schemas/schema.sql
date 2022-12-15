@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS sessions (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS setgroups (
+CREATE TABLE IF NOT EXISTS logged_setgroups (
   id            SERIAL PRIMARY KEY,
   exercise_id   INTEGER NOT NULL,
   weight        INTEGER,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS setgroups (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS exercises (
+CREATE TABLE IF NOT EXISTS logged_exercises (
   id            SERIAL PRIMARY KEY,
   workout_id    INTEGER NOT NULL,
   name          TEXT,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS exercises (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS workouts (
+CREATE TABLE IF NOT EXISTS logged_workouts (
   id            SERIAL PRIMARY KEY,
   user_id       INTEGER NOT NULL,
   name          TEXT,
@@ -58,21 +58,21 @@ CREATE TABLE IF NOT EXISTS workouts (
 );
 
 CREATE TABLE IF NOT EXISTS default_exercises (
-  id            SERIAL PRIMARY KEY
+  id            SERIAL PRIMARY KEY,
 
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS custom_exercises (
-  id            SERIAL PRIMARY KEY
+  id            SERIAL PRIMARY KEY,
 
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS custom_workouts (
-  id            SERIAL PRIMARY KEY
+  id            SERIAL PRIMARY KEY,
 
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -89,17 +89,17 @@ FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON setgroups
+BEFORE UPDATE ON logged_setgroups
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON exercises
+BEFORE UPDATE ON logged_exercises
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON workouts
+BEFORE UPDATE ON logged_workouts
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 

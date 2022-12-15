@@ -14,11 +14,11 @@ import (
 )
 
 const (
-	routeApiV1 = "/api/v1"
-	endUser    = "/user"
-	endLogin   = "/login"
-	endLogout  = "/logout"
-	endWorkout = "/workout"
+	routeApiV1       = "/api/v1"
+	endUser          = "/user"
+	endLogin         = "/login"
+	endLogout        = "/logout"
+	endLoggedWorkout = "/logged-workout"
 )
 
 type middleware func(http.Handler) http.Handler
@@ -59,7 +59,7 @@ func (s *Server) setupEndpoints() {
 		r.Post(endLogout, makeHandler(s.handleLogout))
 
 		// session auth required
-		r.With(s.middlewareAuthSession).Post(endWorkout, makeHandler(s.handleCreateWorkout))
+		r.With(s.middlewareAuthSession).Post(endLoggedWorkout, makeHandler(s.handleLogWorkout))
 	})
 }
 
@@ -120,7 +120,7 @@ func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) error 
 		return newApiError(http.StatusInternalServerError, err.Error())
 	}
 
-	err = s.storage.InsertUser(user, false)
+	err = s.storage.CreateUser(user, false)
 	if err != nil {
 		return newApiError(http.StatusConflict, err.Error())
 	}
@@ -178,7 +178,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	session := types.NewSession(userID)
-	err = s.storage.InsertSession(session)
+	err = s.storage.CreateSession(session)
 	if err != nil {
 		return newApiError(http.StatusInternalServerError, err.Error())
 	}
@@ -207,7 +207,7 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) error {
 	return writeJSON(w, http.StatusOK, nil)
 }
 
-func (s *Server) handleCreateWorkout(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) handleLogWorkout(w http.ResponseWriter, r *http.Request) error {
 	userID, ok := r.Context().Value("user_id").(int)
 	if !ok {
 		return newApiError(http.StatusInternalServerError, "internal server error")
@@ -222,7 +222,7 @@ func (s *Server) handleCreateWorkout(w http.ResponseWriter, r *http.Request) err
 
 	workout.UserID = userID
 
-	if err = s.storage.InsertWorkout(workout); err != nil {
+	if err = s.storage.CreateLoggedWorkout(workout); err != nil {
 		return newApiError(http.StatusInternalServerError, err.Error())
 	}
 

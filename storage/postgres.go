@@ -11,11 +11,11 @@ import (
 )
 
 const (
-	pgTableUser     = "users"
-	pgTableSession  = "sessions"
-	pgTableSetgroup = "setgroups"
-	pgTableExercise = "exercises"
-	pgTableWorkout  = "workouts"
+	pgTableUser        = "users"
+	pgTableSession     = "sessions"
+	pgTableLogSetgroup = "logged_setgroups"
+	pgTableLogExercise = "logged_exercises"
+	pgTableLogWorkout  = "logged_workouts"
 )
 
 type PostgresStorage struct {
@@ -56,7 +56,7 @@ func (p *PostgresStorage) MustClose() {
 	log.Printf("connection to database %s successfuly close", p.url)
 }
 
-func (p *PostgresStorage) InsertUser(user *types.User, isAdmin bool) error {
+func (p *PostgresStorage) CreateUser(user *types.User, isAdmin bool) error {
 	statement := "INSERT INTO " + pgTableUser + " (username, hashed_password, is_admin) VALUES ($1, $2, $3)"
 	_, err := p.conn.Exec(statement, user.Username, user.HashedPassword, isAdmin)
 
@@ -82,7 +82,7 @@ func (p *PostgresStorage) AuthenticateUser(username string, password string) (in
 	return userID, nil
 }
 
-func (p *PostgresStorage) InsertSession(s *types.Session) error {
+func (p *PostgresStorage) CreateSession(s *types.Session) error {
 	statement := "INSERT INTO " + pgTableSession + " (user_id, token) VALUES ($1, $2)"
 	_, err := p.conn.Exec(statement, s.UserID, s.Token)
 
@@ -112,8 +112,8 @@ func (p *PostgresStorage) DeleteSessionByToken(token string) error {
 	return err
 }
 
-func (p *PostgresStorage) InsertWorkout(w *types.Workout) error {
-	statement := "INSERT INTO " + pgTableWorkout +
+func (p *PostgresStorage) CreateLoggedWorkout(w *types.Workout) error {
+	statement := "INSERT INTO " + pgTableLogWorkout +
 		" (user_id, name, time, notes) VALUES ($1, $2, $3, $4) " +
 		"RETURNING id"
 
@@ -125,7 +125,7 @@ func (p *PostgresStorage) InsertWorkout(w *types.Workout) error {
 	for _, e := range w.Exercises {
 		e.WorkoutID = w.ID
 
-		statement := "INSERT INTO " + pgTableExercise +
+		statement := "INSERT INTO " + pgTableLogExercise +
 			" (workout_id, name, notes) VALUES ($1, $2, $3) " +
 			"RETURNING id"
 
@@ -137,7 +137,7 @@ func (p *PostgresStorage) InsertWorkout(w *types.Workout) error {
 		for _, s := range e.Setgroups {
 			s.ExerciseID = e.ID
 
-			statement := "INSERT INTO " + pgTableSetgroup +
+			statement := "INSERT INTO " + pgTableLogSetgroup +
 				" (exercise_id, weight, sets, reps) VALUES ($1, $2, $3, $4) " +
 				"RETURNING id"
 

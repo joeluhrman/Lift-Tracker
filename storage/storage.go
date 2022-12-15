@@ -6,13 +6,13 @@ import (
 )
 
 type Storage interface {
-	InsertUser(user *types.User, isAdmin bool) error
+	CreateUser(user *types.User, isAdmin bool) error
 	AuthenticateUser(username string, password string) (int, error)
 
-	InsertSession(s *types.Session) error
+	CreateSession(s *types.Session) error
 	DeleteSessionByUserID(userID int) error
 	DeleteSessionByToken(token string) error
 	AuthenticateSession(token string) (int, error)
 
-	InsertWorkout(w *types.Workout) error
+	CreateLoggedWorkout(w *types.Workout) error
 }

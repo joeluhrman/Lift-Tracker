@@ -24,7 +24,7 @@ var (
 
 type testStorage struct{}
 
-func (t *testStorage) InsertUser(user *types.User, isAdmin bool) error {
+func (t *testStorage) CreateUser(user *types.User, isAdmin bool) error {
 	return nil
 }
 
@@ -32,7 +32,7 @@ func (t *testStorage) AuthenticateUser(username string, password string) (int, e
 	return 1, nil
 }
 
-func (t *testStorage) InsertSession(s *types.Session) error {
+func (t *testStorage) CreateSession(s *types.Session) error {
 	return nil
 }
 
@@ -48,7 +48,7 @@ func (t *testStorage) AuthenticateSession(token string) (int, error) {
 	return 1, nil
 }
 
-func (t *testStorage) InsertWorkout(w *types.Workout) error {
+func (t *testStorage) CreateLoggedWorkout(w *types.Workout) error {
 	return nil
 }
 
@@ -207,10 +207,10 @@ func Test_handleLogout(t *testing.T) {
 	}()
 }
 
-func Test_handleCreateWorkout(t *testing.T) {
+func Test_handleLogWorkout(t *testing.T) {
 	const (
 		method   = http.MethodPost
-		endpoint = routeApiV1 + endWorkout
+		endpoint = routeApiV1 + endLoggedWorkout
 		userID   = 1
 	)
 

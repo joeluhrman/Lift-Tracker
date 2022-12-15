@@ -18,7 +18,7 @@ var (
 		PostgresStorage: NewPostgresStorage(testPGDriver, testPGURL),
 	}
 
-	tables = []string{pgTableUser, pgTableSession, pgTableSetgroup, pgTableExercise, pgTableWorkout}
+	tables = []string{pgTableUser, pgTableSession, pgTableLogSetgroup, pgTableLogExercise, pgTableLogWorkout}
 )
 
 // wrapper for test methods to avoid confusion
@@ -46,7 +46,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func Test_InsertUser(t *testing.T) {
+func Test_CreateUser(t *testing.T) {
 	defer testPGStorage.clearTable(pgTableUser)
 
 	// Success case
@@ -54,7 +54,7 @@ func Test_InsertUser(t *testing.T) {
 		user := types.NewUser("jaluhrman", "123")
 		user.HashedPassword, _ = HashPassword(user.Password)
 
-		err := testPGStorage.InsertUser(user, false)
+		err := testPGStorage.CreateUser(user, false)
 		if err != nil {
 			t.Error(err)
 		}
@@ -65,7 +65,7 @@ func Test_InsertUser(t *testing.T) {
 		user := types.NewUser("jaluhrman", "123")
 		user.HashedPassword, _ = HashPassword(user.Password)
 
-		err := testPGStorage.InsertUser(user, false)
+		err := testPGStorage.CreateUser(user, false)
 		if err == nil {
 			t.Error("should have produced an error when username already taken")
 		}
@@ -85,7 +85,7 @@ func Test_AuthenticateUser(t *testing.T) {
 
 	user := types.NewUser("jaluhrman", "password")
 	user.HashedPassword, _ = HashPassword(user.Password)
-	testPGStorage.InsertUser(user, false)
+	testPGStorage.CreateUser(user, false)
 
 	// bad password
 	func() {
@@ -104,7 +104,7 @@ func Test_AuthenticateUser(t *testing.T) {
 	}()
 }
 
-func Test_InsertSession(t *testing.T) {
+func Test_CreateSession(t *testing.T) {
 	defer testPGStorage.clearTable(pgTableSession)
 
 	const (
@@ -113,7 +113,7 @@ func Test_InsertSession(t *testing.T) {
 
 	// success case
 	func() {
-		err := testPGStorage.InsertSession(types.NewSession(userID))
+		err := testPGStorage.CreateSession(types.NewSession(userID))
 		if err != nil {
 			t.Error(err)
 		}
@@ -121,7 +121,7 @@ func Test_InsertSession(t *testing.T) {
 
 	// user id already exists
 	func() {
-		err := testPGStorage.InsertSession(types.NewSession(userID))
+		err := testPGStorage.CreateSession(types.NewSession(userID))
 		if err == nil {
 			t.Error("error should have been returned when session useID already exists")
 		}
@@ -137,7 +137,7 @@ func Test_DeleteSessionByUserID(t *testing.T) {
 
 	// success case
 	func() {
-		testPGStorage.InsertSession(types.NewSession(userID))
+		testPGStorage.CreateSession(types.NewSession(userID))
 		err := testPGStorage.DeleteSessionByUserID(userID)
 		if err != nil {
 			t.Error(err)
@@ -157,7 +157,7 @@ func Test_DeleteSessionByToken(t *testing.T) {
 		s := types.NewSession(userID)
 		token := s.Token
 
-		testPGStorage.InsertSession(s)
+		testPGStorage.CreateSession(s)
 		err := testPGStorage.DeleteSessionByToken(token)
 		if err != nil {
 			t.Error(err)
@@ -177,7 +177,7 @@ func Test_AuthenticateSession(t *testing.T) {
 	// success case
 	func() {
 		s := types.NewSession(1)
-		testPGStorage.InsertSession(s)
+		testPGStorage.CreateSession(s)
 		id, err := testPGStorage.AuthenticateSession(s.Token)
 		if err != nil {
 			t.Error(err)
@@ -188,7 +188,7 @@ func Test_AuthenticateSession(t *testing.T) {
 	}()
 }
 
-func Test_InsertWorkout(t *testing.T) {
+func Test_CreateLoggedWorkout(t *testing.T) {
 	defer testPGStorage.clearAllTables()
 
 	// success case
@@ -206,7 +206,7 @@ func Test_InsertWorkout(t *testing.T) {
 		}
 
 		w := types.NewWorkout(1, "test_workout", time.Now(), exercises, "test notes")
-		err := testPGStorage.InsertWorkout(w)
+		err := testPGStorage.CreateLoggedWorkout(w)
 		if err != nil {
 			t.Error(err)
 		}
