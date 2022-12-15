@@ -10,3 +10,5 @@
         3. custom_exercises, custom_workouts -> user-made templates 
     c. Logged exercises and workouts must match either a default or custom template at the time of logging 
 4. Make it more clear in code what deals with logged vs default vs custom exercises/workouts/whatever
+5. Check exercises and workouts exist in either custom tables or default tables before creating (also get data for exercise musclegroups from there)
+    - potential issue with users created exercises with same name as defaults, I guess dont allow that
