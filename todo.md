@@ -12,3 +12,18 @@
 4. Make it more clear in code what deals with logged vs default vs custom exercises/workouts/whatever
 5. Check exercises and workouts exist in either custom tables or default tables before creating (also get data for exercise musclegroups from there)
     - potential issue with users created exercises with same name as defaults, I guess dont allow that
+
+## the tables question
+The issue is what to do with actual logged workouts vs exercise templates and workout templates.  
+I guess it would be easiest to think of it in terms of the entities the user would be aware of:  
+1. Logged data
+    * this would be in the form of workouts (which include exercises and setgroups)
+
+2. Exercise templates
+    * a name, image, musclegroup / ppl type, etc. that would be selected by the user to add to their current (logged) workout (or saved one)
+
+3. Workout templates
+    * when starting a workout the user could (optionally) choose an existing workout template, which would have most of what a logged workout does.  
+    * they should also be able to go off-template and edit things on the fly and have that work, so they wouldn't be locked into the exact template once they've chosen it.
+
+Maybe it would be simplest to start with exercise templates for now and work up from there?
