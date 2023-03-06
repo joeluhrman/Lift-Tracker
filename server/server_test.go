@@ -7,7 +7,6 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/joeluhrman/Lift-Tracker/storage"
@@ -48,9 +47,11 @@ func (t *testStorage) AuthenticateSession(token string) (int, error) {
 	return 1, nil
 }
 
+/*
 func (t *testStorage) CreateLoggedWorkout(w *types.Workout) error {
 	return nil
 }
+*/
 
 func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
 	s := New("", storage, nil)
@@ -207,6 +208,7 @@ func Test_handleLogout(t *testing.T) {
 	}()
 }
 
+/*
 func Test_handleLogWorkout(t *testing.T) {
 	const (
 		method   = http.MethodPost
@@ -250,3 +252,4 @@ func Test_handleLogWorkout(t *testing.T) {
 		}
 	}()
 }
+*/

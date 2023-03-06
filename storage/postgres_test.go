@@ -2,9 +2,7 @@ package storage
 
 import (
 	"os"
-	"strconv"
 	"testing"
-	"time"
 
 	"github.com/joeluhrman/Lift-Tracker/types"
 )
@@ -18,7 +16,7 @@ var (
 		PostgresStorage: NewPostgresStorage(testPGDriver, testPGURL),
 	}
 
-	tables = []string{pgTableUser, pgTableSession, pgTableLogSetgroup, pgTableLogExercise, pgTableLogWorkout}
+	tables = []string{pgTableUser, pgTableSession} /*pgTableLogSetgroup, pgTableLogExercise, pgTableLogWorkout*/
 )
 
 // wrapper for test methods to avoid confusion
@@ -188,6 +186,7 @@ func Test_AuthenticateSession(t *testing.T) {
 	}()
 }
 
+/*
 func Test_CreateLoggedWorkout(t *testing.T) {
 	defer testPGStorage.clearAllTables()
 
@@ -212,3 +211,4 @@ func Test_CreateLoggedWorkout(t *testing.T) {
 		}
 	}()
 }
+*/

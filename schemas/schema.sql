@@ -24,6 +24,17 @@ CREATE TABLE IF NOT EXISTS sessions (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON sessions
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+/*
 CREATE TABLE IF NOT EXISTS logged_setgroups (
   id            SERIAL PRIMARY KEY,
   exercise_id   INTEGER NOT NULL,
@@ -79,16 +90,6 @@ CREATE TABLE IF NOT EXISTS custom_workouts (
 );
 
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON users
-FOR EACH ROW
-EXECUTE PROCEDURE trigger_set_timestamp();
-
-CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON sessions
-FOR EACH ROW
-EXECUTE PROCEDURE trigger_set_timestamp();
-
-CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON logged_setgroups
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
@@ -117,3 +118,4 @@ CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON custom_workouts
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
+*/

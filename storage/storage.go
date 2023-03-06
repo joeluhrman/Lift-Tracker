@@ -14,5 +14,5 @@ type Storage interface {
 	DeleteSessionByToken(token string) error
 	AuthenticateSession(token string) (int, error)
 
-	CreateLoggedWorkout(w *types.Workout) error
+	// CreateLoggedWorkout(w *types.Workout) error
 }

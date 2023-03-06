@@ -112,6 +112,7 @@ func (p *PostgresStorage) DeleteSessionByToken(token string) error {
 	return err
 }
 
+/*
 func (p *PostgresStorage) CreateLoggedWorkout(w *types.Workout) error {
 	statement := "INSERT INTO " + pgTableLogWorkout +
 		" (user_id, name, time, notes) VALUES ($1, $2, $3, $4) " +
@@ -150,3 +151,4 @@ func (p *PostgresStorage) CreateLoggedWorkout(w *types.Workout) error {
 
 	return nil
 }
+*/

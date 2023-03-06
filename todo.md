@@ -12,6 +12,7 @@
 4. Make it more clear in code what deals with logged vs default vs custom exercises/workouts/whatever
 5. Check exercises and workouts exist in either custom tables or default tables before creating (also get data for exercise musclegroups from there)
     - potential issue with users created exercises with same name as defaults, I guess dont allow that
+6. add email to users
 
 ## the tables question
 The issue is what to do with actual logged workouts vs exercise templates and workout templates.  

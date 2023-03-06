@@ -55,6 +55,8 @@ func (s *Session) Cookie() *http.Cookie {
 	}
 }
 
+/* commented out for now
+
 type Setgroup struct {
 	ID         int
 	ExerciseID int
@@ -139,3 +141,4 @@ func NewWorkout(userID int, name string, time time.Time, exercises []*Exercise, 
 		Notes:     notes,
 	}
 }
+*/
