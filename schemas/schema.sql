@@ -36,6 +36,7 @@ EXECUTE PROCEDURE trigger_set_timestamp();
 
 CREATE TABLE IF NOT EXISTS exercise_types (
   id                SERIAL PRIMARY KEY,
+  user_id           INTEGER,
   is_default        BOOLEAN, 
   name              TEXT UNIQUE NOT NULL,
   image             BYTEA,

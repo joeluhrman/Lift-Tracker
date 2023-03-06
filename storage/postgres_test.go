@@ -197,7 +197,7 @@ func Test_CreateExerciseType(t *testing.T) {
 		image.Point{200, 100},
 	})
 
-	exType := types.NewExerciseType(true, "random name", testImage, types.Push, types.Quads)
+	exType := types.NewExerciseType(1, true, "random name", testImage, types.Push, types.Quads)
 
 	// success case
 	func() {

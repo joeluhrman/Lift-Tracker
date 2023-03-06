@@ -14,11 +14,12 @@ import (
 )
 
 const (
-	routeApiV1       = "/api/v1"
-	endUser          = "/user"
-	endLogin         = "/login"
-	endLogout        = "/logout"
-	endLoggedWorkout = "/logged-workout"
+	routeApiV1      = "/api/v1"
+	endUser         = "/user"
+	endLogin        = "/login"
+	endLogout       = "/logout"
+	endExerciseType = "/exercise-Type"
+	//endLoggedWorkout = "/logged-workout"
 )
 
 type middleware func(http.Handler) http.Handler
@@ -59,6 +60,7 @@ func (s *Server) setupEndpoints() {
 		r.Post(endLogout, makeHandler(s.handleLogout))
 
 		// session auth required
+		r.With(s.middlewareAuthSession).Post(endExerciseType, makeHandler(s.handleCreateExerciseType))
 		//r.With(s.middlewareAuthSession).Post(endLoggedWorkout, makeHandler(s.handleLogWorkout))
 	})
 }
@@ -205,6 +207,26 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return writeJSON(w, http.StatusOK, nil)
+}
+
+func (s *Server) handleCreateExerciseType(w http.ResponseWriter, r *http.Request) error {
+	userID, ok := r.Context().Value("user_id").(int)
+	if !ok {
+		return newApiError(http.StatusInternalServerError, "Internal Server Error")
+	}
+
+	exType := &types.ExerciseType{}
+	if err := json.NewDecoder(r.Body).Decode(exType); err != nil {
+		return newApiError(http.StatusBadRequest, err.Error())
+	}
+
+	exType.UserID = uint(userID)
+
+	if err := s.storage.CreateExerciseType(exType); err != nil {
+		return newApiError(http.StatusInternalServerError, err.Error())
+	}
+
+	return writeJSON(w, http.StatusAccepted, nil)
 }
 
 /*

@@ -79,18 +79,20 @@ const (
 
 // either a default or custom exercise type (not a logged exercise)
 type ExerciseType struct {
-	ID          uint
-	IsDefault   bool
-	Name        string
-	Image       image.Image // png for now
-	PPLType     PPLType
-	MuscleGroup MuscleGroup
+	ID          uint        `json:"id"`
+	UserID      uint        `json:"user_id"`
+	IsDefault   bool        `json:"is_default"`
+	Name        string      `json:"name"`
+	Image       image.Image `json:"image"` // png only for now
+	PPLType     PPLType     `json:"ppl_type"`
+	MuscleGroup MuscleGroup `json:"muscle_group"`
 
 	Metadata
 }
 
-func NewExerciseType(isDefault bool, name string, image image.Image, pplType PPLType, mscGrp MuscleGroup) *ExerciseType {
+func NewExerciseType(userID uint, isDefault bool, name string, image image.Image, pplType PPLType, mscGrp MuscleGroup) *ExerciseType {
 	return &ExerciseType{
+		UserID:      userID,
 		IsDefault:   isDefault,
 		Name:        name,
 		Image:       image,

@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -18,7 +19,19 @@ const (
 )
 
 var (
+	// basic test server
 	testServer = newTestServer(&testStorage{}, nil)
+
+	// test server with middleware to set session for logged in tests
+	testLoggedInServer = newTestServer(&testStorage{}, []middleware{
+		func(next http.Handler) http.Handler {
+			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				r.AddCookie(types.NewSession(1).Cookie())
+				ctx := context.WithValue(r.Context(), "user_id", 1)
+				next.ServeHTTP(w, r.WithContext(ctx))
+			})
+		},
+	})
 )
 
 type testStorage struct{}
@@ -208,6 +221,23 @@ func Test_handleLogout(t *testing.T) {
 		}
 		if !cookieReset {
 			t.Error("session cookie was not reset")
+		}
+	}()
+}
+
+func Test_handleCreateExerciseType(t *testing.T) {
+	successCode := http.StatusAccepted
+	exType := types.NewExerciseType(1, false, "name", nil, types.Push, types.Calves)
+
+	// success case
+	func() {
+		json, _ := json.Marshal(exType)
+		data := bytes.NewBuffer(json)
+
+		rc := sendMockHTTPRequest(http.MethodPost, routeApiV1+endExerciseType, data, testLoggedInServer.router)
+		if rc.Code != http.StatusAccepted {
+			t.Errorf(wrongCodef, rc.Code, successCode)
+			t.Error(rc.Body)
 		}
 	}()
 }
