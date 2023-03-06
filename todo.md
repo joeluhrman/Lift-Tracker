@@ -20,7 +20,7 @@ I guess it would be easiest to think of it in terms of the entities the user wou
 1. Logged data
     * this would be in the form of workouts (which include exercises and setgroups)
 
-2. Exercise templates
+2. Exercise templates (i called it a "type" in the code instead of template)
     * a name, image, musclegroup / ppl type, etc. that would be selected by the user to add to their current (logged) workout (or saved one)
 
 3. Workout templates
@@ -28,3 +28,6 @@ I guess it would be easiest to think of it in terms of the entities the user wou
     * they should also be able to go off-template and edit things on the fly and have that work, so they wouldn't be locked into the exact template once they've chosen it.
 
 Maybe it would be simplest to start with exercise templates for now and work up from there?
+
+Exercise templates should be strict, as in a user cannot change anything about it on the fly (so we can do accurate stats on exercises).  
+Workout templates/logged workouts are much looser because they don't actually provide any analytical value so who cares.

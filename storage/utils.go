@@ -1,6 +1,9 @@
 package storage
 
 import (
+	"bytes"
+	"image"
+	"image/png"
 	"os"
 
 	"golang.org/x/crypto/bcrypt"
@@ -33,4 +36,10 @@ func MustReadFile(path string) []byte {
 	}
 
 	return bytes
+}
+
+func pngToBytes(pngImage image.Image) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	err := png.Encode(buf, pngImage)
+	return buf.Bytes(), err
 }

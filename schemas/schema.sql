@@ -16,6 +16,11 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
 CREATE TABLE IF NOT EXISTS sessions (
   user_id     INTEGER PRIMARY KEY,
   token       TEXT UNIQUE,
@@ -25,12 +30,24 @@ CREATE TABLE IF NOT EXISTS sessions (
 );
 
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON users
+BEFORE UPDATE ON sessions
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
+CREATE TABLE IF NOT EXISTS exercise_types (
+  id                SERIAL PRIMARY KEY,
+  is_default        BOOLEAN, 
+  name              TEXT UNIQUE NOT NULL,
+  image             BYTEA,
+  ppl_type          TEXT,
+  muscle_group      TEXT,
+
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON sessions
+BEFORE UPDATE ON exercise_types
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 

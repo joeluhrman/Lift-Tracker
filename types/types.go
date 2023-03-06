@@ -2,6 +2,7 @@
 package types
 
 import (
+	"image"
 	"net/http"
 	"time"
 
@@ -52,6 +53,49 @@ func (s *Session) Cookie() *http.Cookie {
 	return &http.Cookie{
 		Name:  SessionKey,
 		Value: s.Token,
+	}
+}
+
+type PPLType string
+
+const (
+	Push PPLType = "push"
+	Pull         = "pull"
+	Legs         = "legs"
+)
+
+type MuscleGroup string
+
+// incomplete
+const (
+	Calves     MuscleGroup = "calves"
+	Hamstrings             = "hamstrings"
+	Quads                  = "quads"
+	Adductors              = "adductors"
+	Abductors              = "abductors"
+	Core                   = "core"
+	LowBack                = "lower back"
+)
+
+// either a default or custom exercise type (not a logged exercise)
+type ExerciseType struct {
+	ID          uint
+	IsDefault   bool
+	Name        string
+	Image       image.Image // png for now
+	PPLType     PPLType
+	MuscleGroup MuscleGroup
+
+	Metadata
+}
+
+func NewExerciseType(isDefault bool, name string, image image.Image, pplType PPLType, mscGrp MuscleGroup) *ExerciseType {
+	return &ExerciseType{
+		IsDefault:   isDefault,
+		Name:        name,
+		Image:       image,
+		PPLType:     pplType,
+		MuscleGroup: mscGrp,
 	}
 }
 

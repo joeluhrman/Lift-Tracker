@@ -11,11 +11,12 @@ import (
 )
 
 const (
-	pgTableUser        = "users"
-	pgTableSession     = "sessions"
-	pgTableLogSetgroup = "logged_setgroups"
-	pgTableLogExercise = "logged_exercises"
-	pgTableLogWorkout  = "logged_workouts"
+	pgTableUser         = "users"
+	pgTableSession      = "sessions"
+	pgTableExerciseType = "exercise_types"
+	//pgTableLogSetgroup = "logged_setgroups"
+	//pgTableLogExercise = "logged_exercises"
+	//pgTableLogWorkout  = "logged_workouts"
 )
 
 type PostgresStorage struct {
@@ -108,6 +109,23 @@ func (p *PostgresStorage) DeleteSessionByUserID(userID int) error {
 func (p *PostgresStorage) DeleteSessionByToken(token string) error {
 	statement := "DELETE FROM " + pgTableSession + " WHERE token = $1"
 	_, err := p.conn.Exec(statement, token)
+
+	return err
+}
+
+func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) error {
+	pngBytes, err := pngToBytes(exerciseType.Image)
+	if err != nil {
+		return err
+	}
+
+	exerciseType.IsDefault = false
+
+	statement := "INSERT INTO " + pgTableExerciseType + " (is_default, name, image, ppl_type, muscle_group) " +
+		"VALUES ($1, $2, $3, $4, $5)"
+
+	_, err = p.conn.Exec(statement, exerciseType.IsDefault, exerciseType.Name,
+		pngBytes, exerciseType.PPLType, exerciseType.MuscleGroup)
 
 	return err
 }

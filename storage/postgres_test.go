@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"image"
 	"os"
 	"testing"
 
@@ -16,7 +17,7 @@ var (
 		PostgresStorage: NewPostgresStorage(testPGDriver, testPGURL),
 	}
 
-	tables = []string{pgTableUser, pgTableSession} /*pgTableLogSetgroup, pgTableLogExercise, pgTableLogWorkout*/
+	tables = []string{pgTableUser, pgTableSession, pgTableExerciseType} /*pgTableLogSetgroup, pgTableLogExercise, pgTableLogWorkout*/
 )
 
 // wrapper for test methods to avoid confusion
@@ -164,6 +165,8 @@ func Test_DeleteSessionByToken(t *testing.T) {
 }
 
 func Test_AuthenticateSession(t *testing.T) {
+	defer testPGStorage.clearTable(pgTableSession)
+
 	// doesn't exist
 	func() {
 		_, err := testPGStorage.AuthenticateSession("random")
@@ -182,6 +185,33 @@ func Test_AuthenticateSession(t *testing.T) {
 		}
 		if id != 1 {
 			t.Error("returned user id was not correct")
+		}
+	}()
+}
+
+func Test_CreateExerciseType(t *testing.T) {
+	defer testPGStorage.clearTable(pgTableExerciseType)
+
+	testImage := image.NewRGBA(image.Rectangle{
+		image.Point{0, 0},
+		image.Point{200, 100},
+	})
+
+	exType := types.NewExerciseType(true, "random name", testImage, types.Push, types.Quads)
+
+	// success case
+	func() {
+		err := testPGStorage.CreateExerciseType(exType)
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+
+	// name already taken
+	func() {
+		err := testPGStorage.CreateExerciseType(exType)
+		if err == nil {
+			t.Error("Error should have been returned when exercise type name already taken")
 		}
 	}()
 }
