@@ -52,88 +52,92 @@ BEFORE UPDATE ON exercise_types
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-/*
-CREATE TABLE IF NOT EXISTS logged_setgroups (
-  id            SERIAL PRIMARY KEY,
-  exercise_id   INTEGER NOT NULL,
-  weight        INTEGER,
-  sets          INTEGER,
-  reps          INTEGER,
-
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS logged_exercises (
-  id            SERIAL PRIMARY KEY,
-  workout_id    INTEGER NOT NULL,
-  name          TEXT,
-  ppl_types     TEXT[], 
-  notes         TEXT, 
-
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS logged_workouts (
-  id            SERIAL PRIMARY KEY,
-  user_id       INTEGER NOT NULL,
-  name          TEXT,
-  time          TIMESTAMPTZ,
-  notes         TEXT,
-
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS default_exercises (
-  id            SERIAL PRIMARY KEY,
-
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS custom_exercises (
-  id            SERIAL PRIMARY KEY,
-
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS custom_workouts (
-  id            SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS setgroup_logs (
+  id                SERIAL PRIMARY KEY,
+  exercise_log_id   INTEGER ,
+  sets              INTEGER,
+  reps              INTEGER,
+  weight            DECIMAL,
 
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON logged_setgroups
+BEFORE UPDATE ON setgroup_logs
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
+CREATE TABLE IF NOT EXISTS exercise_logs (
+  id                SERIAL PRIMARY KEY,
+  workout_log_id    INTEGER ,
+  exercise_type_id  INTEGER ,
+  notes             TEXT,
+
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON logged_exercises
+BEFORE UPDATE ON exercise_logs
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
+CREATE TABLE IF NOT EXISTS workout_logs (
+  id                SERIAL PRIMARY KEY,
+  user_id           INTEGER ,
+  date              TIMESTAMPTZ NOT NULL,
+  name              TEXT NOT NULL,
+  notes             TEXT,
+
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON logged_workouts
+BEFORE UPDATE ON workout_logs
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
+CREATE TABLE IF NOT EXISTS setgroup_templates (
+  id                    SERIAL PRIMARY KEY,
+  exercise_template_id  INTEGER ,
+  sets                  INTEGER NOT NULL,
+  reps                  INTEGER NOT NULL,
+
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON default_exercises
+BEFORE UPDATE ON setgroup_templates
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
+CREATE TABLE IF NOT EXISTS exercise_templates (
+  id                    SERIAL PRIMARY KEY,
+  workout_template_id   INTEGER ,
+  exercise_type_id      INTEGER ,
+
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON custom_exercises
+BEFORE UPDATE ON exercise_templates
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
+CREATE TABLE IF NOT EXISTS workout_templates (
+  id                    SERIAL PRIMARY KEY,
+  user_id               INTEGER ,
+  name                  TEXT,
+
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON custom_workouts
+BEFORE UPDATE ON workout_templates
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
-*/
