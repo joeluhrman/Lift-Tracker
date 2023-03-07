@@ -220,6 +220,8 @@ func (s *Server) handleCreateExerciseType(w http.ResponseWriter, r *http.Request
 		return newApiError(http.StatusBadRequest, err.Error())
 	}
 
+	// I guess convert image from b64 or whatever it would be
+
 	exType.UserID = uint(userID)
 
 	if err := s.storage.CreateExerciseType(exType); err != nil {

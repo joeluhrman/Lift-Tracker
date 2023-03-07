@@ -222,7 +222,7 @@ func Test_handleCreateExerciseType(t *testing.T) {
 	successCode := http.StatusAccepted
 	exType := types.NewExerciseType(1, false, "name", nil, types.Push, types.Calves)
 
-	// success case
+	// success case (no image)
 	func() {
 		json, _ := json.Marshal(exType)
 		data := bytes.NewBuffer(json)
