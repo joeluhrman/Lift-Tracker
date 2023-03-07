@@ -1,3 +1,3 @@
 # Lift-Tracker
-Just messing around for now <br>
-Working on backend stuff <br>
+Webapp (and maybe mobile in the future) for tracking lifting progress.  
+Right now I'm just working on the database and JSON API.

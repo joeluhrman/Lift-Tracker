@@ -59,9 +59,12 @@ func (s *Server) setupEndpoints() {
 		r.Post(endLogin, makeHandler(s.handleLogin))
 		r.Post(endLogout, makeHandler(s.handleLogout))
 
-		// session auth required
-		r.With(s.middlewareAuthSession).Post(endExerciseType, makeHandler(s.handleCreateExerciseType))
-		//r.With(s.middlewareAuthSession).Post(endLoggedWorkout, makeHandler(s.handleLogWorkout))
+		// user auth routes
+		r.Group(func(auth chi.Router) {
+			auth.Use(s.middlewareAuthSession)
+
+			auth.Post(endExerciseType, makeHandler(s.handleCreateExerciseType))
+		})
 	})
 }
 

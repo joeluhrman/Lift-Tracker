@@ -77,7 +77,6 @@ const (
 	LowBack                = "lower back"
 )
 
-// either a default or custom exercise type (not a logged exercise)
 type ExerciseType struct {
 	ID          uint        `json:"id"`
 	UserID      uint        `json:"user_id"`
