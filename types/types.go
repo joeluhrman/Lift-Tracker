@@ -14,11 +14,6 @@ type metadata struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-type model struct {
-	metadata
-	ID uint `json:"id"`
-}
-
 type User struct {
 	ID             int    `json:"id"`
 	Username       string `json:"username"`
@@ -59,14 +54,6 @@ func (s *Session) Cookie() *http.Cookie {
 		Name:  SessionKey,
 		Value: s.Token,
 	}
-}
-
-type SetGroup struct {
-	model
-	ExerciseID uint
-	Sets       uint
-	Reps       uint
-	Weight     uint
 }
 
 type PPLType string
@@ -114,107 +101,50 @@ func NewExerciseType(userID uint, isDefault bool, name string, image image.Image
 	}
 }
 
-type Exercise struct {
-	model
+type SetGroupLog struct {
+	ID            uint
+	ExerciseLogID uint
+	sets          uint
+	reps          uint
+	weight        uint
+
+	metadata
+}
+
+type ExerciseLog struct {
+	ID             uint
+	WorkoutLogID   uint
 	ExerciseTypeID uint
-	WorkoutID      uint
-	SetGroups      []SetGroup
 	Notes          string
+	SetGroupLogs   []SetGroupLog
 }
 
-type Workout struct {
-	model
-	UserID    uint
-	Name      string
-	Date      time.Time
-	Exercises []Exercise
-	Notes     string
+type WorkoutLog struct {
+	ID           uint
+	UserID       uint
+	Date         time.Time
+	Name         string
+	Notes        string
+	ExerciseLogs []ExerciseLog
 }
 
-/* commented out for now
-
-type Setgroup struct {
-	ID         int
-	ExerciseID int
-
-	Weight int
-	Sets   int
-	Reps   int
-
-	metadata
+type SetGroupTemplate struct {
+	ID                 uint
+	ExerciseTemplateID uint
+	Sets               uint
+	Reps               uint
 }
 
-func NewSetgroup(exerciseID, weight, sets, reps int) *Setgroup {
-	return &Setgroup{
-		ExerciseID: exerciseID,
-		Weight:     weight,
-		Sets:       sets,
-		Reps:       reps,
-	}
+type ExerciseTemplate struct {
+	ID                uint
+	WorkoutTemplateID uint
+	ExerciseTypeID    uint
+	SetGroupTemplates []SetGroupTemplate
 }
 
-type pplType string
-
-const (
-	pplPush pplType = "PUSH"
-	pplPull pplType = "PULL"
-	pplLegs pplType = "LEGS"
-)
-
-var (
-	pplTypes = []pplType{pplPush, pplPull, pplLegs}
-)
-
-func IsPPLType(s string) bool {
-	for _, v := range pplTypes {
-		if s == string(v) {
-			return true
-		}
-	}
-
-	return false
+type WorkoutTemplate struct {
+	ID                uint
+	UserID            uint
+	Name              string
+	ExerciseTemplates []ExerciseTemplate
 }
-
-type Exercise struct {
-	ID        int
-	WorkoutID int
-
-	Name      string
-	PPLTypes  []pplType
-	Setgroups []*Setgroup
-	Notes     string
-
-	metadata
-}
-
-func NewExercise(workoutID int, name string, setgroups []*Setgroup, notes string) *Exercise {
-	return &Exercise{
-		WorkoutID: workoutID,
-		Name:      name,
-		Setgroups: setgroups,
-		Notes:     notes,
-	}
-}
-
-type Workout struct {
-	ID     int
-	UserID int
-
-	Name      string
-	Time      time.Time
-	Exercises []*Exercise
-	Notes     string
-
-	metadata
-}
-
-func NewWorkout(userID int, name string, time time.Time, exercises []*Exercise, notes string) *Workout {
-	return &Workout{
-		UserID:    userID,
-		Name:      name,
-		Time:      time,
-		Exercises: exercises,
-		Notes:     notes,
-	}
-}
-*/
