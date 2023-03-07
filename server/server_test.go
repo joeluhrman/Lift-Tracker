@@ -200,14 +200,7 @@ func Test_handleLogout(t *testing.T) {
 
 	// cookies reset correctly
 	func() {
-		server := newTestServer(&testStorage{}, []middleware{func(next http.Handler) http.Handler {
-			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				r.AddCookie(types.NewSession(userID).Cookie())
-				next.ServeHTTP(w, r)
-			})
-		}})
-
-		rec := sendMockHTTPRequest(method, endpoint, nil, server.router)
+		rec := sendMockHTTPRequest(method, endpoint, nil, testLoggedInServer.router)
 		if rec.Code != http.StatusOK {
 			t.Errorf(wrongCodef, rec.Code, http.StatusOK)
 		}
