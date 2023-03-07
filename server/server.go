@@ -4,7 +4,6 @@ package server
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"log"
 	"net/http"
 
@@ -19,7 +18,6 @@ const (
 	endLogin        = "/login"
 	endLogout       = "/logout"
 	endExerciseType = "/exercise-Type"
-	//endLoggedWorkout = "/logged-workout"
 )
 
 type middleware func(http.Handler) http.Handler
@@ -54,48 +52,16 @@ func (s *Server) MustStart() {
 
 func (s *Server) setupEndpoints() {
 	s.router.Route(routeApiV1, func(r chi.Router) {
-		// no auth required
-		r.Post(endUser, makeHandler(s.handleCreateUser))
-		r.Post(endLogin, makeHandler(s.handleLogin))
-		r.Post(endLogout, makeHandler(s.handleLogout))
+		r.Post(endUser, s.handleCreateUser)
+		r.Post(endLogin, s.handleLogin)
+		r.Post(endLogout, s.handleLogout)
 
-		// user auth routes
 		r.Group(func(auth chi.Router) {
 			auth.Use(s.middlewareAuthSession)
 
-			auth.Post(endExerciseType, makeHandler(s.handleCreateExerciseType))
+			auth.Post(endExerciseType, s.handleCreateExerciseType)
 		})
 	})
-}
-
-type apiError struct {
-	Status int    `json:"status"`
-	Err    string `json:"error"`
-}
-
-func (e apiError) Error() string {
-	return e.Err
-}
-
-func newApiError(status int, err string) apiError {
-	return apiError{
-		Status: status,
-		Err:    err,
-	}
-}
-
-type apiHandler func(http.ResponseWriter, *http.Request) error
-
-func makeHandler(f apiHandler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if err := f(w, r); err != nil {
-			if e, ok := err.(apiError); ok {
-				writeJSON(w, e.Status, e.Err)
-			} else {
-				writeJSON(w, http.StatusInternalServerError, err.Error())
-			}
-		}
-	}
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) error {
@@ -104,33 +70,38 @@ func writeJSON(w http.ResponseWriter, status int, v any) error {
 	return json.NewEncoder(w).Encode(v)
 }
 
-func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	user := &types.User{}
 
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
-		return newApiError(http.StatusBadRequest, err.Error())
+		writeJSON(w, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	if !storage.UsernameMeetsRequirements(user.Username) {
-		return newApiError(http.StatusNotAcceptable, errors.New("username does not meet requirements").Error())
+		writeJSON(w, http.StatusNotAcceptable, "username does not meet requirements")
+		return
 	}
 
 	if !storage.PasswordMeetsRequirements(user.Password) {
-		return newApiError(http.StatusNotAcceptable, errors.New("password does not meet requirements").Error())
+		writeJSON(w, http.StatusNotAcceptable, "password does not meet requirements")
+		return
 	}
 
 	user.HashedPassword, err = storage.HashPassword(user.Password)
 	if err != nil {
-		return newApiError(http.StatusInternalServerError, err.Error())
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	err = s.storage.CreateUser(user, false)
 	if err != nil {
-		return newApiError(http.StatusConflict, err.Error())
+		writeJSON(w, http.StatusConflict, err.Error())
+		return
 	}
 
-	return writeJSON(w, http.StatusAccepted, nil)
+	writeJSON(w, http.StatusAccepted, nil)
 }
 
 func setSession(s *types.Session, w http.ResponseWriter) {
@@ -157,6 +128,7 @@ func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
 		userID, err := s.storage.AuthenticateSession(token)
 		if err != nil {
 			writeJSON(w, http.StatusUnauthorized, err.Error())
+			return
 		}
 
 		ctx := context.WithValue(r.Context(), "user_id", userID)
@@ -164,39 +136,44 @@ func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
 	})
 }
 
-func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	user := &types.User{}
 
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
-		return newApiError(http.StatusBadRequest, err.Error())
+		writeJSON(w, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	userID, err := s.storage.AuthenticateUser(user.Username, user.Password)
 	if err != nil {
-		return newApiError(http.StatusUnauthorized, err.Error())
+		writeJSON(w, http.StatusUnauthorized, err.Error())
+		return
 	}
 
 	err = s.storage.DeleteSessionByUserID(userID)
 	if err != nil {
-		return newApiError(http.StatusInternalServerError, err.Error())
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	session := types.NewSession(userID)
 	err = s.storage.CreateSession(session)
 	if err != nil {
-		return newApiError(http.StatusInternalServerError, err.Error())
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	setSession(session, w)
 
-	return writeJSON(w, http.StatusOK, nil)
+	writeJSON(w, http.StatusOK, nil)
 }
 
-func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	token, err := getSessionToken(r)
 	if err != nil {
-		return newApiError(http.StatusNotFound, err.Error())
+		writeJSON(w, http.StatusNotFound, err.Error())
+		return
 	}
 
 	http.SetCookie(w, &http.Cookie{
@@ -206,21 +183,24 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) error {
 
 	err = s.storage.DeleteSessionByToken(token)
 	if err != nil {
-		return newApiError(http.StatusInternalServerError, err.Error())
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
-	return writeJSON(w, http.StatusOK, nil)
+	writeJSON(w, http.StatusOK, nil)
 }
 
-func (s *Server) handleCreateExerciseType(w http.ResponseWriter, r *http.Request) error {
+func (s *Server) handleCreateExerciseType(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("user_id").(int)
 	if !ok {
-		return newApiError(http.StatusInternalServerError, "Internal Server Error")
+		writeJSON(w, http.StatusInternalServerError, "Internal Server Error")
+		return
 	}
 
 	exType := &types.ExerciseType{}
 	if err := json.NewDecoder(r.Body).Decode(exType); err != nil {
-		return newApiError(http.StatusBadRequest, err.Error())
+		writeJSON(w, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	// I guess convert image from b64 or whatever it would be
@@ -228,32 +208,9 @@ func (s *Server) handleCreateExerciseType(w http.ResponseWriter, r *http.Request
 	exType.UserID = uint(userID)
 
 	if err := s.storage.CreateExerciseType(exType); err != nil {
-		return newApiError(http.StatusInternalServerError, err.Error())
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
-	return writeJSON(w, http.StatusAccepted, nil)
+	writeJSON(w, http.StatusAccepted, nil)
 }
-
-/*
-func (s *Server) handleLogWorkout(w http.ResponseWriter, r *http.Request) error {
-	userID, ok := r.Context().Value("user_id").(int)
-	if !ok {
-		return newApiError(http.StatusInternalServerError, "internal server error")
-	}
-
-	workout := &types.Workout{}
-
-	err := json.NewDecoder(r.Body).Decode(workout)
-	if err != nil {
-		return newApiError(http.StatusBadRequest, err.Error())
-	}
-
-	workout.UserID = userID
-
-	if err = s.storage.CreateLoggedWorkout(workout); err != nil {
-		return newApiError(http.StatusInternalServerError, err.Error())
-	}
-
-	return writeJSON(w, http.StatusCreated, nil)
-}
-*/
