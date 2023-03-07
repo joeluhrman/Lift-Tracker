@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joeluhrman/Lift-Tracker/server"
 	"github.com/joeluhrman/Lift-Tracker/storage"
 )

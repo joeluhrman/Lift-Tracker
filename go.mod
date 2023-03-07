@@ -2,12 +2,11 @@ module github.com/joeluhrman/Lift-Tracker
 
 go 1.19
 
-require (
-	github.com/go-chi/chi v1.5.4
-	github.com/jackc/pgx/v5 v5.1.1
-)
+require github.com/jackc/pgx/v5 v5.1.1
 
 require github.com/google/uuid v1.3.0
+
+require github.com/go-chi/chi/v5 v5.0.8
 
 require (
 	// indirect
