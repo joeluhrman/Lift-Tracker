@@ -9,9 +9,14 @@ import (
 	"github.com/google/uuid"
 )
 
-type Metadata struct {
+type metadata struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type model struct {
+	metadata
+	ID uint `json:"id"`
 }
 
 type User struct {
@@ -21,7 +26,7 @@ type User struct {
 	HashedPassword string `json:"hashed_password"`
 	IsAdmin        bool   `json:"is_admin"`
 
-	Metadata
+	metadata
 }
 
 func NewUser(username string, password string) *User {
@@ -37,7 +42,7 @@ type Session struct {
 	UserID int
 	Token  string
 
-	Metadata
+	metadata
 }
 
 func NewSession(userID int) *Session {
@@ -54,6 +59,14 @@ func (s *Session) Cookie() *http.Cookie {
 		Name:  SessionKey,
 		Value: s.Token,
 	}
+}
+
+type SetGroup struct {
+	model
+	ExerciseID uint
+	Sets       uint
+	Reps       uint
+	Weight     uint
 }
 
 type PPLType string
@@ -87,7 +100,7 @@ type ExerciseType struct {
 	PPLType     PPLType     `json:"ppl_type"`
 	MuscleGroup MuscleGroup `json:"muscle_group"`
 
-	Metadata
+	metadata
 }
 
 func NewExerciseType(userID uint, isDefault bool, name string, image image.Image, pplType PPLType, mscGrp MuscleGroup) *ExerciseType {
@@ -101,6 +114,23 @@ func NewExerciseType(userID uint, isDefault bool, name string, image image.Image
 	}
 }
 
+type Exercise struct {
+	model
+	ExerciseTypeID uint
+	WorkoutID      uint
+	SetGroups      []SetGroup
+	Notes          string
+}
+
+type Workout struct {
+	model
+	UserID    uint
+	Name      string
+	Date      time.Time
+	Exercises []Exercise
+	Notes     string
+}
+
 /* commented out for now
 
 type Setgroup struct {
@@ -111,7 +141,7 @@ type Setgroup struct {
 	Sets   int
 	Reps   int
 
-	Metadata
+	metadata
 }
 
 func NewSetgroup(exerciseID, weight, sets, reps int) *Setgroup {
@@ -154,7 +184,7 @@ type Exercise struct {
 	Setgroups []*Setgroup
 	Notes     string
 
-	Metadata
+	metadata
 }
 
 func NewExercise(workoutID int, name string, setgroups []*Setgroup, notes string) *Exercise {
@@ -175,7 +205,7 @@ type Workout struct {
 	Exercises []*Exercise
 	Notes     string
 
-	Metadata
+	metadata
 }
 
 func NewWorkout(userID int, name string, time time.Time, exercises []*Exercise, notes string) *Workout {
