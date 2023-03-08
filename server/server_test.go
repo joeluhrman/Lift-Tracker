@@ -68,6 +68,10 @@ func (t *testStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 	return nil, nil
 }
 
+func (t *testStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
+	return nil
+}
+
 func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
 	s := New("", storage, nil)
 	s.router = chi.NewRouter()

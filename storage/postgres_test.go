@@ -217,3 +217,40 @@ func Test_CreateExerciseType(t *testing.T) {
 		}
 	}()
 }
+
+func Test_CreateWorkoutTemplate(t *testing.T) {
+	// success case
+	func() {
+		wTemp := &types.WorkoutTemplate{
+			UserID: 1,
+			Name:   "test workout template",
+		}
+
+		var exTemps []types.ExerciseTemplate
+		for i := 0; i < 3; i++ {
+			exTemp := types.ExerciseTemplate{
+				ExerciseTypeID: uint(i),
+			}
+
+			var sgTemps []types.SetGroupTemplate
+			for j := 0; j < 3; j++ {
+				sgTemp := types.SetGroupTemplate{
+					Sets: uint(j),
+					Reps: uint(j),
+				}
+
+				sgTemps = append(sgTemps, sgTemp)
+			}
+
+			exTemp.SetGroupTemplates = sgTemps
+			exTemps = append(exTemps, exTemp)
+		}
+
+		wTemp.ExerciseTemplates = exTemps
+
+		err := testPGStorage.CreateWorkoutTemplate(wTemp)
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+}

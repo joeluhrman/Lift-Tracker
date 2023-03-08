@@ -158,3 +158,48 @@ func (p *PostgresStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 
 	return exerciseTypes, nil
 }
+
+func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
+	var (
+		wtStatement = "INSERT INTO " + pgTableWorkoutTemplate + " (user_id, name) " +
+			"VALUES ($1, $2) RETURNING (id)"
+		etStatement = "INSERT INTO " + pgTableExerciseTemplate + " (workout_template_id, exercise_type_id) " +
+			"VALUES ($1, $2) RETURNING (id)"
+		sgtStatment = "INSERT INTO " + pgTableSetGroupTemplate + " (exercise_template_id, sets, reps) " +
+			"VALUES ($1, $2, $3) RETURNING (id)"
+	)
+
+	err := p.conn.QueryRow(wtStatement, workoutTemplate.UserID, workoutTemplate.Name).Scan(&workoutTemplate.ID)
+	if err != nil {
+		return err
+	}
+
+	for i := range workoutTemplate.ExerciseTemplates {
+		workoutTemplate.ExerciseTemplates[i].WorkoutTemplateID = workoutTemplate.ID
+
+		err = p.conn.QueryRow(etStatement, workoutTemplate.ID, workoutTemplate.ExerciseTemplates[i].ExerciseTypeID).
+			Scan(&workoutTemplate.ExerciseTemplates[i].ID)
+		if err != nil {
+			return err
+		}
+
+		for j := range workoutTemplate.ExerciseTemplates[i].SetGroupTemplates {
+			workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].ExerciseTemplateID =
+				workoutTemplate.ExerciseTemplates[i].ID
+
+			// brace for this gargantuan line
+			err = p.conn.QueryRow(
+				sgtStatment, workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].ExerciseTemplateID,
+				workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].Sets,
+				workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].Reps).
+				Scan(
+					&workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].ID,
+				)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}

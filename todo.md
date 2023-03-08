@@ -10,3 +10,5 @@
 5. Logs
     * How to keep track of order of exercises/setgroups
         * Maybe keep workout id and delete/redo everything every time a workout is modified
+
+6. SET UP FOREIGN KEY CONSTRAINTS 

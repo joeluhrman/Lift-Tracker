@@ -16,4 +16,6 @@ type Storage interface {
 
 	CreateExerciseType(exerciseType *types.ExerciseType) error
 	GetExerciseTypes() ([]types.ExerciseType, error)
+
+	CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error
 }
