@@ -11,12 +11,15 @@ import (
 )
 
 const (
-	pgTableUser         = "users"
-	pgTableSession      = "sessions"
-	pgTableExerciseType = "exercise_types"
-	//pgTableLogSetgroup = "logged_setgroups"
-	//pgTableLogExercise = "logged_exercises"
-	//pgTableLogWorkout  = "logged_workouts"
+	pgTableUser             = "users"
+	pgTableSession          = "sessions"
+	pgTableExerciseType     = "exercise_types"
+	pgTableSetGroupLog      = "setgroup_logs"
+	pgTableExerciseLog      = "exercise_logs"
+	pgTableWorkoutLog       = "workout_logs"
+	pgTableSetGroupTemplate = "setgroup_templates"
+	pgTableExerciseTemplate = "exercise_templates"
+	pgTableWorkoutTemplate  = "workout_templates"
 )
 
 type PostgresStorage struct {
@@ -130,43 +133,30 @@ func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) e
 	return err
 }
 
-/*
-func (p *PostgresStorage) CreateLoggedWorkout(w *types.Workout) error {
-	statement := "INSERT INTO " + pgTableLogWorkout +
-		" (user_id, name, time, notes) VALUES ($1, $2, $3, $4) " +
-		"RETURNING id"
+func (p *PostgresStorage) GetExerciseTypes(userID uint) ([]types.ExerciseType, error) {
+	var exerciseTypes []types.ExerciseType
 
-	err := p.conn.QueryRow(statement, w.UserID, w.Name, w.Time, w.Notes).Scan(&w.ID)
+	statement := "SELECT * FROM " + pgTableExerciseType + " WHERE " +
+		"is_default = $1 OR user_id = $2"
+
+	rows, err := p.conn.Query(statement, true, userID)
 	if err != nil {
-		return err
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var exType types.ExerciseType
+		if err := rows.Scan(exType.ID, exType.UserID, exType.IsDefault, exType.Name, exType.Image,
+			exType.PPLType, exType.MuscleGroup, exType.CreatedAt, exType.UpdatedAt); err != nil {
+			return nil, err
+		}
+		exerciseTypes = append(exerciseTypes, exType)
 	}
 
-	for _, e := range w.Exercises {
-		e.WorkoutID = w.ID
-
-		statement := "INSERT INTO " + pgTableLogExercise +
-			" (workout_id, name, notes) VALUES ($1, $2, $3) " +
-			"RETURNING id"
-
-		err := p.conn.QueryRow(statement, e.WorkoutID, e.Name, e.Notes).Scan(&e.ID)
-		if err != nil {
-			return err
-		}
-
-		for _, s := range e.Setgroups {
-			s.ExerciseID = e.ID
-
-			statement := "INSERT INTO " + pgTableLogSetgroup +
-				" (exercise_id, weight, sets, reps) VALUES ($1, $2, $3, $4) " +
-				"RETURNING id"
-
-			err := p.conn.QueryRow(statement, s.ExerciseID, s.Weight, s.Sets, s.Reps).Scan(&s.ID)
-			if err != nil {
-				return err
-			}
-		}
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
-	return nil
+	return exerciseTypes, nil
 }
-*/

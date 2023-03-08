@@ -15,6 +15,5 @@ type Storage interface {
 	AuthenticateSession(token string) (int, error)
 
 	CreateExerciseType(exerciseType *types.ExerciseType) error
-
-	// CreateLoggedWorkout(w *types.Workout) error
+	GetExerciseTypes(userID uint) ([]types.ExerciseType, error)
 }

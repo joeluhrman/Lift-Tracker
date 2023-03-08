@@ -17,7 +17,9 @@ var (
 		PostgresStorage: NewPostgresStorage(testPGDriver, testPGURL),
 	}
 
-	tables = []string{pgTableUser, pgTableSession, pgTableExerciseType} /*pgTableLogSetgroup, pgTableLogExercise, pgTableLogWorkout*/
+	tables = []string{pgTableUser, pgTableSession, pgTableExerciseType,
+		pgTableSetGroupLog, pgTableExerciseLog, pgTableWorkoutLog,
+		pgTableSetGroupTemplate, pgTableExerciseTemplate, pgTableWorkoutTemplate}
 )
 
 // wrapper for test methods to avoid confusion

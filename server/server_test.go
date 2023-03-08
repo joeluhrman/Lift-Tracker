@@ -64,11 +64,9 @@ func (t *testStorage) CreateExerciseType(exerciseType *types.ExerciseType) error
 	return nil
 }
 
-/*
-func (t *testStorage) CreateLoggedWorkout(w *types.Workout) error {
-	return nil
+func (t *testStorage) GetExerciseTypes(userID uint) ([]types.ExerciseType, error) {
+	return nil, nil
 }
-*/
 
 func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
 	s := New("", storage, nil)
