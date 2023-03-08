@@ -199,7 +199,7 @@ func Test_CreateExerciseType(t *testing.T) {
 		image.Point{200, 100},
 	})
 
-	exType := types.NewExerciseType(1, true, "random name", testImage, types.Push, types.Quads)
+	exType := types.NewExerciseType("random name", testImage, types.Push, types.Quads)
 
 	// success case
 	func() {
@@ -217,30 +217,3 @@ func Test_CreateExerciseType(t *testing.T) {
 		}
 	}()
 }
-
-/*
-func Test_CreateLoggedWorkout(t *testing.T) {
-	defer testPGStorage.clearAllTables()
-
-	// success case
-	func() {
-		exercises := make([]*types.Exercise, 5)
-		for i := 0; i < len(exercises); i++ {
-			setgroups := make([]*types.Setgroup, 5)
-			for i := 0; i < len(setgroups); i++ {
-				setgroups[i] = types.NewSetgroup(0, i, i, i)
-			}
-
-			name := "exercise " + strconv.Itoa(i)
-			notes := "notes " + strconv.Itoa(i)
-			exercises[i] = types.NewExercise(0, name, setgroups, notes)
-		}
-
-		w := types.NewWorkout(1, "test_workout", time.Now(), exercises, "test notes")
-		err := testPGStorage.CreateLoggedWorkout(w)
-		if err != nil {
-			t.Error(err)
-		}
-	}()
-}
-*/

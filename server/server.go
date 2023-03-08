@@ -59,7 +59,7 @@ func (s *Server) setupEndpoints() {
 		r.Group(func(auth chi.Router) {
 			auth.Use(s.middlewareAuthSession)
 
-			auth.Post(endExerciseType, s.handleCreateExerciseType)
+			//auth.Post(endExerciseType, s.handleCreateExerciseType)
 		})
 	})
 }
@@ -190,6 +190,7 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, nil)
 }
 
+/*
 func (s *Server) handleCreateExerciseType(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("user_id").(int)
 	if !ok {
@@ -214,3 +215,4 @@ func (s *Server) handleCreateExerciseType(w http.ResponseWriter, r *http.Request
 
 	writeJSON(w, http.StatusAccepted, nil)
 }
+*/

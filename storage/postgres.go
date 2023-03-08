@@ -122,13 +122,11 @@ func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) e
 		return err
 	}
 
-	exerciseType.IsDefault = false
+	statement := "INSERT INTO " + pgTableExerciseType + " (name, image, ppl_type, muscle_group) " +
+		"VALUES ($1, $2, $3, $4)"
 
-	statement := "INSERT INTO " + pgTableExerciseType + " (is_default, name, image, ppl_type, muscle_group) " +
-		"VALUES ($1, $2, $3, $4, $5)"
-
-	_, err = p.conn.Exec(statement, exerciseType.IsDefault, exerciseType.Name,
-		pngBytes, exerciseType.PPLType, exerciseType.MuscleGroup)
+	_, err = p.conn.Exec(statement, exerciseType.Name, pngBytes,
+		exerciseType.PPLType, exerciseType.MuscleGroup)
 
 	return err
 }
@@ -136,10 +134,9 @@ func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) e
 func (p *PostgresStorage) GetExerciseTypes(userID uint) ([]types.ExerciseType, error) {
 	var exerciseTypes []types.ExerciseType
 
-	statement := "SELECT * FROM " + pgTableExerciseType + " WHERE " +
-		"is_default = $1 OR user_id = $2"
+	statement := "SELECT * FROM " + pgTableExerciseType
 
-	rows, err := p.conn.Query(statement, true, userID)
+	rows, err := p.conn.Query(statement)
 	if err != nil {
 		return nil, err
 	}
@@ -147,8 +144,8 @@ func (p *PostgresStorage) GetExerciseTypes(userID uint) ([]types.ExerciseType, e
 
 	for rows.Next() {
 		var exType types.ExerciseType
-		if err := rows.Scan(exType.ID, exType.UserID, exType.IsDefault, exType.Name, exType.Image,
-			exType.PPLType, exType.MuscleGroup, exType.CreatedAt, exType.UpdatedAt); err != nil {
+		if err := rows.Scan(exType.ID, exType.Name, exType.Image, exType.PPLType,
+			exType.MuscleGroup, exType.CreatedAt, exType.UpdatedAt); err != nil {
 			return nil, err
 		}
 		exerciseTypes = append(exerciseTypes, exType)

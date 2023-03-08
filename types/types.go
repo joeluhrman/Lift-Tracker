@@ -79,8 +79,6 @@ const (
 
 type ExerciseType struct {
 	ID          uint        `json:"id"`
-	UserID      uint        `json:"user_id"`
-	IsDefault   bool        `json:"is_default"`
 	Name        string      `json:"name"`
 	Image       image.Image `json:"image"` // png only for now
 	PPLType     PPLType     `json:"ppl_type"`
@@ -89,10 +87,8 @@ type ExerciseType struct {
 	metadata
 }
 
-func NewExerciseType(userID uint, isDefault bool, name string, image image.Image, pplType PPLType, mscGrp MuscleGroup) *ExerciseType {
+func NewExerciseType(name string, image image.Image, pplType PPLType, mscGrp MuscleGroup) *ExerciseType {
 	return &ExerciseType{
-		UserID:      userID,
-		IsDefault:   isDefault,
 		Name:        name,
 		Image:       image,
 		PPLType:     pplType,
