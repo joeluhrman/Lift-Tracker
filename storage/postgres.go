@@ -132,7 +132,7 @@ func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) e
 	return err
 }
 
-func (p *PostgresStorage) GetExerciseTypes(userID uint) ([]types.ExerciseType, error) {
+func (p *PostgresStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 	var exerciseTypes []types.ExerciseType
 
 	statement := "SELECT * FROM " + pgTableExerciseType

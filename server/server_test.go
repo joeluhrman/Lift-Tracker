@@ -64,7 +64,7 @@ func (t *testStorage) CreateExerciseType(exerciseType *types.ExerciseType) error
 	return nil
 }
 
-func (t *testStorage) GetExerciseTypes(userID uint) ([]types.ExerciseType, error) {
+func (t *testStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 	return nil, nil
 }
 
