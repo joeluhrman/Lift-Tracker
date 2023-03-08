@@ -58,8 +58,6 @@ func (s *Server) setupEndpoints() {
 
 		r.Group(func(auth chi.Router) {
 			auth.Use(s.middlewareAuthSession)
-
-			//auth.Post(endExerciseType, s.handleCreateExerciseType)
 		})
 	})
 }
@@ -189,30 +187,3 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, http.StatusOK, nil)
 }
-
-/*
-func (s *Server) handleCreateExerciseType(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value("user_id").(int)
-	if !ok {
-		writeJSON(w, http.StatusInternalServerError, "Internal Server Error")
-		return
-	}
-
-	exType := &types.ExerciseType{}
-	if err := json.NewDecoder(r.Body).Decode(exType); err != nil {
-		writeJSON(w, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	// I guess convert image from b64 or whatever it would be
-
-	exType.UserID = uint(userID)
-
-	if err := s.storage.CreateExerciseType(exType); err != nil {
-		writeJSON(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	writeJSON(w, http.StatusAccepted, nil)
-}
-*/

@@ -215,22 +215,3 @@ func Test_handleLogout(t *testing.T) {
 		}
 	}()
 }
-
-/*
-func Test_handleCreateExerciseType(t *testing.T) {
-	successCode := http.StatusAccepted
-	exType := types.NewExerciseType(1, false, "name", nil, types.Push, types.Calves)
-
-	// success case (no image)
-	func() {
-		json, _ := json.Marshal(exType)
-		data := bytes.NewBuffer(json)
-
-		rc := sendMockHTTPRequest(http.MethodPost, routeApiV1+endExerciseType, data, testLoggedInServer.router)
-		if rc.Code != http.StatusAccepted {
-			t.Errorf(wrongCodef, rc.Code, successCode)
-			t.Error(rc.Body)
-		}
-	}()
-}
-*/

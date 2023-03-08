@@ -116,6 +116,7 @@ func (p *PostgresStorage) DeleteSessionByToken(token string) error {
 	return err
 }
 
+// currently just used for development, maybe later as part of an admin endpoint?
 func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) error {
 	pngBytes, err := pngToBytes(exerciseType.Image)
 	if err != nil {
