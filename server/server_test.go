@@ -9,8 +9,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/joeluhrman/Lift-Tracker/storage"
 	"github.com/joeluhrman/Lift-Tracker/types"
 )
 
@@ -20,10 +18,10 @@ const (
 
 var (
 	// basic test server
-	testServer = newTestServer(&testStorage{}, nil)
+	testServer = New("", &testStorage{}, nil)
 
 	// test server with middleware to set session for logged in tests
-	testLoggedInServer = newTestServer(&testStorage{}, []middleware{
+	testLoggedInServer = New("", &testStorage{}, []Middleware{
 		func(next http.Handler) http.Handler {
 			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				r.AddCookie(types.NewSession(1).Cookie())
@@ -72,6 +70,7 @@ func (t *testStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTempla
 	return nil
 }
 
+/*
 func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
 	s := New("", storage, nil)
 	router := chi.NewRouter()
@@ -84,7 +83,7 @@ func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
 	s.Handler = router
 
 	return s
-}
+}*/
 
 func sendMockHTTPRequest(method string, endpoint string, data *bytes.Buffer, router http.Handler) *httptest.ResponseRecorder {
 	rec := httptest.NewRecorder()

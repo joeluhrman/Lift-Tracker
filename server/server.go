@@ -20,43 +20,39 @@ const (
 	endExerciseType = "/exercise-Type"
 )
 
-type middleware func(http.Handler) http.Handler
+type Middleware func(http.Handler) http.Handler
 
 type Server struct {
 	http.Server
-	middlewares []middleware
-	storage     storage.Storage
+	storage storage.Storage
 }
 
-func New(port string, storage storage.Storage, middlewares ...middleware) *Server {
+func New(port string, storage storage.Storage, middlewares []Middleware) *Server {
 	httpServer := http.Server{
 		Addr: port,
 	}
-
-	return &Server{
-		Server:      httpServer,
-		middlewares: middlewares,
-		storage:     storage,
+	s := &Server{
+		Server:  httpServer,
+		storage: storage,
 	}
+
+	s.Handler = s.setupRouter(chi.NewRouter(), middlewares)
+
+	return s
 }
 
 func (s *Server) MustStart() {
-	router := chi.NewRouter()
-
-	for i := range s.middlewares {
-		router.Use(s.middlewares[i])
-	}
-
-	s.setupEndpoints(router)
-	s.Handler = router
-
 	log.Println("server running on port " + s.Addr)
 	s.ListenAndServe()
 }
 
-func (s *Server) setupEndpoints(router *chi.Mux) {
+func (s *Server) setupRouter(router *chi.Mux, globalMiddlewares []Middleware) *chi.Mux {
+	for i := range globalMiddlewares {
+		router.Use(globalMiddlewares[i])
+	}
+
 	router.Route(routeApiV1, func(r chi.Router) {
-		r.Post(endUser, s.handleCreateUser)
+		router.Post(routeApiV1+endUser, s.handleCreateUser)
 		r.Post(endLogin, s.handleLogin)
 		r.Post(endLogout, s.handleLogout)
 
@@ -64,6 +60,8 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 			auth.Use(s.middlewareAuthSession)
 		})
 	})
+
+	return router
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) error {
