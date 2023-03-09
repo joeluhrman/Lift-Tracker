@@ -22,6 +22,6 @@ func main() {
 	pgStore.MustConnect()
 	defer pgStore.MustClose()
 
-	server := server.New(*listenaddr, pgStore, []server.Middleware{middleware.Logger})
+	server := server.New(*listenaddr, pgStore, middleware.Logger)
 	server.MustStart()
 }

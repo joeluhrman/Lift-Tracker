@@ -18,18 +18,17 @@ const (
 
 var (
 	// basic test server
-	testServer = New("", &testStorage{}, nil)
+	testServer = New("", &testStorage{})
 
 	// test server with middleware to set session for logged in tests
-	testLoggedInServer = New("", &testStorage{}, []Middleware{
+	testLoggedInServer = New("", &testStorage{},
 		func(next http.Handler) http.Handler {
 			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				r.AddCookie(types.NewSession(1).Cookie())
 				ctx := context.WithValue(r.Context(), "user_id", 1)
 				next.ServeHTTP(w, r.WithContext(ctx))
 			})
-		},
-	})
+		})
 )
 
 type testStorage struct{}
