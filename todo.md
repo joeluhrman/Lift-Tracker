@@ -7,11 +7,6 @@
 4. Logs
     * How to keep track of order of exercises/setgroups
         * Maybe keep workout id and delete/redo everything every time a workout is modified
-
-5. SET UP FOREIGN KEY CONSTRAINTS 
-
-6. CreateWorkoutTemplate:
-    * Need to actually check that exercise type ID's for the exercises exist
+5. CreateWorkoutTemplate:
     * Figure out how to cancel/delete everything already inserted if there is an error 
-
-8. Make graceful shutdown a little less verbose in main
+6. Make graceful shutdown a little less verbose in main

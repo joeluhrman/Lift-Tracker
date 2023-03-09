@@ -17,9 +17,9 @@ var (
 		PostgresStorage: NewPostgresStorage(testPGDriver, testPGURL),
 	}
 
-	tables = []string{pgTableUser, pgTableSession, pgTableExerciseType,
-		pgTableSetGroupLog, pgTableExerciseLog, pgTableWorkoutLog,
-		pgTableSetGroupTemplate, pgTableExerciseTemplate, pgTableWorkoutTemplate}
+	tables = []string{pgTableSetGroupLog, pgTableSetGroupTemplate, pgTableExerciseLog,
+		pgTableExerciseTemplate, pgTableExerciseType, pgTableWorkoutLog, pgTableWorkoutTemplate,
+		pgTableSession, pgTableUser}
 )
 
 // wrapper for test methods to avoid confusion
@@ -224,9 +224,7 @@ func Test_CreateExerciseType(t *testing.T) {
 }
 
 func Test_CreateWorkoutTemplate(t *testing.T) {
-	defer testPGStorage.clearTable(pgTableUser)
-	defer testPGStorage.clearTable(pgTableExerciseType)
-	defer testPGStorage.clearTable(pgTableWorkoutTemplate)
+	defer testPGStorage.clearAllTables()
 
 	// success case
 	func() {
