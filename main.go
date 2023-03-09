@@ -30,16 +30,13 @@ func main() {
 
 	server := server.New(*listenaddr, pgStore, middleware.Logger)
 
-	// Server run context
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())
 
-	// Listen for syscall signals for process to interrupt/quit
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	go func() {
 		<-sig
 
-		// Shutdown signal with grace period of 30 seconds
 		shutdownCtx, _ := context.WithTimeout(serverCtx, 30*time.Second)
 
 		go func() {
@@ -49,7 +46,6 @@ func main() {
 			}
 		}()
 
-		// Trigger graceful shutdown
 		server.MustShutdown(shutdownCtx)
 		log.Println("Server successfully shutdown")
 		serverStopCtx()
