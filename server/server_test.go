@@ -74,18 +74,19 @@ func (t *testStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTempla
 
 func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
 	s := New("", storage, nil)
-	s.router = chi.NewRouter()
+	router := chi.NewRouter()
 
 	for _, middleware := range middlewares {
-		s.router.Use(middleware)
+		router.Use(middleware)
 	}
 
-	s.setupEndpoints()
+	s.setupEndpoints(router)
+	s.httpServer.Handler = router
 
 	return s
 }
 
-func sendMockHTTPRequest(method string, endpoint string, data *bytes.Buffer, router *chi.Mux) *httptest.ResponseRecorder {
+func sendMockHTTPRequest(method string, endpoint string, data *bytes.Buffer, router http.Handler) *httptest.ResponseRecorder {
 	rec := httptest.NewRecorder()
 
 	if data == nil {
@@ -116,7 +117,7 @@ func Test_handleCreateUser(t *testing.T) {
 
 	// Bad JSON
 	func() {
-		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.router)
+		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.httpServer.Handler)
 		if rec.Code != badJSONCode {
 			t.Errorf(wrongCodef, rec.Code, badJSONCode)
 		}
@@ -129,7 +130,7 @@ func Test_handleCreateUser(t *testing.T) {
 		json, _ := json.Marshal(user)
 		body := bytes.NewBuffer(json)
 
-		rec := sendMockHTTPRequest(method, endpoint, body, testServer.router)
+		rec := sendMockHTTPRequest(method, endpoint, body, testServer.httpServer.Handler)
 		if rec.Code != badPasswordCode {
 			t.Errorf(wrongCodef, rec.Code, badPasswordCode)
 		}
@@ -142,7 +143,7 @@ func Test_handleCreateUser(t *testing.T) {
 		json, _ := json.Marshal(user)
 		body := bytes.NewBuffer(json)
 
-		rec := sendMockHTTPRequest(method, endpoint, body, testServer.router)
+		rec := sendMockHTTPRequest(method, endpoint, body, testServer.httpServer.Handler)
 		if rec.Code != successCode {
 			t.Errorf(wrongCodef, rec.Code, successCode)
 		}
@@ -156,7 +157,7 @@ func Test_handleLogin(t *testing.T) {
 
 	// bad json
 	func() {
-		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.router)
+		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.httpServer.Handler)
 		if rec.Code != badJSONCode {
 			t.Errorf(wrongCodef, rec.Code, badJSONCode)
 		}
@@ -172,7 +173,7 @@ func Test_handleLogin(t *testing.T) {
 		json, _ := json.Marshal(loginInfo)
 		body := bytes.NewBuffer(json)
 
-		rec := sendMockHTTPRequest(method, endpoint, body, testServer.router)
+		rec := sendMockHTTPRequest(method, endpoint, body, testServer.httpServer.Handler)
 
 		// check correct response code
 		if rec.Code != http.StatusOK {
@@ -202,7 +203,7 @@ func Test_handleLogout(t *testing.T) {
 
 	// cookies reset correctly
 	func() {
-		rec := sendMockHTTPRequest(method, endpoint, nil, testLoggedInServer.router)
+		rec := sendMockHTTPRequest(method, endpoint, nil, testLoggedInServer.httpServer.Handler)
 		if rec.Code != http.StatusOK {
 			t.Errorf(wrongCodef, rec.Code, http.StatusOK)
 		}

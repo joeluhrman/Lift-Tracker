@@ -23,35 +23,37 @@ const (
 type middleware func(http.Handler) http.Handler
 
 type Server struct {
-	router      *chi.Mux
-	port        string
+	httpServer  http.Server
 	middlewares []middleware
 	storage     storage.Storage
 }
 
 func New(port string, storage storage.Storage, middlewares ...middleware) *Server {
 	return &Server{
-		port:        port,
+		httpServer: http.Server{
+			Addr: port,
+		},
 		middlewares: middlewares,
 		storage:     storage,
 	}
 }
 
 func (s *Server) MustStart() {
-	s.router = chi.NewRouter()
+	router := chi.NewRouter()
 
 	for i := range s.middlewares {
-		s.router.Use(s.middlewares[i])
+		router.Use(s.middlewares[i])
 	}
 
-	s.setupEndpoints()
+	s.setupEndpoints(router)
+	s.httpServer.Handler = router
 
-	log.Println("server running on port " + s.port)
-	http.ListenAndServe(s.port, s.router)
+	log.Println("server running on port " + s.httpServer.Addr)
+	s.httpServer.ListenAndServe()
 }
 
-func (s *Server) setupEndpoints() {
-	s.router.Route(routeApiV1, func(r chi.Router) {
+func (s *Server) setupEndpoints(router *chi.Mux) {
+	router.Route(routeApiV1, func(r chi.Router) {
 		r.Post(endUser, s.handleCreateUser)
 		r.Post(endLogin, s.handleLogin)
 		r.Post(endLogout, s.handleLogout)
