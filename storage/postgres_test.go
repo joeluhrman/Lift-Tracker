@@ -209,6 +209,10 @@ func Test_CreateExerciseType(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+
+		if exType.ID == 0 {
+			t.Error("Struct's id was not updated")
+		}
 	}()
 
 	// name already taken

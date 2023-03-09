@@ -133,10 +133,10 @@ func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) e
 	}
 
 	statement := "INSERT INTO " + pgTableExerciseType + " (name, image, ppl_type, muscle_group) " +
-		"VALUES ($1, $2, $3, $4)"
+		"VALUES ($1, $2, $3, $4) RETURNING (id)"
 
-	_, err = p.conn.Exec(statement, exerciseType.Name, pngBytes,
-		exerciseType.PPLType, exerciseType.MuscleGroup)
+	err = p.conn.QueryRow(statement, exerciseType.Name, pngBytes,
+		exerciseType.PPLType, exerciseType.MuscleGroup).Scan(&exerciseType.ID)
 
 	return err
 }
