@@ -81,7 +81,7 @@ func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
 	}
 
 	s.setupEndpoints(router)
-	s.httpServer.Handler = router
+	s.Handler = router
 
 	return s
 }
@@ -117,7 +117,7 @@ func Test_handleCreateUser(t *testing.T) {
 
 	// Bad JSON
 	func() {
-		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.httpServer.Handler)
+		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.Handler)
 		if rec.Code != badJSONCode {
 			t.Errorf(wrongCodef, rec.Code, badJSONCode)
 		}
@@ -130,7 +130,7 @@ func Test_handleCreateUser(t *testing.T) {
 		json, _ := json.Marshal(user)
 		body := bytes.NewBuffer(json)
 
-		rec := sendMockHTTPRequest(method, endpoint, body, testServer.httpServer.Handler)
+		rec := sendMockHTTPRequest(method, endpoint, body, testServer.Handler)
 		if rec.Code != badPasswordCode {
 			t.Errorf(wrongCodef, rec.Code, badPasswordCode)
 		}
@@ -143,7 +143,7 @@ func Test_handleCreateUser(t *testing.T) {
 		json, _ := json.Marshal(user)
 		body := bytes.NewBuffer(json)
 
-		rec := sendMockHTTPRequest(method, endpoint, body, testServer.httpServer.Handler)
+		rec := sendMockHTTPRequest(method, endpoint, body, testServer.Handler)
 		if rec.Code != successCode {
 			t.Errorf(wrongCodef, rec.Code, successCode)
 		}
@@ -157,7 +157,7 @@ func Test_handleLogin(t *testing.T) {
 
 	// bad json
 	func() {
-		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.httpServer.Handler)
+		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.Handler)
 		if rec.Code != badJSONCode {
 			t.Errorf(wrongCodef, rec.Code, badJSONCode)
 		}
@@ -173,7 +173,7 @@ func Test_handleLogin(t *testing.T) {
 		json, _ := json.Marshal(loginInfo)
 		body := bytes.NewBuffer(json)
 
-		rec := sendMockHTTPRequest(method, endpoint, body, testServer.httpServer.Handler)
+		rec := sendMockHTTPRequest(method, endpoint, body, testServer.Handler)
 
 		// check correct response code
 		if rec.Code != http.StatusOK {
@@ -203,7 +203,7 @@ func Test_handleLogout(t *testing.T) {
 
 	// cookies reset correctly
 	func() {
-		rec := sendMockHTTPRequest(method, endpoint, nil, testLoggedInServer.httpServer.Handler)
+		rec := sendMockHTTPRequest(method, endpoint, nil, testLoggedInServer.Handler)
 		if rec.Code != http.StatusOK {
 			t.Errorf(wrongCodef, rec.Code, http.StatusOK)
 		}

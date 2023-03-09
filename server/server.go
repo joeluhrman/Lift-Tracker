@@ -23,16 +23,18 @@ const (
 type middleware func(http.Handler) http.Handler
 
 type Server struct {
-	httpServer  http.Server
+	http.Server
 	middlewares []middleware
 	storage     storage.Storage
 }
 
 func New(port string, storage storage.Storage, middlewares ...middleware) *Server {
+	httpServer := http.Server{
+		Addr: port,
+	}
+
 	return &Server{
-		httpServer: http.Server{
-			Addr: port,
-		},
+		Server:      httpServer,
 		middlewares: middlewares,
 		storage:     storage,
 	}
@@ -46,10 +48,10 @@ func (s *Server) MustStart() {
 	}
 
 	s.setupEndpoints(router)
-	s.httpServer.Handler = router
+	s.Handler = router
 
-	log.Println("server running on port " + s.httpServer.Addr)
-	s.httpServer.ListenAndServe()
+	log.Println("server running on port " + s.Addr)
+	s.ListenAndServe()
 }
 
 func (s *Server) setupEndpoints(router *chi.Mux) {
