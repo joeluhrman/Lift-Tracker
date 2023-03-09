@@ -51,6 +51,13 @@ func (s *Server) MustStart() {
 	s.ListenAndServe()
 }
 
+func (s *Server) MustShutdown(shutdownCtx context.Context) {
+	err := s.Shutdown(shutdownCtx)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (s *Server) setupEndpoints(router *chi.Mux) {
 	router.Route(routeApiV1, func(r chi.Router) {
 		router.Post(routeApiV1+endUser, s.handleCreateUser)

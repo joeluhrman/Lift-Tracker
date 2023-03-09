@@ -57,7 +57,7 @@ func (p *PostgresStorage) MustClose() {
 		panic(err)
 	}
 
-	log.Printf("connection to database %s successfuly close", p.url)
+	log.Printf("connection to database %s successfuly closed", p.url)
 }
 
 func (p *PostgresStorage) CreateUser(user *types.User) error {
