@@ -62,15 +62,16 @@ func (p *PostgresStorage) MustClose() {
 
 func (p *PostgresStorage) CreateUser(user *types.User) error {
 	var err error
-	user.HashedPassword, err = HashPassword(user.Password)
+	user.HashedPassword, err = hashPassword(user.Password)
 	if err != nil {
 		return err
 	}
 
 	user.IsAdmin = false
 
-	statement := "INSERT INTO " + pgTableUser + " (username, hashed_password, is_admin) VALUES ($1, $2, $3)"
-	_, err = p.conn.Exec(statement, user.Username, user.HashedPassword, user.IsAdmin)
+	statement := "INSERT INTO " + pgTableUser + " (username, hashed_password, is_admin) VALUES ($1, $2, $3) " +
+		"RETURNING (id)"
+	err = p.conn.QueryRow(statement, user.Username, user.HashedPassword, user.IsAdmin).Scan(&user.ID)
 
 	return err
 }

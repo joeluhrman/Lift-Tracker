@@ -11,7 +11,7 @@ import (
 
 // things that I'm not sure which package they should go in
 
-func HashPassword(password string) (string, error) {
+func hashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(hash), err
 }

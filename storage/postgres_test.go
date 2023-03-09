@@ -59,6 +59,10 @@ func Test_CreateUser(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+
+		if user.ID == 0 {
+			t.Error("Struct's ID was not updated")
+		}
 	}()
 
 	// username already exists
