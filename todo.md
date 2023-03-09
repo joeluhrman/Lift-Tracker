@@ -14,4 +14,4 @@
     * Need to actually check that exercise type ID's for the exercises exist
     * Figure out how to cancel/delete everything already inserted if there is an error 
 
-8. Graceful shutdown of database connection and server
+8. Make graceful shutdown a little less verbose in main

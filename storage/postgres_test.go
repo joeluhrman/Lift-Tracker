@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"fmt"
 	"image"
 	"os"
 	"testing"
@@ -225,17 +224,33 @@ func Test_CreateExerciseType(t *testing.T) {
 }
 
 func Test_CreateWorkoutTemplate(t *testing.T) {
+	defer testPGStorage.clearTable(pgTableUser)
+	defer testPGStorage.clearTable(pgTableExerciseType)
+	defer testPGStorage.clearTable(pgTableWorkoutTemplate)
+
 	// success case
 	func() {
+		user := types.NewUser("Bingus", "Pringus")
+		testPGStorage.CreateUser(user)
+
+		testImage := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}})
+		exType := &types.ExerciseType{
+			Name:        "test type",
+			Image:       testImage,
+			PPLType:     types.Push,
+			MuscleGroup: types.Calves,
+		}
+		testPGStorage.CreateExerciseType(exType)
+
 		wTemp := &types.WorkoutTemplate{
-			UserID: 1,
+			UserID: uint(user.ID),
 			Name:   "test workout template",
 		}
 
 		var exTemps []types.ExerciseTemplate
 		for i := 0; i < 3; i++ {
 			exTemp := types.ExerciseTemplate{
-				ExerciseTypeID: uint(i),
+				ExerciseTypeID: exType.ID,
 			}
 
 			var sgTemps []types.SetGroupTemplate
@@ -270,8 +285,6 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 					t.Errorf("Setgroup template %d had exercise template ID %d, should have been %d",
 						j, sgTemp.ExerciseTemplateID, exTemp.ID)
 				}
-
-				fmt.Println(sgTemp.ExerciseTemplateID, exTemp.ID)
 			}
 		}
 	}()
