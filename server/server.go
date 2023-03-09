@@ -87,13 +87,7 @@ func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user.HashedPassword, err = storage.HashPassword(user.Password)
-	if err != nil {
-		writeJSON(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	err = s.storage.CreateUser(user, false)
+	err = s.storage.CreateUser(user)
 	if err != nil {
 		writeJSON(w, http.StatusConflict, err.Error())
 		return

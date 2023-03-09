@@ -60,9 +60,17 @@ func (p *PostgresStorage) MustClose() {
 	log.Printf("connection to database %s successfuly close", p.url)
 }
 
-func (p *PostgresStorage) CreateUser(user *types.User, isAdmin bool) error {
+func (p *PostgresStorage) CreateUser(user *types.User) error {
+	var err error
+	user.HashedPassword, err = HashPassword(user.Password)
+	if err != nil {
+		return err
+	}
+
+	user.IsAdmin = false
+
 	statement := "INSERT INTO " + pgTableUser + " (username, hashed_password, is_admin) VALUES ($1, $2, $3)"
-	_, err := p.conn.Exec(statement, user.Username, user.HashedPassword, isAdmin)
+	_, err = p.conn.Exec(statement, user.Username, user.HashedPassword, user.IsAdmin)
 
 	return err
 }

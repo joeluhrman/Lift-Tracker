@@ -54,9 +54,8 @@ func Test_CreateUser(t *testing.T) {
 	// Success case
 	func() {
 		user := types.NewUser("jaluhrman", "123")
-		user.HashedPassword, _ = HashPassword(user.Password)
 
-		err := testPGStorage.CreateUser(user, false)
+		err := testPGStorage.CreateUser(user)
 		if err != nil {
 			t.Error(err)
 		}
@@ -65,9 +64,8 @@ func Test_CreateUser(t *testing.T) {
 	// username already exists
 	func() {
 		user := types.NewUser("jaluhrman", "123")
-		user.HashedPassword, _ = HashPassword(user.Password)
 
-		err := testPGStorage.CreateUser(user, false)
+		err := testPGStorage.CreateUser(user)
 		if err == nil {
 			t.Error("should have produced an error when username already taken")
 		}
@@ -86,8 +84,7 @@ func Test_AuthenticateUser(t *testing.T) {
 	}()
 
 	user := types.NewUser("jaluhrman", "password")
-	user.HashedPassword, _ = HashPassword(user.Password)
-	testPGStorage.CreateUser(user, false)
+	testPGStorage.CreateUser(user)
 
 	// bad password
 	func() {

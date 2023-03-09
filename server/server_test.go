@@ -36,7 +36,7 @@ var (
 
 type testStorage struct{}
 
-func (t *testStorage) CreateUser(user *types.User, isAdmin bool) error {
+func (t *testStorage) CreateUser(user *types.User) error {
 	return nil
 }
 
