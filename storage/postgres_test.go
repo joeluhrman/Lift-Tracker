@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"fmt"
 	"image"
 	"os"
 	"testing"
@@ -251,6 +252,22 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 		err := testPGStorage.CreateWorkoutTemplate(wTemp)
 		if err != nil {
 			t.Error(err)
+		}
+
+		for i, exTemp := range wTemp.ExerciseTemplates {
+			if exTemp.WorkoutTemplateID != wTemp.ID {
+				t.Errorf("Exercise template %d had workout template ID %d, should have been %d",
+					i, exTemp.WorkoutTemplateID, wTemp.ID)
+			}
+
+			for j, sgTemp := range exTemp.SetGroupTemplates {
+				if sgTemp.ExerciseTemplateID != exTemp.ID {
+					t.Errorf("Setgroup template %d had exercise template ID %d, should have been %d",
+						j, sgTemp.ExerciseTemplateID, exTemp.ID)
+				}
+
+				fmt.Println(sgTemp.ExerciseTemplateID, exTemp.ID)
+			}
 		}
 	}()
 }
