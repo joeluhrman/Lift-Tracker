@@ -13,21 +13,22 @@ import (
 )
 
 const (
-	routeApiV1      = "/api/v1"
-	endUser         = "/user"
-	endLogin        = "/login"
-	endLogout       = "/logout"
-	endExerciseType = "/exercise-Type"
+	routeApiV1         = "/api/v1"
+	endUser            = "/user"
+	endLogin           = "/login"
+	endLogout          = "/logout"
+	endExerciseType    = "/exercise-Type"
+	endWorkoutTemplate = "/workout-template"
 )
 
-type middleware func(http.Handler) http.Handler
+//type middleware func(http.Handler) http.Handler
 
 type Server struct {
 	http.Server
 	storage storage.Storage
 }
 
-func New(port string, storage storage.Storage, middlewares ...middleware) *Server {
+func New(port string, storage storage.Storage, middlewares ...func(http.Handler) http.Handler) *Server {
 	httpServer := http.Server{
 		Addr: port,
 	}
@@ -66,6 +67,8 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 
 		r.Group(func(auth chi.Router) {
 			auth.Use(s.middlewareAuthSession)
+
+			auth.Post(endWorkoutTemplate, s.handleCreateWorkoutTemplate)
 		})
 	})
 }
@@ -188,4 +191,22 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, http.StatusOK, nil)
+}
+
+func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user_id").(int)
+
+	wTemp := &types.WorkoutTemplate{}
+	if err := json.NewDecoder(r.Body).Decode(wTemp); err != nil {
+		writeJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	wTemp.UserID = uint(userID)
+
+	if err := s.storage.CreateWorkoutTemplate(wTemp); err != nil {
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+	}
+
+	writeJSON(w, http.StatusAccepted, nil)
 }

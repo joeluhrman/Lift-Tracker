@@ -97,49 +97,49 @@ func NewExerciseType(name string, image image.Image, pplType PPLType, mscGrp Mus
 }
 
 type SetGroupLog struct {
-	ID            uint
-	ExerciseLogID uint
-	sets          uint
-	reps          uint
-	weight        uint
+	ID            uint `json:"id"`
+	ExerciseLogID uint `json:"exercise_log_id"`
+	Sets          uint `json:"sets"`
+	Reps          uint `json:"reps"`
+	Weight        uint `json:"weight"`
 
 	metadata
 }
 
 type ExerciseLog struct {
-	ID             uint
-	WorkoutLogID   uint
-	ExerciseTypeID uint
-	Notes          string
-	SetGroupLogs   []SetGroupLog
+	ID             uint          `json:"id"`
+	WorkoutLogID   uint          `json:"workout_log_id"`
+	ExerciseTypeID uint          `json:"exercise_type_id"`
+	Notes          string        `json:"notes"`
+	SetGroupLogs   []SetGroupLog `json:"setgroup_logs"`
 }
 
 type WorkoutLog struct {
-	ID           uint
-	UserID       uint
-	Date         time.Time
-	Name         string
-	Notes        string
-	ExerciseLogs []ExerciseLog
+	ID           uint          `json:"id"`
+	UserID       uint          `json:"user_id"`
+	Date         time.Time     `json:"date"`
+	Name         string        `json:"name"`
+	Notes        string        `json:"notes"`
+	ExerciseLogs []ExerciseLog `json:"exercise_logs"`
 }
 
 type SetGroupTemplate struct {
-	ID                 uint
-	ExerciseTemplateID uint
-	Sets               uint
-	Reps               uint
+	ID                 uint `json:"id"`
+	ExerciseTemplateID uint `json:"exercise_template_id"`
+	Sets               uint `json:"sets"`
+	Reps               uint `json:"reps"`
 }
 
 type ExerciseTemplate struct {
-	ID                uint
-	WorkoutTemplateID uint
-	ExerciseTypeID    uint
-	SetGroupTemplates []SetGroupTemplate
+	ID                uint               `json:"id"`
+	WorkoutTemplateID uint               `json:"workout_template_id"`
+	ExerciseTypeID    uint               `json:"exercise_type_id"`
+	SetGroupTemplates []SetGroupTemplate `json:"setgroup_templates"`
 }
 
 type WorkoutTemplate struct {
-	ID                uint
-	UserID            uint
-	Name              string
-	ExerciseTemplates []ExerciseTemplate
+	ID                uint               `json:"id"`
+	UserID            uint               `json:"user_id"`
+	Name              string             `json:"name"`
+	ExerciseTemplates []ExerciseTemplate `json:"exercise_templates"`
 }

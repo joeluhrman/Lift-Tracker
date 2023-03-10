@@ -9,6 +9,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joeluhrman/Lift-Tracker/types"
 )
 
@@ -18,7 +19,7 @@ const (
 
 var (
 	// basic test server
-	testServer = New("", &testStorage{})
+	testServer = New("", &testStorage{}, middleware.Logger)
 
 	// test server with middleware to set session for logged in tests
 	testLoggedInServer = New("", &testStorage{},
@@ -28,7 +29,9 @@ var (
 				ctx := context.WithValue(r.Context(), "user_id", 1)
 				next.ServeHTTP(w, r.WithContext(ctx))
 			})
-		})
+		},
+		middleware.Logger,
+	)
 )
 
 type testStorage struct{}
@@ -68,21 +71,6 @@ func (t *testStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 func (t *testStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
 	return nil
 }
-
-/*
-func newTestServer(storage storage.Storage, middlewares []middleware) *Server {
-	s := New("", storage, nil)
-	router := chi.NewRouter()
-
-	for _, middleware := range middlewares {
-		router.Use(middleware)
-	}
-
-	s.setupEndpoints(router)
-	s.Handler = router
-
-	return s
-}*/
 
 func sendMockHTTPRequest(method string, endpoint string, data *bytes.Buffer, router http.Handler) *httptest.ResponseRecorder {
 	rec := httptest.NewRecorder()
@@ -215,6 +203,56 @@ func Test_handleLogout(t *testing.T) {
 		}
 		if !cookieReset {
 			t.Error("session cookie was not reset")
+		}
+	}()
+}
+
+func Test_handleCreateWorkoutTemplate(t *testing.T) {
+	// success case
+	func() {
+		wTemp := &types.WorkoutTemplate{
+			UserID: 1,
+			Name:   "test wTemp",
+			ExerciseTemplates: []types.ExerciseTemplate{
+				{
+					WorkoutTemplateID: 1,
+					ExerciseTypeID:    1,
+					SetGroupTemplates: []types.SetGroupTemplate{
+						{
+							ExerciseTemplateID: 1,
+							Sets:               5,
+							Reps:               5,
+						},
+					},
+				},
+			},
+		}
+
+		json, _ := json.Marshal(wTemp)
+		data := bytes.NewBuffer(json)
+
+		rec := sendMockHTTPRequest(http.MethodPost, routeApiV1+endWorkoutTemplate, data,
+			testLoggedInServer.Handler)
+		if rec.Code != http.StatusAccepted {
+			t.Errorf(wrongCodef, rec.Code, http.StatusAccepted)
+		}
+	}()
+
+	// user not logged in
+	func() {
+		rec := sendMockHTTPRequest(http.MethodPost, routeApiV1+endWorkoutTemplate, nil,
+			testServer.Handler)
+		if rec.Code != http.StatusUnauthorized {
+			t.Errorf(wrongCodef, rec.Code, http.StatusUnauthorized)
+		}
+	}()
+
+	// bad json
+	func() {
+		rec := sendMockHTTPRequest(http.MethodPost, routeApiV1+endWorkoutTemplate, nil,
+			testLoggedInServer.Handler)
+		if rec.Code != http.StatusBadRequest {
+			t.Errorf(wrongCodef, rec.Code, http.StatusBadRequest)
 		}
 	}()
 }
