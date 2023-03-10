@@ -112,6 +112,8 @@ type ExerciseLog struct {
 	ExerciseTypeID uint          `json:"exercise_type_id"`
 	Notes          string        `json:"notes"`
 	SetGroupLogs   []SetGroupLog `json:"setgroup_logs"`
+
+	metadata
 }
 
 type WorkoutLog struct {
@@ -121,6 +123,8 @@ type WorkoutLog struct {
 	Name         string        `json:"name"`
 	Notes        string        `json:"notes"`
 	ExerciseLogs []ExerciseLog `json:"exercise_logs"`
+
+	metadata
 }
 
 type SetGroupTemplate struct {
@@ -128,6 +132,8 @@ type SetGroupTemplate struct {
 	ExerciseTemplateID uint `json:"exercise_template_id"`
 	Sets               uint `json:"sets"`
 	Reps               uint `json:"reps"`
+
+	metadata
 }
 
 type ExerciseTemplate struct {
@@ -135,6 +141,8 @@ type ExerciseTemplate struct {
 	WorkoutTemplateID uint               `json:"workout_template_id"`
 	ExerciseTypeID    uint               `json:"exercise_type_id"`
 	SetGroupTemplates []SetGroupTemplate `json:"setgroup_templates"`
+
+	metadata
 }
 
 type WorkoutTemplate struct {
@@ -142,4 +150,6 @@ type WorkoutTemplate struct {
 	UserID            uint               `json:"user_id"`
 	Name              string             `json:"name"`
 	ExerciseTemplates []ExerciseTemplate `json:"exercise_templates"`
+
+	metadata
 }

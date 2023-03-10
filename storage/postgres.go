@@ -221,3 +221,67 @@ func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTe
 
 	return tx.Commit()
 }
+
+func (p *PostgresStorage) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error) {
+	var (
+		wTemps       []types.WorkoutTemplate
+		wtStatement  = "SELECT * FROM " + pgTableWorkoutTemplate + " WHERE user_id = $1"
+		etStatement  = "SELECT * FROM " + pgTableExerciseTemplate + " WHERE workout_template_id = $1"
+		sgtStatement = "SELECT * FROM " + pgTableSetGroupTemplate + " WHERE exercise_template_id = $1"
+	)
+
+	wRows, err := p.conn.Query(wtStatement, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	for wRows.Next() {
+		var (
+			w      = types.WorkoutTemplate{}
+			eTemps []types.ExerciseTemplate
+		)
+
+		if err := wRows.Scan(&w.ID, &w.UserID, &w.Name, &w.CreatedAt, &w.UpdatedAt); err != nil {
+			return nil, err
+		}
+
+		eRows, err := p.conn.Query(etStatement, w.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		for eRows.Next() {
+			var (
+				e       = types.ExerciseTemplate{}
+				sgTemps []types.SetGroupTemplate
+			)
+
+			if err := eRows.Scan(&e.ID, &e.WorkoutTemplateID, &e.ExerciseTypeID, &e.CreatedAt, &e.UpdatedAt); err != nil {
+				return nil, err
+			}
+
+			sgRows, err := p.conn.Query(sgtStatement, e.ID)
+			if err != nil {
+				return nil, err
+			}
+
+			for sgRows.Next() {
+				sgt := types.SetGroupTemplate{}
+				if err := sgRows.Scan(&sgt.ID, &sgt.ExerciseTemplateID, &sgt.Sets, &sgt.Reps,
+					&sgt.CreatedAt, &sgt.UpdatedAt); err != nil {
+					return nil, err
+				}
+
+				sgTemps = append(sgTemps, sgt)
+			}
+
+			e.SetGroupTemplates = sgTemps
+			eTemps = append(eTemps, e)
+		}
+
+		w.ExerciseTemplates = eTemps
+		wTemps = append(wTemps, w)
+	}
+
+	return wTemps, nil
+}

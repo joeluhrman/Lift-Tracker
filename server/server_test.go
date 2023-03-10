@@ -72,6 +72,10 @@ func (t *testStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTempla
 	return nil
 }
 
+func (t *testStorage) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error) {
+	return nil, nil
+}
+
 func sendMockHTTPRequest(method string, endpoint string, data *bytes.Buffer, router http.Handler) *httptest.ResponseRecorder {
 	rec := httptest.NewRecorder()
 

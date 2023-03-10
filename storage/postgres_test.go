@@ -3,6 +3,7 @@ package storage
 import (
 	"image"
 	"os"
+	"strconv"
 	"testing"
 
 	"github.com/joeluhrman/Lift-Tracker/types"
@@ -285,5 +286,55 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 				}
 			}
 		}
+	}()
+}
+
+func Test_GetWorkoutTemplates(t *testing.T) {
+	defer testPGStorage.clearAllTables()
+
+	// success case
+	func() {
+		testUser := types.NewUser("jaluhrman", "goober2000")
+		testPGStorage.CreateUser(testUser)
+
+		var wTemps []types.WorkoutTemplate
+		for i := 0; i < 3; i++ {
+			eType := types.NewExerciseType("type "+strconv.Itoa(i),
+				image.NewRGBA(image.Rectangle{}), types.Push, types.Abductors,
+			)
+			testPGStorage.CreateExerciseType(eType)
+
+			wTemp := &types.WorkoutTemplate{
+				UserID: uint(testUser.ID),
+				Name:   "wTemp " + strconv.Itoa(i),
+			}
+
+			for j := 0; j < 3; j++ {
+				eTemp := &types.ExerciseTemplate{
+					WorkoutTemplateID: wTemp.ID,
+					ExerciseTypeID:    eType.ID,
+				}
+
+				for k := 0; k < 3; k++ {
+					sTemp := &types.SetGroupTemplate{
+						ExerciseTemplateID: eTemp.ID,
+						Sets:               uint(k),
+						Reps:               uint(k),
+					}
+
+					eTemp.SetGroupTemplates = append(eTemp.SetGroupTemplates, *sTemp)
+				}
+
+				wTemp.ExerciseTemplates = append(wTemp.ExerciseTemplates, *eTemp)
+				testPGStorage.CreateWorkoutTemplate(wTemp)
+				wTemps = append(wTemps, *wTemp)
+			}
+		}
+
+		_, err := testPGStorage.GetWorkoutTemplates(uint(testUser.ID))
+		if err != nil {
+			t.Error(err)
+		}
+
 	}()
 }
