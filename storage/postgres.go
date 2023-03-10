@@ -178,17 +178,25 @@ func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTe
 			"VALUES ($1, $2, $3) RETURNING (id)"
 	)
 
-	err := p.conn.QueryRow(wtStatement, workoutTemplate.UserID, workoutTemplate.Name).Scan(&workoutTemplate.ID)
+	tx, err := p.conn.Begin()
 	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.QueryRow(wtStatement, workoutTemplate.UserID, workoutTemplate.Name).Scan(&workoutTemplate.ID)
+	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
 	for i := range workoutTemplate.ExerciseTemplates {
 		workoutTemplate.ExerciseTemplates[i].WorkoutTemplateID = workoutTemplate.ID
 
-		err = p.conn.QueryRow(etStatement, workoutTemplate.ID, workoutTemplate.ExerciseTemplates[i].ExerciseTypeID).
+		err = tx.QueryRow(etStatement, workoutTemplate.ID, workoutTemplate.ExerciseTemplates[i].ExerciseTypeID).
 			Scan(&workoutTemplate.ExerciseTemplates[i].ID)
 		if err != nil {
+			tx.Rollback()
 			return err
 		}
 
@@ -197,7 +205,7 @@ func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTe
 				workoutTemplate.ExerciseTemplates[i].ID
 
 			// brace for this gargantuan line
-			err = p.conn.QueryRow(
+			err = tx.QueryRow(
 				sgtStatment, workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].ExerciseTemplateID,
 				workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].Sets,
 				workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].Reps).
@@ -205,10 +213,11 @@ func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTe
 					&workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].ID,
 				)
 			if err != nil {
+				tx.Rollback()
 				return err
 			}
 		}
 	}
 
-	return nil
+	return tx.Commit()
 }

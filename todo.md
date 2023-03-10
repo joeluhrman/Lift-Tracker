@@ -7,6 +7,4 @@
 4. Logs
     * How to keep track of order of exercises/setgroups
         * Maybe keep workout id and delete/redo everything every time a workout is modified
-5. CreateWorkoutTemplate:
-    * Figure out how to cancel/delete everything already inserted if there is an error 
 6. Make graceful shutdown a little less verbose in main
