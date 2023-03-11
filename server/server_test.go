@@ -7,9 +7,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strconv"
 	"testing"
 
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/google/go-cmp/cmp"
 	"github.com/joeluhrman/Lift-Tracker/types"
 )
 
@@ -65,7 +67,20 @@ func (t *testStorage) CreateExerciseType(exerciseType *types.ExerciseType) error
 }
 
 func (t *testStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
-	return nil, nil
+	var eTypes []types.ExerciseType
+	for i := 0; i < 5; i++ {
+		eType := types.ExerciseType{
+			ID:   uint(i + 1),
+			Name: "eType " + strconv.Itoa(i+1),
+			//Image:       image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}}),
+			PPLType:     types.Push,
+			MuscleGroup: types.Calves,
+		}
+
+		eTypes = append(eTypes, eType)
+	}
+
+	return eTypes, nil
 }
 
 func (t *testStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
@@ -98,7 +113,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func Test_handleCreateUser(t *testing.T) {
+func Test_CreateUser(t *testing.T) {
 	method := http.MethodPost
 	endpoint := routeApiV1 + endUser
 	successCode := http.StatusAccepted
@@ -140,7 +155,7 @@ func Test_handleCreateUser(t *testing.T) {
 	}()
 }
 
-func Test_handleLogin(t *testing.T) {
+func Test_Login(t *testing.T) {
 	method := http.MethodPost
 	endpoint := routeApiV1 + endLogin
 	badJSONCode := http.StatusBadRequest
@@ -184,7 +199,7 @@ func Test_handleLogin(t *testing.T) {
 	}()
 }
 
-func Test_handleLogout(t *testing.T) {
+func Test_Logout(t *testing.T) {
 	const (
 		method   = http.MethodPost
 		endpoint = routeApiV1 + endLogout
@@ -211,7 +226,7 @@ func Test_handleLogout(t *testing.T) {
 	}()
 }
 
-func Test_handleCreateWorkoutTemplate(t *testing.T) {
+func Test_CreateWorkoutTemplate(t *testing.T) {
 	// success case
 	func() {
 		wTemp := &types.WorkoutTemplate{
@@ -257,6 +272,28 @@ func Test_handleCreateWorkoutTemplate(t *testing.T) {
 			testLoggedInServer.Handler)
 		if rec.Code != http.StatusBadRequest {
 			t.Errorf(wrongCodef, rec.Code, http.StatusBadRequest)
+		}
+	}()
+}
+
+func Test_GetExerciseTypes(t *testing.T) {
+	// success case
+	func() {
+		eTypes, _ := testLoggedInServer.storage.GetExerciseTypes()
+
+		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endExerciseType, nil, testLoggedInServer.Handler)
+		if rec.Code != http.StatusFound {
+			t.Fatalf(wrongCodef, rec.Code, http.StatusFound)
+		}
+
+		var response []types.ExerciseType
+		err := json.NewDecoder(rec.Body).Decode(&response)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if !cmp.Equal(eTypes, response) {
+			t.Fatal(err)
 		}
 	}()
 }

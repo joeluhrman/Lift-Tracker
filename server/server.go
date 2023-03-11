@@ -61,22 +61,25 @@ func (s *Server) MustShutdown(shutdownCtx context.Context) {
 
 func (s *Server) setupEndpoints(router *chi.Mux) {
 	router.Route(routeApiV1, func(r chi.Router) {
-		router.Post(routeApiV1+endUser, s.handleCreateUser)
+		r.Post(endUser, s.handleCreateUser)
 		r.Post(endLogin, s.handleLogin)
 		r.Post(endLogout, s.handleLogout)
 
 		r.Group(func(auth chi.Router) {
 			auth.Use(s.middlewareAuthSession)
 
+			auth.Get(endExerciseType, s.handleGetExerciseTypes)
 			auth.Post(endWorkoutTemplate, s.handleCreateWorkoutTemplate)
 		})
 	})
 }
 
-func writeJSON(w http.ResponseWriter, status int, v any) error {
+func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.WriteHeader(status)
 	w.Header().Add("Content-Type", "application/json")
-	return json.NewEncoder(w).Encode(v)
+	if err := json.NewEncoder(w).Encode(v); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
@@ -194,7 +197,13 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleGetExerciseTypes(w http.ResponseWriter, r *http.Request) {
+	eTypes, err := s.storage.GetExerciseTypes()
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
+	writeJSON(w, http.StatusFound, eTypes)
 }
 
 func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Request) {

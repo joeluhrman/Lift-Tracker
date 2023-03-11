@@ -80,7 +80,7 @@ const (
 type ExerciseType struct {
 	ID          uint        `json:"id"`
 	Name        string      `json:"name"`
-	Image       image.Image `json:"image"` // png only for now
+	Image       image.Image `json:"image;omitempty"` // png only for now
 	PPLType     PPLType     `json:"ppl_type"`
 	MuscleGroup MuscleGroup `json:"muscle_group"`
 
