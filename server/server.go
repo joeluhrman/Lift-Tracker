@@ -193,6 +193,10 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, nil)
 }
 
+func (s *Server) handleGetExerciseTypes(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value("user_id").(int)
 
