@@ -171,11 +171,11 @@ func (p *PostgresStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
 	var (
 		wtStatement = "INSERT INTO " + pgTableWorkoutTemplate + " (user_id, name) " +
-			"VALUES ($1, $2) RETURNING (id)"
+			"VALUES ($1, $2) RETURNING id, created_at, updated_at"
 		etStatement = "INSERT INTO " + pgTableExerciseTemplate + " (workout_template_id, exercise_type_id) " +
-			"VALUES ($1, $2) RETURNING (id)"
+			"VALUES ($1, $2) RETURNING id, created_at, updated_at"
 		sgtStatment = "INSERT INTO " + pgTableSetGroupTemplate + " (exercise_template_id, sets, reps) " +
-			"VALUES ($1, $2, $3) RETURNING (id)"
+			"VALUES ($1, $2, $3) RETURNING id, created_at, updated_at"
 	)
 
 	tx, err := p.conn.Begin()
@@ -184,7 +184,8 @@ func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTe
 		return err
 	}
 
-	err = tx.QueryRow(wtStatement, workoutTemplate.UserID, workoutTemplate.Name).Scan(&workoutTemplate.ID)
+	err = tx.QueryRow(wtStatement, workoutTemplate.UserID, workoutTemplate.Name).
+		Scan(&workoutTemplate.ID, &workoutTemplate.CreatedAt, &workoutTemplate.UpdatedAt)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -194,7 +195,8 @@ func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTe
 		workoutTemplate.ExerciseTemplates[i].WorkoutTemplateID = workoutTemplate.ID
 
 		err = tx.QueryRow(etStatement, workoutTemplate.ID, workoutTemplate.ExerciseTemplates[i].ExerciseTypeID).
-			Scan(&workoutTemplate.ExerciseTemplates[i].ID)
+			Scan(&workoutTemplate.ExerciseTemplates[i].ID, &workoutTemplate.ExerciseTemplates[i].CreatedAt,
+				&workoutTemplate.ExerciseTemplates[i].UpdatedAt)
 		if err != nil {
 			tx.Rollback()
 			return err
@@ -211,6 +213,8 @@ func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTe
 				workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].Reps).
 				Scan(
 					&workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].ID,
+					&workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].CreatedAt,
+					&workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].UpdatedAt,
 				)
 			if err != nil {
 				tx.Rollback()

@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type metadata struct {
+type Metadata struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -21,7 +21,7 @@ type User struct {
 	HashedPassword string `json:"hashed_password"`
 	IsAdmin        bool   `json:"is_admin"`
 
-	metadata
+	Metadata
 }
 
 func NewUser(username string, password string) *User {
@@ -37,7 +37,7 @@ type Session struct {
 	UserID int
 	Token  string
 
-	metadata
+	Metadata
 }
 
 func NewSession(userID int) *Session {
@@ -84,7 +84,7 @@ type ExerciseType struct {
 	PPLType     PPLType     `json:"ppl_type"`
 	MuscleGroup MuscleGroup `json:"muscle_group"`
 
-	metadata
+	Metadata
 }
 
 func NewExerciseType(name string, image image.Image, pplType PPLType, mscGrp MuscleGroup) *ExerciseType {
@@ -103,7 +103,7 @@ type SetGroupLog struct {
 	Reps          uint `json:"reps"`
 	Weight        uint `json:"weight"`
 
-	metadata
+	Metadata
 }
 
 type ExerciseLog struct {
@@ -113,7 +113,7 @@ type ExerciseLog struct {
 	Notes          string        `json:"notes"`
 	SetGroupLogs   []SetGroupLog `json:"setgroup_logs"`
 
-	metadata
+	Metadata
 }
 
 type WorkoutLog struct {
@@ -124,7 +124,7 @@ type WorkoutLog struct {
 	Notes        string        `json:"notes"`
 	ExerciseLogs []ExerciseLog `json:"exercise_logs"`
 
-	metadata
+	Metadata
 }
 
 type SetGroupTemplate struct {
@@ -133,7 +133,7 @@ type SetGroupTemplate struct {
 	Sets               uint `json:"sets"`
 	Reps               uint `json:"reps"`
 
-	metadata
+	Metadata
 }
 
 type ExerciseTemplate struct {
@@ -142,7 +142,7 @@ type ExerciseTemplate struct {
 	ExerciseTypeID    uint               `json:"exercise_type_id"`
 	SetGroupTemplates []SetGroupTemplate `json:"setgroup_templates"`
 
-	metadata
+	Metadata
 }
 
 type WorkoutTemplate struct {
@@ -151,5 +151,5 @@ type WorkoutTemplate struct {
 	Name              string             `json:"name"`
 	ExerciseTemplates []ExerciseTemplate `json:"exercise_templates"`
 
-	metadata
+	Metadata
 }

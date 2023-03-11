@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/joeluhrman/Lift-Tracker/types"
 )
 
@@ -292,15 +293,18 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 func Test_GetWorkoutTemplates(t *testing.T) {
 	defer testPGStorage.clearAllTables()
 
+	const loops = 3
+
 	// success case
 	func() {
 		testUser := types.NewUser("jaluhrman", "goober2000")
 		testPGStorage.CreateUser(testUser)
 
 		var wTemps []types.WorkoutTemplate
-		for i := 0; i < 3; i++ {
+		for i := 0; i < loops; i++ {
 			eType := types.NewExerciseType("type "+strconv.Itoa(i),
-				image.NewRGBA(image.Rectangle{}), types.Push, types.Abductors,
+				image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}}),
+				types.Push, types.Abductors,
 			)
 			testPGStorage.CreateExerciseType(eType)
 
@@ -309,13 +313,13 @@ func Test_GetWorkoutTemplates(t *testing.T) {
 				Name:   "wTemp " + strconv.Itoa(i),
 			}
 
-			for j := 0; j < 3; j++ {
+			for j := 0; j < loops; j++ {
 				eTemp := &types.ExerciseTemplate{
 					WorkoutTemplateID: wTemp.ID,
 					ExerciseTypeID:    eType.ID,
 				}
 
-				for k := 0; k < 3; k++ {
+				for k := 0; k < loops; k++ {
 					sTemp := &types.SetGroupTemplate{
 						ExerciseTemplateID: eTemp.ID,
 						Sets:               uint(k),
@@ -326,15 +330,23 @@ func Test_GetWorkoutTemplates(t *testing.T) {
 				}
 
 				wTemp.ExerciseTemplates = append(wTemp.ExerciseTemplates, *eTemp)
-				testPGStorage.CreateWorkoutTemplate(wTemp)
-				wTemps = append(wTemps, *wTemp)
 			}
+
+			testPGStorage.CreateWorkoutTemplate(wTemp)
+			wTemps = append(wTemps, *wTemp)
 		}
 
-		_, err := testPGStorage.GetWorkoutTemplates(uint(testUser.ID))
+		rTemps, err := testPGStorage.GetWorkoutTemplates(uint(testUser.ID))
 		if err != nil {
 			t.Error(err)
 		}
 
+		if len(rTemps) != len(wTemps) {
+			t.Errorf("returned slice had length %d, original has length %d", len(rTemps), len(wTemps))
+		}
+
+		if !(cmp.Equal(rTemps, wTemps)) {
+			t.Error("original and returned slices were not equal")
+		}
 	}()
 }

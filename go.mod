@@ -8,6 +8,8 @@ require github.com/google/uuid v1.3.0
 
 require github.com/go-chi/chi/v5 v5.0.8
 
+require github.com/google/go-cmp v0.5.9
+
 require (
 	// indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
