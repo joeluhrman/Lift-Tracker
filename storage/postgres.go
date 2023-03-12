@@ -169,14 +169,51 @@ func (p *Postgres) GetExerciseTypes() ([]types.ExerciseType, error) {
 	return exerciseTypes, nil
 }
 
+func (p *Postgres) createSetGroupTemplates(tx *sql.Tx, exTempID uint, sgTemps []types.SetGroupTemplate) error {
+	statment := "INSERT INTO " + pgTableSetGroupTemplate + " (exercise_template_id, sets, reps) " +
+		"VALUES ($1, $2, $3) RETURNING id, created_at, updated_at"
+
+	for i := range sgTemps {
+		sgTemps[i].ExerciseTemplateID = exTempID
+
+		err := tx.QueryRow(statment, sgTemps[i].ExerciseTemplateID, sgTemps[i].Sets, sgTemps[i].Reps).
+			Scan(&sgTemps[i].ID, &sgTemps[i].CreatedAt, &sgTemps[i].UpdatedAt)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (p *Postgres) createExerciseTemplates(tx *sql.Tx, wTempID uint, eTemps []types.ExerciseTemplate) error {
+	statment := "INSERT INTO " + pgTableExerciseTemplate + " (workout_template_id, exercise_type_id) " +
+		"VALUES ($1, $2) RETURNING id, created_at, updated_at"
+
+	for i := range eTemps {
+		eTemps[i].WorkoutTemplateID = wTempID
+
+		err := tx.QueryRow(statment, eTemps[i].WorkoutTemplateID, eTemps[i].ExerciseTypeID).
+			Scan(&eTemps[i].ID, &eTemps[i].CreatedAt, &eTemps[i].UpdatedAt)
+
+		if err != nil {
+			return err
+		}
+
+		err = p.createSetGroupTemplates(tx, eTemps[i].ID, eTemps[i].SetGroupTemplates)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (p *Postgres) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
 	var (
 		wtStatement = "INSERT INTO " + pgTableWorkoutTemplate + " (user_id, name) " +
 			"VALUES ($1, $2) RETURNING id, created_at, updated_at"
-		etStatement = "INSERT INTO " + pgTableExerciseTemplate + " (workout_template_id, exercise_type_id) " +
-			"VALUES ($1, $2) RETURNING id, created_at, updated_at"
-		sgtStatment = "INSERT INTO " + pgTableSetGroupTemplate + " (exercise_template_id, sets, reps) " +
-			"VALUES ($1, $2, $3) RETURNING id, created_at, updated_at"
 	)
 
 	tx, err := p.conn.Begin()
@@ -192,39 +229,17 @@ func (p *Postgres) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate)
 		return err
 	}
 
-	for i := range workoutTemplate.ExerciseTemplates {
-		workoutTemplate.ExerciseTemplates[i].WorkoutTemplateID = workoutTemplate.ID
-
-		err = tx.QueryRow(etStatement, workoutTemplate.ID, workoutTemplate.ExerciseTemplates[i].ExerciseTypeID).
-			Scan(&workoutTemplate.ExerciseTemplates[i].ID, &workoutTemplate.ExerciseTemplates[i].CreatedAt,
-				&workoutTemplate.ExerciseTemplates[i].UpdatedAt)
-		if err != nil {
-			tx.Rollback()
-			return err
-		}
-
-		for j := range workoutTemplate.ExerciseTemplates[i].SetGroupTemplates {
-			workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].ExerciseTemplateID =
-				workoutTemplate.ExerciseTemplates[i].ID
-
-			// brace for this gargantuan line
-			err = tx.QueryRow(
-				sgtStatment, workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].ExerciseTemplateID,
-				workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].Sets,
-				workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].Reps).
-				Scan(
-					&workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].ID,
-					&workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].CreatedAt,
-					&workoutTemplate.ExerciseTemplates[i].SetGroupTemplates[j].UpdatedAt,
-				)
-			if err != nil {
-				tx.Rollback()
-				return err
-			}
-		}
+	err = p.createExerciseTemplates(tx, workoutTemplate.ID, workoutTemplate.ExerciseTemplates)
+	if err != nil {
+		tx.Rollback()
+		return err
 	}
 
-	return tx.Commit()
+	if err = tx.Commit(); err != nil {
+		tx.Rollback()
+	}
+
+	return err
 }
 
 func (p *Postgres) getSetGroupTemplates(exerciseTemplateID uint) ([]types.SetGroupTemplate, error) {
