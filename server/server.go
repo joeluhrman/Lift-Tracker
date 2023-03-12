@@ -210,7 +210,7 @@ func (s *Server) handleGetExerciseTypes(w http.ResponseWriter, r *http.Request) 
 }
 
 func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value(keyUserID).(int)
+	userID := r.Context().Value(keyUserID).(uint)
 
 	wTemp := &types.WorkoutTemplate{}
 	if err := json.NewDecoder(r.Body).Decode(wTemp); err != nil {
@@ -218,7 +218,7 @@ func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	wTemp.UserID = uint(userID)
+	wTemp.UserID = userID
 
 	if err := s.storage.CreateWorkoutTemplate(wTemp); err != nil {
 		writeJSON(w, http.StatusInternalServerError, err.Error())
@@ -228,9 +228,9 @@ func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Requ
 }
 
 func (s *Server) handleGetWorkoutTemplates(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value(keyUserID).(int)
+	userID := r.Context().Value(keyUserID).(uint)
 
-	wTemps, err := s.storage.GetWorkoutTemplates(uint(userID))
+	wTemps, err := s.storage.GetWorkoutTemplates(userID)
 	if err != nil {
 		writeJSON(w, http.StatusInternalServerError, err.Error())
 		return

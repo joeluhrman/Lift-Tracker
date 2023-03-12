@@ -15,7 +15,7 @@ type Metadata struct {
 }
 
 type User struct {
-	ID             int    `json:"id"`
+	ID             uint   `json:"id"`
 	Username       string `json:"username"`
 	Password       string `json:"password"` // not stored in db, just used for login
 	HashedPassword string `json:"hashed_password"`
@@ -34,13 +34,13 @@ func NewUser(username string, password string) *User {
 const SessionKey = "session"
 
 type Session struct {
-	UserID int
+	UserID uint
 	Token  string
 
 	Metadata
 }
 
-func NewSession(userID int) *Session {
+func NewSession(userID uint) *Session {
 	token := uuid.New().String()
 
 	return &Session{

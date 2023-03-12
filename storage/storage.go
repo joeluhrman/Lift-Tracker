@@ -7,12 +7,12 @@ import (
 
 type Storage interface {
 	CreateUser(user *types.User) error
-	AuthenticateUser(username string, password string) (int, error)
+	AuthenticateUser(username string, password string) (uint, error)
 
 	CreateSession(s *types.Session) error
-	DeleteSessionByUserID(userID int) error
+	DeleteSessionByUserID(userID uint) error
 	DeleteSessionByToken(token string) error
-	AuthenticateSession(token string) (int, error)
+	AuthenticateSession(token string) (uint, error)
 
 	CreateExerciseType(exerciseType *types.ExerciseType) error
 	GetExerciseTypes() ([]types.ExerciseType, error)

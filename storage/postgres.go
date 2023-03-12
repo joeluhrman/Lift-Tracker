@@ -76,9 +76,9 @@ func (p *Postgres) CreateUser(user *types.User) error {
 		Scan(&user.ID)
 }
 
-func (p *Postgres) AuthenticateUser(username string, password string) (int, error) {
+func (p *Postgres) AuthenticateUser(username string, password string) (uint, error) {
 	var (
-		userID         int
+		userID         uint
 		hashedPassword string
 	)
 
@@ -102,8 +102,8 @@ func (p *Postgres) CreateSession(s *types.Session) error {
 	return err
 }
 
-func (p *Postgres) AuthenticateSession(token string) (int, error) {
-	var userID int
+func (p *Postgres) AuthenticateSession(token string) (uint, error) {
+	var userID uint
 
 	statement := "SELECT user_id FROM " + pgTableSession + " WHERE token = $1"
 	err := p.conn.QueryRow(statement, token).Scan(&userID)
@@ -111,7 +111,7 @@ func (p *Postgres) AuthenticateSession(token string) (int, error) {
 	return userID, err
 }
 
-func (p *Postgres) DeleteSessionByUserID(userID int) error {
+func (p *Postgres) DeleteSessionByUserID(userID uint) error {
 	statement := "DELETE FROM " + pgTableSession + " WHERE user_id = $1"
 	_, err := p.conn.Exec(statement, userID)
 

@@ -42,7 +42,7 @@ func (t *testStorage) CreateUser(user *types.User) error {
 	return nil
 }
 
-func (t *testStorage) AuthenticateUser(username string, password string) (int, error) {
+func (t *testStorage) AuthenticateUser(username string, password string) (uint, error) {
 	return 1, nil
 }
 
@@ -50,7 +50,7 @@ func (t *testStorage) CreateSession(s *types.Session) error {
 	return nil
 }
 
-func (t *testStorage) DeleteSessionByUserID(userID int) error {
+func (t *testStorage) DeleteSessionByUserID(userID uint) error {
 	return nil
 }
 
@@ -58,7 +58,7 @@ func (t *testStorage) DeleteSessionByToken(token string) error {
 	return nil
 }
 
-func (t *testStorage) AuthenticateSession(token string) (int, error) {
+func (t *testStorage) AuthenticateSession(token string) (uint, error) {
 	return 1, nil
 }
 
