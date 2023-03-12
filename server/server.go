@@ -19,9 +19,10 @@ const (
 	endLogout          = "/logout"
 	endExerciseType    = "/exercise-Type"
 	endWorkoutTemplate = "/workout-template"
-)
 
-//type middleware func(http.Handler) http.Handler
+	keyUserID  = "user_id"
+	keySession = types.SessionKey
+)
 
 type Server struct {
 	http.Server
@@ -69,6 +70,8 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 			auth.Use(s.middlewareAuthSession)
 
 			auth.Get(endExerciseType, s.handleGetExerciseTypes)
+
+			auth.Get(endWorkoutTemplate, s.handleGetWorkoutTemplates)
 			auth.Post(endWorkoutTemplate, s.handleCreateWorkoutTemplate)
 		})
 	})
@@ -137,7 +140,7 @@ func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "user_id", userID)
+		ctx := context.WithValue(r.Context(), keyUserID, userID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -183,7 +186,7 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:  types.SessionKey,
+		Name:  keySession,
 		Value: "",
 	})
 
@@ -207,7 +210,7 @@ func (s *Server) handleGetExerciseTypes(w http.ResponseWriter, r *http.Request) 
 }
 
 func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value("user_id").(int)
+	userID := r.Context().Value(keyUserID).(int)
 
 	wTemp := &types.WorkoutTemplate{}
 	if err := json.NewDecoder(r.Body).Decode(wTemp); err != nil {
@@ -222,4 +225,16 @@ func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Requ
 	}
 
 	writeJSON(w, http.StatusAccepted, nil)
+}
+
+func (s *Server) handleGetWorkoutTemplates(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value(keyUserID).(int)
+
+	wTemps, err := s.storage.GetWorkoutTemplates(uint(userID))
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	writeJSON(w, http.StatusFound, wTemps)
 }

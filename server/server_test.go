@@ -88,7 +88,37 @@ func (t *testStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTempla
 }
 
 func (t *testStorage) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error) {
-	return nil, nil
+	var wTemps []types.WorkoutTemplate
+	for i := 0; i < 3; i++ {
+		wTemp := types.WorkoutTemplate{
+			ID:     uint(i),
+			UserID: uint(userID),
+			Name:   "wTemp " + strconv.Itoa(i),
+		}
+
+		for j := 0; j < 3; j++ {
+			eTemp := types.ExerciseTemplate{
+				ID:                uint(j),
+				WorkoutTemplateID: wTemp.ID,
+				ExerciseTypeID:    uint(i),
+			}
+
+			for k := 0; k < 3; k++ {
+				sgTemp := types.SetGroupTemplate{
+					ID:                 uint(k),
+					ExerciseTemplateID: eTemp.ID,
+					Sets:               uint(k * j),
+					Reps:               uint(j * k),
+				}
+				eTemp.SetGroupTemplates = append(eTemp.SetGroupTemplates, sgTemp)
+			}
+			wTemp.ExerciseTemplates = append(wTemp.ExerciseTemplates, eTemp)
+		}
+
+		wTemps = append(wTemps, wTemp)
+	}
+
+	return wTemps, nil
 }
 
 func sendMockHTTPRequest(method string, endpoint string, data *bytes.Buffer, router http.Handler) *httptest.ResponseRecorder {
@@ -304,6 +334,29 @@ func Test_GetExerciseTypesEndpoint(t *testing.T) {
 		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endExerciseType, nil, testServer.Handler)
 		if rec.Code != http.StatusUnauthorized {
 			t.Errorf(wrongCodef, rec.Code, http.StatusUnauthorized)
+		}
+	}()
+}
+
+func Test_GetWorkoutTemplatesEndpoint(t *testing.T) {
+	// success case
+	func() {
+		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endWorkoutTemplate, nil, testLoggedInServer.Handler)
+		if rec.Code != http.StatusFound {
+			t.Errorf(wrongCodef, rec.Code, http.StatusFound)
+			return
+		}
+
+		var responseData []types.WorkoutTemplate
+		if err := json.NewDecoder(rec.Body).Decode(&responseData); err != nil {
+			t.Error(err)
+			return
+		}
+
+		originalData, _ := testLoggedInServer.storage.GetWorkoutTemplates(1)
+
+		if !cmp.Equal(originalData, responseData) {
+			t.Error("Original wTemp and response wTemp/JSON were not the same")
 		}
 	}()
 }
