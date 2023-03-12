@@ -69,11 +69,11 @@ func (p *PostgresStorage) CreateUser(user *types.User) error {
 
 	user.IsAdmin = false
 
-	statement := "INSERT INTO " + pgTableUser + " (username, hashed_password, is_admin) VALUES ($1, $2, $3) " +
-		"RETURNING (id)"
-	err = p.conn.QueryRow(statement, user.Username, user.HashedPassword, user.IsAdmin).Scan(&user.ID)
+	statement := "INSERT INTO " + pgTableUser + " (username, hashed_password, is_admin) " +
+		"VALUES ($1, $2, $3) RETURNING id"
 
-	return err
+	return p.conn.QueryRow(statement, user.Username, user.HashedPassword, user.IsAdmin).
+		Scan(&user.ID)
 }
 
 func (p *PostgresStorage) AuthenticateUser(username string, password string) (int, error) {
@@ -135,11 +135,8 @@ func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) e
 	statement := "INSERT INTO " + pgTableExerciseType + " (name, image, ppl_type, muscle_group) " +
 		"VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at"
 
-	err = p.conn.QueryRow(statement, exerciseType.Name, pngBytes,
-		exerciseType.PPLType, exerciseType.MuscleGroup).
+	return p.conn.QueryRow(statement, exerciseType.Name, pngBytes, exerciseType.PPLType, exerciseType.MuscleGroup).
 		Scan(&exerciseType.ID, &exerciseType.CreatedAt, &exerciseType.UpdatedAt)
-
-	return err
 }
 
 func (p *PostgresStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
