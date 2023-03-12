@@ -15,8 +15,8 @@ var (
 	testPGApiKey = string(MustReadFile("../api_keys/api_key_test.txt"))
 	testPGURL    = "postgresql://jaluhrman:" + testPGApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test"
 
-	testPGStorage = &testPostgresStorage{
-		PostgresStorage: NewPostgresStorage(testPGDriver, testPGURL),
+	testPGStorage = &testPostgres{
+		Postgres: NewPostgres(testPGDriver, testPGURL),
 	}
 
 	tables = []string{pgTableSetGroupLog, pgTableSetGroupTemplate, pgTableExerciseLog,
@@ -25,17 +25,17 @@ var (
 )
 
 // wrapper for test methods to avoid confusion
-type testPostgresStorage struct {
-	*PostgresStorage
+type testPostgres struct {
+	*Postgres
 }
 
-func (t *testPostgresStorage) clearAllTables() {
+func (t *testPostgres) clearAllTables() {
 	for _, table := range tables {
 		t.clearTable(table)
 	}
 }
 
-func (t *testPostgresStorage) clearTable(tName string) {
+func (t *testPostgres) clearTable(tName string) {
 	_, err := t.conn.Exec("DELETE FROM " + tName)
 	if err != nil {
 		panic(err)

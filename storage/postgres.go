@@ -22,21 +22,21 @@ const (
 	pgTableWorkoutTemplate  = "workout_templates"
 )
 
-type PostgresStorage struct {
+type Postgres struct {
 	conn   *sql.DB
 	driver string
 	url    string
 }
 
-// Call PostgresStorage.MustConnect() to initialize connection.
-func NewPostgresStorage(driver string, url string) *PostgresStorage {
-	return &PostgresStorage{
+// Call Postgres.MustConnect() to initialize connection.
+func NewPostgres(driver string, url string) *Postgres {
+	return &Postgres{
 		driver: driver,
 		url:    url,
 	}
 }
 
-func (p *PostgresStorage) MustConnect() {
+func (p *Postgres) MustConnect() {
 	var err error
 	p.conn, err = sql.Open(p.driver, p.url)
 	if err != nil {
@@ -51,7 +51,7 @@ func (p *PostgresStorage) MustConnect() {
 	log.Printf("connected to database %s", p.url)
 }
 
-func (p *PostgresStorage) MustClose() {
+func (p *Postgres) MustClose() {
 	err := p.conn.Close()
 	if err != nil {
 		panic(err)
@@ -60,7 +60,7 @@ func (p *PostgresStorage) MustClose() {
 	log.Printf("connection to database %s successfuly closed", p.url)
 }
 
-func (p *PostgresStorage) CreateUser(user *types.User) error {
+func (p *Postgres) CreateUser(user *types.User) error {
 	var err error
 	user.HashedPassword, err = hashPassword(user.Password)
 	if err != nil {
@@ -76,7 +76,7 @@ func (p *PostgresStorage) CreateUser(user *types.User) error {
 		Scan(&user.ID)
 }
 
-func (p *PostgresStorage) AuthenticateUser(username string, password string) (int, error) {
+func (p *Postgres) AuthenticateUser(username string, password string) (int, error) {
 	var (
 		userID         int
 		hashedPassword string
@@ -95,14 +95,14 @@ func (p *PostgresStorage) AuthenticateUser(username string, password string) (in
 	return userID, nil
 }
 
-func (p *PostgresStorage) CreateSession(s *types.Session) error {
+func (p *Postgres) CreateSession(s *types.Session) error {
 	statement := "INSERT INTO " + pgTableSession + " (user_id, token) VALUES ($1, $2)"
 	_, err := p.conn.Exec(statement, s.UserID, s.Token)
 
 	return err
 }
 
-func (p *PostgresStorage) AuthenticateSession(token string) (int, error) {
+func (p *Postgres) AuthenticateSession(token string) (int, error) {
 	var userID int
 
 	statement := "SELECT user_id FROM " + pgTableSession + " WHERE token = $1"
@@ -111,14 +111,14 @@ func (p *PostgresStorage) AuthenticateSession(token string) (int, error) {
 	return userID, err
 }
 
-func (p *PostgresStorage) DeleteSessionByUserID(userID int) error {
+func (p *Postgres) DeleteSessionByUserID(userID int) error {
 	statement := "DELETE FROM " + pgTableSession + " WHERE user_id = $1"
 	_, err := p.conn.Exec(statement, userID)
 
 	return err
 }
 
-func (p *PostgresStorage) DeleteSessionByToken(token string) error {
+func (p *Postgres) DeleteSessionByToken(token string) error {
 	statement := "DELETE FROM " + pgTableSession + " WHERE token = $1"
 	_, err := p.conn.Exec(statement, token)
 
@@ -126,7 +126,7 @@ func (p *PostgresStorage) DeleteSessionByToken(token string) error {
 }
 
 // currently just used for development, maybe later as part of an admin endpoint?
-func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) error {
+func (p *Postgres) CreateExerciseType(exerciseType *types.ExerciseType) error {
 	pngBytes, err := pngToBytes(exerciseType.Image)
 	if err != nil {
 		return err
@@ -139,7 +139,7 @@ func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) e
 		Scan(&exerciseType.ID, &exerciseType.CreatedAt, &exerciseType.UpdatedAt)
 }
 
-func (p *PostgresStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
+func (p *Postgres) GetExerciseTypes() ([]types.ExerciseType, error) {
 	var exerciseTypes []types.ExerciseType
 
 	statement := "SELECT * FROM " + pgTableExerciseType
@@ -169,7 +169,7 @@ func (p *PostgresStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 	return exerciseTypes, nil
 }
 
-func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
+func (p *Postgres) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
 	var (
 		wtStatement = "INSERT INTO " + pgTableWorkoutTemplate + " (user_id, name) " +
 			"VALUES ($1, $2) RETURNING id, created_at, updated_at"
@@ -227,66 +227,92 @@ func (p *PostgresStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTe
 	return tx.Commit()
 }
 
-func (p *PostgresStorage) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error) {
+func (p *Postgres) getSetGroupTemplates(exerciseTemplateID uint) ([]types.SetGroupTemplate, error) {
 	var (
-		wTemps       []types.WorkoutTemplate
-		wtStatement  = "SELECT * FROM " + pgTableWorkoutTemplate + " WHERE user_id = $1"
-		etStatement  = "SELECT * FROM " + pgTableExerciseTemplate + " WHERE workout_template_id = $1"
-		sgtStatement = "SELECT * FROM " + pgTableSetGroupTemplate + " WHERE exercise_template_id = $1"
+		statement = "SELECT * FROM " + pgTableSetGroupTemplate + " WHERE exercise_template_id = $1"
+		sgTemps   []types.SetGroupTemplate
 	)
 
-	wRows, err := p.conn.Query(wtStatement, userID)
+	rows, err := p.conn.Query(statement, exerciseTemplateID)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
-	for wRows.Next() {
-		var (
-			w      = types.WorkoutTemplate{}
-			eTemps []types.ExerciseTemplate
-		)
-
-		if err := wRows.Scan(&w.ID, &w.UserID, &w.Name, &w.CreatedAt, &w.UpdatedAt); err != nil {
+	for rows.Next() {
+		sgt := types.SetGroupTemplate{}
+		if err := rows.Scan(&sgt.ID, &sgt.ExerciseTemplateID, &sgt.Sets, &sgt.Reps,
+			&sgt.CreatedAt, &sgt.UpdatedAt); err != nil {
 			return nil, err
 		}
 
-		eRows, err := p.conn.Query(etStatement, w.ID)
+		sgTemps = append(sgTemps, sgt)
+	}
+
+	return sgTemps, rows.Err()
+}
+
+func (p *Postgres) getExerciseTemplates(workoutTemplateID uint) ([]types.ExerciseTemplate, error) {
+	var (
+		statement = "SELECT * FROM " + pgTableExerciseTemplate + " WHERE workout_template_id = $1"
+		eTemps    []types.ExerciseTemplate
+	)
+
+	rows, err := p.conn.Query(statement, workoutTemplateID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var (
+			e       = types.ExerciseTemplate{}
+			sgTemps []types.SetGroupTemplate
+		)
+
+		if err := rows.Scan(&e.ID, &e.WorkoutTemplateID, &e.ExerciseTypeID, &e.CreatedAt, &e.UpdatedAt); err != nil {
+			return nil, err
+		}
+
+		sgTemps, err := p.getSetGroupTemplates(e.ID)
 		if err != nil {
 			return nil, err
 		}
 
-		for eRows.Next() {
-			var (
-				e       = types.ExerciseTemplate{}
-				sgTemps []types.SetGroupTemplate
-			)
+		e.SetGroupTemplates = sgTemps
+		eTemps = append(eTemps, e)
+	}
 
-			if err := eRows.Scan(&e.ID, &e.WorkoutTemplateID, &e.ExerciseTypeID, &e.CreatedAt, &e.UpdatedAt); err != nil {
-				return nil, err
-			}
+	return eTemps, rows.Err()
+}
 
-			sgRows, err := p.conn.Query(sgtStatement, e.ID)
-			if err != nil {
-				return nil, err
-			}
+func (p *Postgres) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error) {
+	var (
+		wTemps    []types.WorkoutTemplate
+		statement = "SELECT * FROM " + pgTableWorkoutTemplate + " WHERE user_id = $1"
+	)
 
-			for sgRows.Next() {
-				sgt := types.SetGroupTemplate{}
-				if err := sgRows.Scan(&sgt.ID, &sgt.ExerciseTemplateID, &sgt.Sets, &sgt.Reps,
-					&sgt.CreatedAt, &sgt.UpdatedAt); err != nil {
-					return nil, err
-				}
+	rows, err := p.conn.Query(statement, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-				sgTemps = append(sgTemps, sgt)
-			}
+	for rows.Next() {
+		w := types.WorkoutTemplate{}
 
-			e.SetGroupTemplates = sgTemps
-			eTemps = append(eTemps, e)
+		if err := rows.Scan(&w.ID, &w.UserID, &w.Name, &w.CreatedAt, &w.UpdatedAt); err != nil {
+			return nil, err
+		}
+
+		eTemps, err := p.getExerciseTemplates(w.ID)
+		if err != nil {
+			return nil, err
 		}
 
 		w.ExerciseTemplates = eTemps
 		wTemps = append(wTemps, w)
 	}
 
-	return wTemps, nil
+	return wTemps, rows.Err()
 }

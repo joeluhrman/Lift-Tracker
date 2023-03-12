@@ -24,7 +24,7 @@ func main() {
 	)
 	flag.Parse()
 
-	pgStore := storage.NewPostgresStorage(pgDriver, pgURL)
+	pgStore := storage.NewPostgres(pgDriver, pgURL)
 	pgStore.MustConnect()
 	defer pgStore.MustClose()
 
