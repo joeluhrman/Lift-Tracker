@@ -113,7 +113,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func Test_CreateUser(t *testing.T) {
+func Test_CreateUserEndpoint(t *testing.T) {
 	method := http.MethodPost
 	endpoint := routeApiV1 + endUser
 	successCode := http.StatusAccepted
@@ -155,7 +155,7 @@ func Test_CreateUser(t *testing.T) {
 	}()
 }
 
-func Test_Login(t *testing.T) {
+func Test_LoginEndpoint(t *testing.T) {
 	method := http.MethodPost
 	endpoint := routeApiV1 + endLogin
 	badJSONCode := http.StatusBadRequest
@@ -199,7 +199,7 @@ func Test_Login(t *testing.T) {
 	}()
 }
 
-func Test_Logout(t *testing.T) {
+func Test_LogoutEndpoint(t *testing.T) {
 	const (
 		method   = http.MethodPost
 		endpoint = routeApiV1 + endLogout
@@ -226,7 +226,7 @@ func Test_Logout(t *testing.T) {
 	}()
 }
 
-func Test_CreateWorkoutTemplate(t *testing.T) {
+func Test_CreateWorkoutTemplateEndpoint(t *testing.T) {
 	// success case
 	func() {
 		wTemp := &types.WorkoutTemplate{
@@ -276,24 +276,34 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 	}()
 }
 
-func Test_GetExerciseTypes(t *testing.T) {
+func Test_GetExerciseTypesEndpoint(t *testing.T) {
 	// success case
 	func() {
 		eTypes, _ := testLoggedInServer.storage.GetExerciseTypes()
 
 		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endExerciseType, nil, testLoggedInServer.Handler)
 		if rec.Code != http.StatusFound {
-			t.Fatalf(wrongCodef, rec.Code, http.StatusFound)
+			t.Errorf(wrongCodef, rec.Code, http.StatusFound)
+			return
 		}
 
 		var response []types.ExerciseType
 		err := json.NewDecoder(rec.Body).Decode(&response)
 		if err != nil {
-			t.Fatal(err)
+			t.Error(err)
+			return
 		}
 
 		if !cmp.Equal(eTypes, response) {
-			t.Fatal(err)
+			t.Error(err)
+		}
+	}()
+
+	// not logged in
+	func() {
+		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endExerciseType, nil, testServer.Handler)
+		if rec.Code != http.StatusUnauthorized {
+			t.Errorf(wrongCodef, rec.Code, http.StatusUnauthorized)
 		}
 	}()
 }

@@ -225,6 +225,29 @@ func Test_CreateExerciseType(t *testing.T) {
 	}()
 }
 
+func Test_GetExerciseTypes(t *testing.T) {
+	// success case
+	func() {
+		testImage := image.NewRGBA(image.Rectangle{
+			image.Point{0, 0},
+			image.Point{200, 100},
+		})
+
+		exType := types.NewExerciseType("random name", testImage, types.Push, types.Quads)
+		testPGStorage.CreateExerciseType(exType)
+
+		rExTypes, err := testPGStorage.GetExerciseTypes()
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		if cmp.Equal(rExTypes[0], exType) {
+			t.Error("Returned exercise type did not equal original")
+		}
+	}()
+}
+
 func Test_CreateWorkoutTemplate(t *testing.T) {
 	defer testPGStorage.clearAllTables()
 

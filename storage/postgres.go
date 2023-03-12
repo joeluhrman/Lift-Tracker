@@ -133,10 +133,11 @@ func (p *PostgresStorage) CreateExerciseType(exerciseType *types.ExerciseType) e
 	}
 
 	statement := "INSERT INTO " + pgTableExerciseType + " (name, image, ppl_type, muscle_group) " +
-		"VALUES ($1, $2, $3, $4) RETURNING (id)"
+		"VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at"
 
 	err = p.conn.QueryRow(statement, exerciseType.Name, pngBytes,
-		exerciseType.PPLType, exerciseType.MuscleGroup).Scan(&exerciseType.ID)
+		exerciseType.PPLType, exerciseType.MuscleGroup).
+		Scan(&exerciseType.ID, &exerciseType.CreatedAt, &exerciseType.UpdatedAt)
 
 	return err
 }
@@ -153,9 +154,12 @@ func (p *PostgresStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 	defer rows.Close()
 
 	for rows.Next() {
+		// PLACEHOLDER UNTIL IMAGE STUFF WORKS
+		PLACEHOLDER := new(interface{})
+
 		var exType types.ExerciseType
-		if err := rows.Scan(exType.ID, exType.Name, exType.Image, exType.PPLType,
-			exType.MuscleGroup, exType.CreatedAt, exType.UpdatedAt); err != nil {
+		if err := rows.Scan(&exType.ID, &exType.Name, PLACEHOLDER, &exType.PPLType,
+			&exType.MuscleGroup, &exType.CreatedAt, &exType.UpdatedAt); err != nil {
 			return nil, err
 		}
 		exerciseTypes = append(exerciseTypes, exType)
