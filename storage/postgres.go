@@ -331,3 +331,68 @@ func (p *Postgres) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, er
 
 	return wTemps, rows.Err()
 }
+
+func (p *Postgres) createSetGroupLogs(tx *sql.Tx, eLogID uint, sgLogs []types.SetGroupLog) error {
+	statement := "INSERT INTO " + pgTableSetGroupLog + " (exercise_log_id, sets, reps, weight) " +
+		"VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at"
+
+	for i := range sgLogs {
+		sg := &sgLogs[i]
+		sg.ExerciseLogID = eLogID
+
+		err := tx.QueryRow(statement, sg.ExerciseLogID, sg.Sets, sg.Reps, sg.Weight).
+			Scan(&sg.ID, &sg.CreatedAt, &sg.UpdatedAt)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (p *Postgres) createExerciseLogs(tx *sql.Tx, wLogID uint, eLogs []types.ExerciseLog) error {
+	statement := "INSERT INTO " + pgTableExerciseLog + " (workout_log_id, exercise_type_id, notes) " +
+		"VALUES ($1, $2, $3) RETURNING id, created_at, updated_at"
+
+	for i := range eLogs {
+		eLog := &eLogs[i]
+		eLog.WorkoutLogID = wLogID
+
+		err := tx.QueryRow(statement, eLog.WorkoutLogID, eLog.ExerciseTypeID, eLog.Notes).
+			Scan(&eLog.ID, &eLog.CreatedAt, &eLog.UpdatedAt)
+		if err != nil {
+			return err
+		}
+
+		if err = p.createSetGroupLogs(tx, eLog.ID, eLog.SetGroupLogs); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (p *Postgres) CreateWorkoutLog(wLog *types.WorkoutLog) error {
+	statement := "INSERT INTO " + pgTableWorkoutLog + " (user_id, date, name, notes) " +
+		"VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at"
+
+	tx, err := p.conn.Begin()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.QueryRow(statement, wLog.UserID, wLog.Date, wLog.Name, wLog.Notes).
+		Scan(&wLog.ID, &wLog.CreatedAt, &wLog.UpdatedAt)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err = p.createExerciseLogs(tx, wLog.ID, wLog.ExerciseLogs); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
+}

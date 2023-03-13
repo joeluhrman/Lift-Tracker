@@ -97,11 +97,11 @@ func NewExerciseType(name string, image image.Image, pplType PPLType, mscGrp Mus
 }
 
 type SetGroupLog struct {
-	ID            uint `json:"id"`
-	ExerciseLogID uint `json:"exercise_log_id"`
-	Sets          uint `json:"sets"`
-	Reps          uint `json:"reps"`
-	Weight        uint `json:"weight"`
+	ID            uint    `json:"id"`
+	ExerciseLogID uint    `json:"exercise_log_id"`
+	Sets          uint    `json:"sets"`
+	Reps          uint    `json:"reps"`
+	Weight        float32 `json:"weight"`
 
 	Metadata
 }

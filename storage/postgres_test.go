@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/joeluhrman/Lift-Tracker/types"
@@ -297,6 +298,10 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 			t.Error(err)
 		}
 
+		if wTemp.ID <= 0 {
+			t.Error("wTemp.ID was not scanned properly")
+		}
+
 		for i, exTemp := range wTemp.ExerciseTemplates {
 			if exTemp.WorkoutTemplateID != wTemp.ID {
 				t.Errorf("Exercise template %d had workout template ID %d, should have been %d",
@@ -370,6 +375,81 @@ func Test_GetWorkoutTemplates(t *testing.T) {
 
 		if !(cmp.Equal(rTemps, wTemps)) {
 			t.Error("original and returned slices were not equal")
+		}
+	}()
+}
+
+func Test_CreateWorkoutLog(t *testing.T) {
+	defer testPGStorage.clearAllTables()
+
+	// success case
+	func() {
+		user := types.NewUser("spoingus", "moingus")
+		testPGStorage.CreateUser(user)
+
+		testImage := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}})
+		exType := &types.ExerciseType{
+			Name:        "test type",
+			Image:       testImage,
+			PPLType:     types.Push,
+			MuscleGroup: types.Calves,
+		}
+		testPGStorage.CreateExerciseType(exType)
+
+		wLog := &types.WorkoutLog{
+			UserID: user.ID,
+			Date:   time.Time{},
+			Name:   "test workout template",
+			Notes:  "test notes",
+		}
+
+		var eLogs []types.ExerciseLog
+		for i := 0; i < 3; i++ {
+			eLog := types.ExerciseLog{
+				ExerciseTypeID: exType.ID,
+				Notes:          "test notes",
+			}
+
+			var sgLogs []types.SetGroupLog
+			for j := 0; j < 3; j++ {
+				sgLog := types.SetGroupLog{
+					Sets:   uint(j),
+					Reps:   uint(j),
+					Weight: float32(i * j),
+				}
+
+				sgLogs = append(sgLogs, sgLog)
+			}
+
+			eLog.SetGroupLogs = sgLogs
+			eLogs = append(eLogs, eLog)
+		}
+
+		wLog.ExerciseLogs = eLogs
+
+		err := testPGStorage.CreateWorkoutLog(wLog)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		if wLog.ID <= 0 {
+			t.Error("wLog.ID was not scanned correctly")
+			return
+		}
+
+		for i, eLog := range wLog.ExerciseLogs {
+			if eLog.WorkoutLogID != wLog.ID {
+				t.Errorf("Exercise template %d had workout template ID %d, should have been %d",
+					i, eLog.WorkoutLogID, wLog.ID)
+			}
+
+			for j, sgLog := range eLog.SetGroupLogs {
+				if sgLog.ExerciseLogID != eLog.ID {
+					t.Errorf("Setgroup template %d had exercise template ID %d, should have been %d",
+						j, sgLog.ExerciseLogID, eLog.ID)
+				}
+			}
 		}
 	}()
 }
