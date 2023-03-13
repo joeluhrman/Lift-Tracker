@@ -17,8 +17,9 @@ const (
 	endUser            = "/user"
 	endLogin           = "/login"
 	endLogout          = "/logout"
-	endExerciseType    = "/exercise-Type"
+	endExerciseType    = "/exercise-type"
 	endWorkoutTemplate = "/workout-template"
+	endWorkoutLog      = "/workout-log"
 
 	keyUserID  = "user_id"
 	keySession = types.SessionKey
@@ -73,6 +74,8 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 
 			auth.Get(endWorkoutTemplate, s.handleGetWorkoutTemplates)
 			auth.Post(endWorkoutTemplate, s.handleCreateWorkoutTemplate)
+
+			auth.Post(endWorkoutLog, s.handleCreateWorkoutLog)
 		})
 	})
 }
@@ -224,7 +227,7 @@ func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Requ
 		writeJSON(w, http.StatusInternalServerError, err.Error())
 	}
 
-	writeJSON(w, http.StatusAccepted, nil)
+	writeJSON(w, http.StatusCreated, nil)
 }
 
 func (s *Server) handleGetWorkoutTemplates(w http.ResponseWriter, r *http.Request) {
@@ -237,4 +240,23 @@ func (s *Server) handleGetWorkoutTemplates(w http.ResponseWriter, r *http.Reques
 	}
 
 	writeJSON(w, http.StatusFound, wTemps)
+}
+
+func (s *Server) handleCreateWorkoutLog(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value(keyUserID).(uint)
+
+	wLog := &types.WorkoutLog{}
+	if err := json.NewDecoder(r.Body).Decode(wLog); err != nil {
+		writeJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	wLog.UserID = userID
+
+	if err := s.storage.CreateWorkoutLog(wLog); err != nil {
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	writeJSON(w, http.StatusCreated, nil)
 }

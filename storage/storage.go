@@ -19,4 +19,6 @@ type Storage interface {
 
 	CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error
 	GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error)
+
+	CreateWorkoutLog(wLog *types.WorkoutLog) error
 }

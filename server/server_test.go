@@ -121,6 +121,10 @@ func (t *testStorage) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate,
 	return wTemps, nil
 }
 
+func (t *testStorage) CreateWorkoutLog(wLog *types.WorkoutLog) error {
+	return nil
+}
+
 func sendMockHTTPRequest(method string, endpoint string, data *bytes.Buffer, router http.Handler) *httptest.ResponseRecorder {
 	rec := httptest.NewRecorder()
 
@@ -259,31 +263,15 @@ func Test_LogoutEndpoint(t *testing.T) {
 func Test_CreateWorkoutTemplateEndpoint(t *testing.T) {
 	// success case
 	func() {
-		wTemp := &types.WorkoutTemplate{
-			UserID: 1,
-			Name:   "test wTemp",
-			ExerciseTemplates: []types.ExerciseTemplate{
-				{
-					WorkoutTemplateID: 1,
-					ExerciseTypeID:    1,
-					SetGroupTemplates: []types.SetGroupTemplate{
-						{
-							ExerciseTemplateID: 1,
-							Sets:               5,
-							Reps:               5,
-						},
-					},
-				},
-			},
-		}
+		wTemp := &types.WorkoutTemplate{}
 
 		json, _ := json.Marshal(wTemp)
 		data := bytes.NewBuffer(json)
 
 		rec := sendMockHTTPRequest(http.MethodPost, routeApiV1+endWorkoutTemplate, data,
 			testLoggedInServer.Handler)
-		if rec.Code != http.StatusAccepted {
-			t.Errorf(wrongCodef, rec.Code, http.StatusAccepted)
+		if rec.Code != http.StatusCreated {
+			t.Errorf(wrongCodef, rec.Code, http.StatusCreated)
 		}
 	}()
 
@@ -357,6 +345,39 @@ func Test_GetWorkoutTemplatesEndpoint(t *testing.T) {
 
 		if !cmp.Equal(originalData, responseData) {
 			t.Error("Original wTemp and response wTemp/JSON were not the same")
+		}
+	}()
+}
+
+func Test_CreateWorkoutLogEndpoint(t *testing.T) {
+	// success case
+	func() {
+		wLog := &types.WorkoutLog{}
+
+		json, _ := json.Marshal(wLog)
+		data := bytes.NewBuffer(json)
+
+		rec := sendMockHTTPRequest(http.MethodPost, routeApiV1+endWorkoutLog, data, testLoggedInServer.Handler)
+		if rec.Code != http.StatusCreated {
+			t.Errorf(wrongCodef, rec.Code, http.StatusCreated)
+			t.Error(rec.Body)
+			return
+		}
+	}()
+
+	// bad json
+	func() {
+		rec := sendMockHTTPRequest(http.MethodPost, routeApiV1+endWorkoutLog, nil, testLoggedInServer.Handler)
+		if rec.Code != http.StatusBadRequest {
+			t.Errorf(wrongCodef, rec.Code, http.StatusBadRequest)
+		}
+	}()
+
+	// not logged in
+	func() {
+		rec := sendMockHTTPRequest(http.MethodPost, routeApiV1+endWorkoutLog, nil, testServer.Handler)
+		if rec.Code != http.StatusUnauthorized {
+			t.Errorf(wrongCodef, rec.Code, http.StatusUnauthorized)
 		}
 	}()
 }
