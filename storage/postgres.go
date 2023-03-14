@@ -57,7 +57,7 @@ func (p *Postgres) MustClose() {
 		panic(err)
 	}
 
-	log.Printf("connection to database %s successfuly closed", p.url)
+	log.Printf("connection to database %s successfully closed", p.url)
 }
 
 func (p *Postgres) CreateUser(user *types.User) error {
@@ -395,4 +395,107 @@ func (p *Postgres) CreateWorkoutLog(wLog *types.WorkoutLog) error {
 	}
 
 	return tx.Commit()
+}
+
+func (p *Postgres) getSetGroupLogs(eLogID uint) ([]types.SetGroupLog, error) {
+	var (
+		statement = "SELECT * FROM " + pgTableSetGroupLog + " WHERE exercise_log_id = $1"
+		sgLogs    []types.SetGroupLog
+	)
+
+	rows, err := p.conn.Query(statement, eLogID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		sgLog := types.SetGroupLog{}
+		err = rows.Scan(&sgLog.ID, &sgLog.ExerciseLogID, &sgLog.Sets, &sgLog.Reps, &sgLog.Weight,
+			&sgLog.CreatedAt, &sgLog.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		sgLogs = append(sgLogs, sgLog)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+
+	return sgLogs, nil
+}
+
+func (p *Postgres) getExerciseLogs(wLogID uint) ([]types.ExerciseLog, error) {
+	var (
+		statement = "SELECT * FROM " + pgTableExerciseLog + " WHERE workout_log_id = $1"
+		eLogs     []types.ExerciseLog
+	)
+
+	rows, err := p.conn.Query(statement, wLogID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		eLog := types.ExerciseLog{}
+		err = rows.Scan(&eLog.ID, &eLog.WorkoutLogID, &eLog.ExerciseTypeID, &eLog.Notes,
+			&eLog.CreatedAt, &eLog.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		sgLogs, err := p.getSetGroupLogs(eLog.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		eLog.SetGroupLogs = sgLogs
+		eLogs = append(eLogs, eLog)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return eLogs, nil
+}
+
+func (p *Postgres) GetWorkoutLogs(userID uint) ([]types.WorkoutLog, error) {
+	var (
+		statement = "SELECT * FROM " + pgTableWorkoutLog + " WHERE user_id = $1"
+		wLogs     []types.WorkoutLog
+	)
+
+	rows, err := p.conn.Query(statement, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		wLog := types.WorkoutLog{}
+		err := rows.Scan(&wLog.ID, &wLog.UserID, &wLog.Date, &wLog.Name,
+			&wLog.Notes, &wLog.CreatedAt, &wLog.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		eLogs, err := p.getExerciseLogs(wLog.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		wLog.ExerciseLogs = eLogs
+		wLogs = append(wLogs, wLog)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return wLogs, nil
 }

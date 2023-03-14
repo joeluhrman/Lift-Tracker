@@ -454,3 +454,64 @@ func Test_CreateWorkoutLog(t *testing.T) {
 		}
 	}()
 }
+
+func Test_GetWorkoutLogs(t *testing.T) {
+	// success case
+	func() {
+		const loops = 3
+
+		testUser := types.NewUser("jaluhrman", "goober2000")
+		testPGStorage.CreateUser(testUser)
+
+		var wLogs []types.WorkoutLog
+		for i := 0; i < loops; i++ {
+			eType := types.NewExerciseType("type "+strconv.Itoa(i),
+				image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}}),
+				types.Push, types.Abductors,
+			)
+			testPGStorage.CreateExerciseType(eType)
+
+			wLog := &types.WorkoutLog{
+				UserID: uint(testUser.ID),
+				Date:   time.Time{},
+				Name:   "wTemp " + strconv.Itoa(i),
+				Notes:  "test",
+			}
+
+			for j := 0; j < loops; j++ {
+				eLog := types.ExerciseLog{
+					WorkoutLogID:   wLog.ID,
+					ExerciseTypeID: eType.ID,
+					Notes:          "test notes",
+				}
+
+				for k := 0; k < loops; k++ {
+					sLog := types.SetGroupLog{
+						ExerciseLogID: eLog.ID,
+						Sets:          uint(k),
+						Reps:          uint(k),
+						Weight:        float32(k),
+					}
+
+					eLog.SetGroupLogs = append(eLog.SetGroupLogs, sLog)
+				}
+
+				wLog.ExerciseLogs = append(wLog.ExerciseLogs, eLog)
+			}
+
+			testPGStorage.CreateWorkoutLog(wLog)
+			wLogs = append(wLogs, *wLog)
+		}
+
+		rLogs, err := testPGStorage.GetWorkoutLogs(testUser.ID)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		if !cmp.Equal(wLogs, rLogs) {
+			t.Error("returned logs were not equal to original")
+			return
+		}
+	}()
+}
