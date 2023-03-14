@@ -25,7 +25,7 @@ func UsernameMeetsRequirements(username string) bool {
 }
 
 func PasswordMeetsRequirements(password string) bool {
-	return password != ""
+	return len(password) > 7
 }
 
 // not sure where to put this, can't put in main package because need for testing unfortunately

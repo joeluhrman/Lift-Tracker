@@ -76,6 +76,14 @@ func (p *Postgres) CreateUser(user *types.User) error {
 		Scan(&user.ID)
 }
 
+/*
+func (p *Postgres) GetUser(userID uint) (types.User, error) {
+	var (
+		statement = "SELECT (id, username, is_admin) FROM " + pgTableUsers
+	)
+}
+*/
+
 func (p *Postgres) AuthenticateUser(username string, password string) (uint, error) {
 	var (
 		userID         uint

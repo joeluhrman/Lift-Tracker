@@ -216,7 +216,7 @@ func Test_CreateUserEndpoint(t *testing.T) {
 
 	// Success case
 	func() {
-		user := types.NewUser("jaluhrman", "123")
+		user := types.NewUser("jaluhrman", "12345678")
 
 		json, _ := json.Marshal(user)
 		body := bytes.NewBuffer(json)

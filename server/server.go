@@ -91,34 +91,6 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 	}
 }
 
-func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
-	user := &types.User{}
-
-	err := json.NewDecoder(r.Body).Decode(user)
-	if err != nil {
-		writeJSON(w, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	if !storage.UsernameMeetsRequirements(user.Username) {
-		writeJSON(w, http.StatusNotAcceptable, "username does not meet requirements")
-		return
-	}
-
-	if !storage.PasswordMeetsRequirements(user.Password) {
-		writeJSON(w, http.StatusNotAcceptable, "password does not meet requirements")
-		return
-	}
-
-	err = s.storage.CreateUser(user)
-	if err != nil {
-		writeJSON(w, http.StatusConflict, err.Error())
-		return
-	}
-
-	writeJSON(w, http.StatusAccepted, nil)
-}
-
 func setSession(s *types.Session, w http.ResponseWriter) {
 	http.SetCookie(w, s.Cookie())
 }
@@ -150,6 +122,40 @@ func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
+
+func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
+	user := &types.User{}
+
+	err := json.NewDecoder(r.Body).Decode(user)
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if !storage.UsernameMeetsRequirements(user.Username) {
+		writeJSON(w, http.StatusNotAcceptable, "username does not meet requirements")
+		return
+	}
+
+	if !storage.PasswordMeetsRequirements(user.Password) {
+		writeJSON(w, http.StatusNotAcceptable, "password does not meet requirements")
+		return
+	}
+
+	err = s.storage.CreateUser(user)
+	if err != nil {
+		writeJSON(w, http.StatusConflict, err.Error())
+		return
+	}
+
+	writeJSON(w, http.StatusAccepted, nil)
+}
+
+/*
+func (s *Server) handleGetProfile(w http.ResponseWriter, r *http.Request) {
+
+}
+*/
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	user := &types.User{}
