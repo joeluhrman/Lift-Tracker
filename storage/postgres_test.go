@@ -56,9 +56,10 @@ func Test_CreateUser(t *testing.T) {
 
 	// Success case
 	func() {
-		user := types.NewUser("jaluhrman", "123")
+		user := &types.User{Username: "jaluhrman"}
+		password := "goober"
 
-		err := testPGStorage.CreateUser(user)
+		err := testPGStorage.CreateUser(user, password)
 		if err != nil {
 			t.Error(err)
 		}
@@ -70,9 +71,10 @@ func Test_CreateUser(t *testing.T) {
 
 	// username already exists
 	func() {
-		user := types.NewUser("jaluhrman", "123")
+		user := &types.User{Username: "jaluhrman"}
+		password := "123"
 
-		err := testPGStorage.CreateUser(user)
+		err := testPGStorage.CreateUser(user, password)
 		if err == nil {
 			t.Error("should have produced an error when username already taken")
 		}
@@ -90,8 +92,9 @@ func Test_AuthenticateUser(t *testing.T) {
 		}
 	}()
 
-	user := types.NewUser("jaluhrman", "password")
-	testPGStorage.CreateUser(user)
+	user := &types.User{Username: "jaluhrman"}
+	password := "password"
+	testPGStorage.CreateUser(user, password)
 
 	// bad password
 	func() {
@@ -255,8 +258,9 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 
 	// success case
 	func() {
-		user := types.NewUser("Bingus", "Pringus")
-		testPGStorage.CreateUser(user)
+		user := &types.User{Username: "Bingus"}
+		password := "Pringus"
+		testPGStorage.CreateUser(user, password)
 
 		testImage := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}})
 		exType := &types.ExerciseType{
@@ -326,8 +330,9 @@ func Test_GetWorkoutTemplates(t *testing.T) {
 
 	// success case
 	func() {
-		testUser := types.NewUser("jaluhrman", "goober2000")
-		testPGStorage.CreateUser(testUser)
+		testUser := &types.User{Username: "jaluhrman"}
+		password := "goober2000"
+		testPGStorage.CreateUser(testUser, password)
 
 		var wTemps []types.WorkoutTemplate
 		for i := 0; i < loops; i++ {
@@ -385,8 +390,9 @@ func Test_CreateWorkoutLog(t *testing.T) {
 
 	// success case
 	func() {
-		user := types.NewUser("spoingus", "moingus")
-		testPGStorage.CreateUser(user)
+		user := &types.User{Username: "spoingus"}
+		password := "moingus"
+		testPGStorage.CreateUser(user, password)
 
 		testImage := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}})
 		exType := &types.ExerciseType{
@@ -460,8 +466,9 @@ func Test_GetWorkoutLogs(t *testing.T) {
 	func() {
 		const loops = 3
 
-		testUser := types.NewUser("jaluhrman", "goober2000")
-		testPGStorage.CreateUser(testUser)
+		testUser := &types.User{Username: "jaluhrman"}
+		password := "goober2000"
+		testPGStorage.CreateUser(testUser, password)
 
 		var wLogs []types.WorkoutLog
 		for i := 0; i < loops; i++ {

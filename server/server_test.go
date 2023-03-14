@@ -39,7 +39,7 @@ var (
 
 type testStorage struct{}
 
-func (t *testStorage) CreateUser(user *types.User) error {
+func (t *testStorage) CreateUser(user *types.User, password string) error {
 	return nil
 }
 
@@ -203,9 +203,9 @@ func Test_CreateUserEndpoint(t *testing.T) {
 
 	// Password doesn't meet requirements
 	func() {
-		user := types.NewUser("jaluhrman", "")
+		credentials := &credentials{"jaluhrman", ""}
 
-		json, _ := json.Marshal(user)
+		json, _ := json.Marshal(credentials)
 		body := bytes.NewBuffer(json)
 
 		rec := sendMockHTTPRequest(method, endpoint, body, testServer.Handler)
@@ -216,14 +216,15 @@ func Test_CreateUserEndpoint(t *testing.T) {
 
 	// Success case
 	func() {
-		user := types.NewUser("jaluhrman", "12345678")
+		creds := &credentials{"jaluhrman", "12345678"}
 
-		json, _ := json.Marshal(user)
+		json, _ := json.Marshal(creds)
 		body := bytes.NewBuffer(json)
 
 		rec := sendMockHTTPRequest(method, endpoint, body, testServer.Handler)
 		if rec.Code != successCode {
 			t.Errorf(wrongCodef, rec.Code, successCode)
+			t.Error(rec.Body)
 		}
 	}()
 }
@@ -243,10 +244,7 @@ func Test_LoginEndpoint(t *testing.T) {
 
 	// success case
 	func() {
-		loginInfo := &types.User{
-			Username:       "jaluhrman",
-			HashedPassword: "123",
-		}
+		loginInfo := &credentials{"jaluhrman", "123"}
 
 		json, _ := json.Marshal(loginInfo)
 		body := bytes.NewBuffer(json)

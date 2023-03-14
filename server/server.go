@@ -123,26 +123,35 @@ func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
 	})
 }
 
-func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
-	user := &types.User{}
+type credentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
 
-	err := json.NewDecoder(r.Body).Decode(user)
+func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
+	credentials := &credentials{}
+
+	err := json.NewDecoder(r.Body).Decode(credentials)
 	if err != nil {
 		writeJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if !storage.UsernameMeetsRequirements(user.Username) {
+	if !storage.UsernameMeetsRequirements(credentials.Username) {
 		writeJSON(w, http.StatusNotAcceptable, "username does not meet requirements")
 		return
 	}
 
-	if !storage.PasswordMeetsRequirements(user.Password) {
+	if !storage.PasswordMeetsRequirements(credentials.Password) {
 		writeJSON(w, http.StatusNotAcceptable, "password does not meet requirements")
 		return
 	}
 
-	err = s.storage.CreateUser(user)
+	user := &types.User{
+		Username: credentials.Username,
+	}
+
+	err = s.storage.CreateUser(user, credentials.Password)
 	if err != nil {
 		writeJSON(w, http.StatusConflict, err.Error())
 		return
@@ -158,15 +167,15 @@ func (s *Server) handleGetProfile(w http.ResponseWriter, r *http.Request) {
 */
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
-	user := &types.User{}
+	credentials := &credentials{}
 
-	err := json.NewDecoder(r.Body).Decode(user)
+	err := json.NewDecoder(r.Body).Decode(credentials)
 	if err != nil {
 		writeJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	userID, err := s.storage.AuthenticateUser(user.Username, user.Password)
+	userID, err := s.storage.AuthenticateUser(credentials.Username, credentials.Password)
 	if err != nil {
 		writeJSON(w, http.StatusUnauthorized, err.Error())
 		return

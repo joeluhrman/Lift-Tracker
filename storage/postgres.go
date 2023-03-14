@@ -60,9 +60,9 @@ func (p *Postgres) MustClose() {
 	log.Printf("connection to database %s successfully closed", p.url)
 }
 
-func (p *Postgres) CreateUser(user *types.User) error {
+func (p *Postgres) CreateUser(user *types.User, password string) error {
 	var err error
-	user.HashedPassword, err = hashPassword(user.Password)
+	user.HashedPassword, err = hashPassword(password)
 	if err != nil {
 		return err
 	}

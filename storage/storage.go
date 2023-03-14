@@ -6,7 +6,7 @@ import (
 )
 
 type Storage interface {
-	CreateUser(user *types.User) error
+	CreateUser(user *types.User, password string) error
 	AuthenticateUser(username string, password string) (uint, error)
 
 	CreateSession(s *types.Session) error

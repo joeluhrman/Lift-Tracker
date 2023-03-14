@@ -17,18 +17,10 @@ type Metadata struct {
 type User struct {
 	ID             uint   `json:"id"`
 	Username       string `json:"username"`
-	Password       string `json:"password"` // not stored in db, just used for login
 	HashedPassword string `json:"hashed_password"`
 	IsAdmin        bool   `json:"is_admin"`
 
 	Metadata
-}
-
-func NewUser(username string, password string) *User {
-	return &User{
-		Username: username,
-		Password: password,
-	}
 }
 
 const SessionKey = "session"
