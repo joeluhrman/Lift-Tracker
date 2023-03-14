@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/google/go-cmp/cmp"
@@ -123,6 +124,44 @@ func (t *testStorage) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate,
 
 func (t *testStorage) CreateWorkoutLog(wLog *types.WorkoutLog) error {
 	return nil
+}
+
+func (t *testStorage) GetWorkoutLogs(userID uint) ([]types.WorkoutLog, error) {
+	var wLogs []types.WorkoutLog
+	for i := 0; i < 3; i++ {
+		wLog := types.WorkoutLog{
+			ID:     uint(i),
+			UserID: uint(userID),
+			Date:   time.Time{},
+			Name:   "wTemp " + strconv.Itoa(i),
+			Notes:  "test notes",
+		}
+
+		for j := 0; j < 3; j++ {
+			eLog := types.ExerciseLog{
+				ID:             uint(j),
+				WorkoutLogID:   wLog.ID,
+				ExerciseTypeID: uint(i),
+				Notes:          "test notes",
+			}
+
+			for k := 0; k < 3; k++ {
+				sgLog := types.SetGroupLog{
+					ID:            uint(k),
+					ExerciseLogID: eLog.ID,
+					Sets:          uint(k * j),
+					Reps:          uint(j * k),
+					Weight:        float32(k),
+				}
+				eLog.SetGroupLogs = append(eLog.SetGroupLogs, sgLog)
+			}
+			wLog.ExerciseLogs = append(wLog.ExerciseLogs, eLog)
+		}
+
+		wLogs = append(wLogs, wLog)
+	}
+
+	return wLogs, nil
 }
 
 func sendMockHTTPRequest(method string, endpoint string, data *bytes.Buffer, router http.Handler) *httptest.ResponseRecorder {
@@ -378,6 +417,39 @@ func Test_CreateWorkoutLogEndpoint(t *testing.T) {
 		rec := sendMockHTTPRequest(http.MethodPost, routeApiV1+endWorkoutLog, nil, testServer.Handler)
 		if rec.Code != http.StatusUnauthorized {
 			t.Errorf(wrongCodef, rec.Code, http.StatusUnauthorized)
+		}
+	}()
+}
+
+func Test_GetWorkoutLogsEndpoint(t *testing.T) {
+	// success case
+	func() {
+		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endWorkoutLog, nil, testLoggedInServer.Handler)
+		if rec.Code != http.StatusFound {
+			t.Errorf(wrongCodef, rec.Code, http.StatusFound)
+			return
+		}
+
+		correctLogs, _ := testLoggedInServer.storage.GetWorkoutLogs(1)
+
+		var responseLogs []types.WorkoutLog
+		err := json.NewDecoder(rec.Body).Decode(&responseLogs)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		if !cmp.Equal(correctLogs, responseLogs) {
+			t.Error("logs json in response was not correct")
+		}
+	}()
+
+	// not logged in
+	func() {
+		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endWorkoutLog, nil, testServer.Handler)
+		if rec.Code != http.StatusUnauthorized {
+			t.Errorf(wrongCodef, rec.Code, http.StatusUnauthorized)
+			return
 		}
 	}()
 }

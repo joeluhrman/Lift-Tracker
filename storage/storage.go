@@ -21,4 +21,5 @@ type Storage interface {
 	GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error)
 
 	CreateWorkoutLog(wLog *types.WorkoutLog) error
+	GetWorkoutLogs(userID uint) ([]types.WorkoutLog, error)
 }

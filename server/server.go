@@ -78,6 +78,7 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 			auth.Post(endWorkoutTemplate, s.handleCreateWorkoutTemplate)
 
 			auth.Post(endWorkoutLog, s.handleCreateWorkoutLog)
+			auth.Get(endWorkoutLog, s.handleGetWorkoutLogs)
 		})
 	})
 }
@@ -261,4 +262,16 @@ func (s *Server) handleCreateWorkoutLog(w http.ResponseWriter, r *http.Request) 
 	}
 
 	writeJSON(w, http.StatusCreated, nil)
+}
+
+func (s *Server) handleGetWorkoutLogs(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value(keyUserID).(uint)
+
+	wLogs, err := s.storage.GetWorkoutLogs(userID)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	writeJSON(w, http.StatusFound, wLogs)
 }
