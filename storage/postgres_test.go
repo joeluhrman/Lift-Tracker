@@ -44,9 +44,10 @@ func (t *testPostgres) clearTable(tName string) {
 }
 
 func TestMain(m *testing.M) {
-	testPGStorage.MustConnect()
+	testPGStorage.MustOpen()
 	testPGStorage.clearAllTables()
 	code := m.Run()
+	testPGStorage.MustClose()
 	os.Exit(code)
 }
 

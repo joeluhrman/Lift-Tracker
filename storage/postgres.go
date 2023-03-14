@@ -36,7 +36,7 @@ func NewPostgres(driver string, url string) *Postgres {
 	}
 }
 
-func (p *Postgres) MustConnect() {
+func (p *Postgres) MustOpen() {
 	var err error
 	p.conn, err = sql.Open(p.driver, p.url)
 	if err != nil {
