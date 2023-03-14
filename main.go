@@ -47,7 +47,6 @@ func main() {
 		}()
 
 		server.MustShutdown(shutdownCtx)
-		log.Println("Server successfully shutdown")
 		serverStopCtx()
 	}()
 

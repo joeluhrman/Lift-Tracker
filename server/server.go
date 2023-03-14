@@ -59,6 +59,8 @@ func (s *Server) MustShutdown(shutdownCtx context.Context) {
 	if err != nil {
 		panic(err)
 	}
+
+	log.Println("server successfully shutdown")
 }
 
 func (s *Server) setupEndpoints(router *chi.Mux) {
