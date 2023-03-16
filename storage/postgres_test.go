@@ -81,6 +81,40 @@ func Test_CreateUser(t *testing.T) {
 	}()
 }
 
+func Test_GetUser(t *testing.T) {
+	defer testPGStorage.clearTable(pgTableUser)
+
+	// user doesn't exist
+	func() {
+		if _, err := testPGStorage.GetUser(1); err == nil {
+			t.Error("error should have been returned when user doesn't exist")
+		}
+	}()
+
+	// success case
+	func() {
+		user := &types.User{
+			Username: "user",
+			Email:    "user@user.com",
+		}
+		password := "password"
+
+		testPGStorage.CreateUser(user, password)
+
+		ret, err := testPGStorage.GetUser(user.ID)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		user.HashedPassword = ""
+		if !cmp.Equal(user, &ret) {
+			t.Error("returned user was not the same as created")
+			return
+		}
+	}()
+}
+
 func Test_AuthenticateUser(t *testing.T) {
 	defer testPGStorage.clearTable(pgTableUser)
 

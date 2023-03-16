@@ -70,19 +70,24 @@ func (p *Postgres) CreateUser(user *types.User, password string) error {
 	user.IsAdmin = false
 
 	statement := "INSERT INTO " + pgTableUser + " (username, email, hashed_password, is_admin) " +
-		"VALUES ($1, $2, $3, $4) RETURNING id"
+		"VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at"
 
 	return p.conn.QueryRow(statement, user.Username, user.Email, user.HashedPassword, user.IsAdmin).
-		Scan(&user.ID)
+		Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
 }
 
-/*
 func (p *Postgres) GetUser(userID uint) (types.User, error) {
 	var (
-		statement = "SELECT (id, username, is_admin) FROM " + pgTableUsers
+		statement = "SELECT id, username, email, is_admin, created_at, updated_at FROM " + pgTableUser +
+			" WHERE id = $1"
+		user types.User
 	)
+
+	err := p.conn.QueryRow(statement, userID).
+		Scan(&user.ID, &user.Username, &user.Email, &user.IsAdmin, &user.CreatedAt, &user.UpdatedAt)
+
+	return user, err
 }
-*/
 
 func (p *Postgres) AuthenticateUser(username string, password string) (uint, error) {
 	var (
