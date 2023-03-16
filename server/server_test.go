@@ -203,7 +203,11 @@ func Test_CreateUserEndpoint(t *testing.T) {
 
 	// Password doesn't meet requirements
 	func() {
-		credentials := &credentials{"jaluhrman", ""}
+		credentials := &credentials{
+			Username: "jaluhrman",
+			Email:    "jaluhrman@gober.com",
+			Password: "",
+		}
 
 		json, _ := json.Marshal(credentials)
 		body := bytes.NewBuffer(json)
@@ -216,7 +220,11 @@ func Test_CreateUserEndpoint(t *testing.T) {
 
 	// Success case
 	func() {
-		creds := &credentials{"jaluhrman", "12345678"}
+		creds := &credentials{
+			Username: "jaluhrman",
+			Email:    "Goob@goob.com",
+			Password: "12345678",
+		}
 
 		json, _ := json.Marshal(creds)
 		body := bytes.NewBuffer(json)
@@ -244,7 +252,10 @@ func Test_LoginEndpoint(t *testing.T) {
 
 	// success case
 	func() {
-		loginInfo := &credentials{"jaluhrman", "123"}
+		loginInfo := &credentials{
+			Username: "jaluhrman",
+			Password: "123",
+		}
 
 		json, _ := json.Marshal(loginInfo)
 		body := bytes.NewBuffer(json)

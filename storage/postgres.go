@@ -69,10 +69,10 @@ func (p *Postgres) CreateUser(user *types.User, password string) error {
 
 	user.IsAdmin = false
 
-	statement := "INSERT INTO " + pgTableUser + " (username, hashed_password, is_admin) " +
-		"VALUES ($1, $2, $3) RETURNING id"
+	statement := "INSERT INTO " + pgTableUser + " (username, email, hashed_password, is_admin) " +
+		"VALUES ($1, $2, $3, $4) RETURNING id"
 
-	return p.conn.QueryRow(statement, user.Username, user.HashedPassword, user.IsAdmin).
+	return p.conn.QueryRow(statement, user.Username, user.Email, user.HashedPassword, user.IsAdmin).
 		Scan(&user.ID)
 }
 

@@ -10,7 +10,6 @@ I'm focussing primarily on bare-bones functionality such as signup, login, logou
 3. Deleting workout logs
 4. Deleting workout templates
 5. Get user profile data layer/endpoint
-6. Add email to users
 7. Templates/Logs
     * How to keep track of order of exercises/setgroups
         * Maybe keep workout id and delete/redo everything every time a workout is modified

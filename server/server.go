@@ -125,6 +125,7 @@ func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
 
 type credentials struct {
 	Username string `json:"username"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 

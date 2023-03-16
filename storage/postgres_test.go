@@ -56,7 +56,7 @@ func Test_CreateUser(t *testing.T) {
 
 	// Success case
 	func() {
-		user := &types.User{Username: "jaluhrman"}
+		user := &types.User{Username: "jaluhrman", Email: "goober@goober.com"}
 		password := "goober"
 
 		err := testPGStorage.CreateUser(user, password)
@@ -71,7 +71,7 @@ func Test_CreateUser(t *testing.T) {
 
 	// username already exists
 	func() {
-		user := &types.User{Username: "jaluhrman"}
+		user := &types.User{Username: "jaluhrman", Email: "goober@goober.com"}
 		password := "123"
 
 		err := testPGStorage.CreateUser(user, password)
