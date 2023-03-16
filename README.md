@@ -15,7 +15,8 @@ I'm focussing primarily on bare-bones functionality such as signup, login, logou
     * How to keep track of order of exercises/setgroups
         * Maybe keep workout id and delete/redo everything every time a workout is modified
 8. Figure out what to do with exercise type images
-9. FRONTEND
+9. Make exercise types able to have multiple musclegroups and ppl types
+10. FRONTEND
 
 ## Long term
 1. Custom exercise types
