@@ -20,7 +20,7 @@ func main() {
 		pgApiKey = string(storage.MustReadFile("./api_keys/api_key_test.txt"))
 		pgURL    = "postgresql://jaluhrman:" + pgApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test"
 
-		listenaddr = flag.String("listenaddr", ":3000", "the port the server should listen on")
+		listenaddr = flag.String("listenaddr", ":3000", "server port")
 	)
 	flag.Parse()
 
