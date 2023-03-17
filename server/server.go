@@ -67,18 +67,16 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 	router.Route(routeApiV1, func(r chi.Router) {
 		r.Post(endUser, s.handleCreateUser)
 		r.Post(endLogin, s.handleLogin)
-		r.Post(endLogout, s.handleLogout)
 
 		r.Group(func(auth chi.Router) {
 			auth.Use(s.middlewareAuthSession)
-
+			auth.Get(endUser, s.handleGetUser)
 			auth.Get(endExerciseType, s.handleGetExerciseTypes)
-
 			auth.Get(endWorkoutTemplate, s.handleGetWorkoutTemplates)
-			auth.Post(endWorkoutTemplate, s.handleCreateWorkoutTemplate)
-
-			auth.Post(endWorkoutLog, s.handleCreateWorkoutLog)
 			auth.Get(endWorkoutLog, s.handleGetWorkoutLogs)
+			auth.Post(endWorkoutTemplate, s.handleCreateWorkoutTemplate)
+			auth.Post(endWorkoutLog, s.handleCreateWorkoutLog)
+			auth.Post(endLogout, s.handleLogout)
 		})
 	})
 }
@@ -161,11 +159,16 @@ func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusAccepted, nil)
 }
 
-/*
-func (s *Server) handleGetProfile(w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleGetUser(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value(keyUserID).(uint)
+	user, err := s.storage.GetUser(userID)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
+	writeJSON(w, http.StatusFound, user)
 }
-*/
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	credentials := &credentials{}

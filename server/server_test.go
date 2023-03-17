@@ -22,14 +22,14 @@ const (
 
 var (
 	// basic test server
-	testServer = New("", &testStorage{}, middleware.Logger)
+	testServer = New("", &mockStorage{}, middleware.Logger)
 
 	// test server with middleware to set session for logged in tests
-	testLoggedInServer = New("", &testStorage{},
+	testLoggedInServer = New("", &mockStorage{},
 		func(next http.Handler) http.Handler {
 			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				r.AddCookie(types.NewSession(1).Cookie())
-				ctx := context.WithValue(r.Context(), "user_id", 1)
+				ctx := context.WithValue(r.Context(), keyUserID, 1)
 				next.ServeHTTP(w, r.WithContext(ctx))
 			})
 		},
@@ -37,37 +37,46 @@ var (
 	)
 )
 
-type testStorage struct{}
+type mockStorage struct{}
 
-func (t *testStorage) CreateUser(user *types.User, password string) error {
+func (t *mockStorage) CreateUser(user *types.User, password string) error {
 	return nil
 }
 
-func (t *testStorage) AuthenticateUser(username string, password string) (uint, error) {
+func (t *mockStorage) AuthenticateUser(username string, password string) (uint, error) {
 	return 1, nil
 }
 
-func (t *testStorage) CreateSession(s *types.Session) error {
+func (t *mockStorage) GetUser(userID uint) (types.User, error) {
+	return types.User{
+		ID:       userID,
+		Username: "username",
+		Email:    "email@email.com",
+		IsAdmin:  false,
+	}, nil
+}
+
+func (t *mockStorage) CreateSession(s *types.Session) error {
 	return nil
 }
 
-func (t *testStorage) DeleteSessionByUserID(userID uint) error {
+func (t *mockStorage) DeleteSessionByUserID(userID uint) error {
 	return nil
 }
 
-func (t *testStorage) DeleteSessionByToken(token string) error {
+func (t *mockStorage) DeleteSessionByToken(token string) error {
 	return nil
 }
 
-func (t *testStorage) AuthenticateSession(token string) (uint, error) {
+func (t *mockStorage) AuthenticateSession(token string) (uint, error) {
 	return 1, nil
 }
 
-func (t *testStorage) CreateExerciseType(exerciseType *types.ExerciseType) error {
+func (t *mockStorage) CreateExerciseType(exerciseType *types.ExerciseType) error {
 	return nil
 }
 
-func (t *testStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
+func (t *mockStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 	var eTypes []types.ExerciseType
 	for i := 0; i < 5; i++ {
 		eType := types.ExerciseType{
@@ -84,11 +93,11 @@ func (t *testStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 	return eTypes, nil
 }
 
-func (t *testStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
+func (t *mockStorage) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
 	return nil
 }
 
-func (t *testStorage) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error) {
+func (t *mockStorage) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error) {
 	var wTemps []types.WorkoutTemplate
 	for i := 0; i < 3; i++ {
 		wTemp := types.WorkoutTemplate{
@@ -122,11 +131,11 @@ func (t *testStorage) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate,
 	return wTemps, nil
 }
 
-func (t *testStorage) CreateWorkoutLog(wLog *types.WorkoutLog) error {
+func (t *mockStorage) CreateWorkoutLog(wLog *types.WorkoutLog) error {
 	return nil
 }
 
-func (t *testStorage) GetWorkoutLogs(userID uint) ([]types.WorkoutLog, error) {
+func (t *mockStorage) GetWorkoutLogs(userID uint) ([]types.WorkoutLog, error) {
 	var wLogs []types.WorkoutLog
 	for i := 0; i < 3; i++ {
 		wLog := types.WorkoutLog{
@@ -456,6 +465,38 @@ func Test_GetWorkoutLogsEndpoint(t *testing.T) {
 	// not logged in
 	func() {
 		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endWorkoutLog, nil, testServer.Handler)
+		if rec.Code != http.StatusUnauthorized {
+			t.Errorf(wrongCodef, rec.Code, http.StatusUnauthorized)
+			return
+		}
+	}()
+}
+
+func Test_GetUserEndpoint(t *testing.T) {
+	// success case
+	func() {
+		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endUser, nil, testLoggedInServer.Handler)
+		if rec.Code != http.StatusFound {
+			t.Errorf(wrongCodef, rec.Code, http.StatusFound)
+			return
+		}
+
+		correctData, _ := testServer.storage.GetUser(1)
+		responseData := &types.User{}
+		if err := json.NewDecoder(rec.Body).Decode(responseData); err != nil {
+			t.Error(err)
+			return
+		}
+
+		if !cmp.Equal(&correctData, responseData) {
+			t.Error("original data and response were not the same")
+			return
+		}
+	}()
+
+	// not logged in
+	func() {
+		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endUser, nil, testServer.Handler)
 		if rec.Code != http.StatusUnauthorized {
 			t.Errorf(wrongCodef, rec.Code, http.StatusUnauthorized)
 			return
