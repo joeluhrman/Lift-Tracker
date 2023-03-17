@@ -1,4 +1,6 @@
 *.exe
 *.db
+*.yaml
+*.yml
 api_key.txt
 api_key_test.txt
