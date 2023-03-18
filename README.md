@@ -5,7 +5,7 @@ I'm focussing primarily on bare-bones functionality such as signup, login, logou
 
 # ToDo
 
-1. setup config file for db urls, server port, etc
+1. Setup config file for db urls, server port, etc
 1. Editing workout logs
 2. Editing workout templates
 3. Deleting workout logs
