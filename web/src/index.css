@@ -25,6 +25,7 @@ a:hover {
 
 body {
   font-family: Roboto, Helvetica, Arial, sans-serif;
+  background-color: whitesmoke;
   margin: 0;
   display: flex;
   place-items: center;

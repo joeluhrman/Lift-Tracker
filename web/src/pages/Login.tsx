@@ -11,7 +11,7 @@ import {
   MDBInput
 }
 from 'mdb-react-ui-kit'
-import imgUrl from "../assets/kyriakos_grizzly.png"
+import imgUrl from "../assets/react.svg"
 
 function Login() {
   return (
@@ -21,7 +21,7 @@ function Login() {
         <MDBRow className='g-0'>
 
           <MDBCol md='6'>
-            <MDBCardImage src={imgUrl} alt="login form" className='rounded-start w-100'/>
+            <MDBCardImage src='https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp' alt="login form" className='rounded-start w-100'/>
           </MDBCol>
 
           <MDBCol md='6'>
