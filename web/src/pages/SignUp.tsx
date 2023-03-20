@@ -26,9 +26,28 @@ export default function SignUp() {
   return (
     <MDBCard>
       <MDBCardTitle>Sign Up</MDBCardTitle>
-      <form>
-
-      </form>
+      <MDBValidation className="row g-3">
+        <MDBValidationItem className="row-md-4">
+          <MDBInput
+            value={formValue.username}
+            name="username"
+            onChange={handleChange}
+            id="username"
+            required
+            label="Username"
+          />
+        </MDBValidationItem>
+        <MDBValidationItem className="row-md-4">
+          <MDBInput
+            value={formValue.password}
+            name="password"
+            onChange={handleChange}
+            id="password"
+            required
+            label="Password"
+          />
+        </MDBValidationItem>
+      </MDBValidation>
     </MDBCard>
   );
 }
