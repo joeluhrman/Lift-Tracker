@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  MDBContainer,
   MDBValidation,
   MDBValidationItem,
   MDBInput,
@@ -24,11 +25,24 @@ export default function SignUp() {
   };
 
   return (
-    <MDBCard>
-      <MDBCardTitle>Sign Up</MDBCardTitle>
-      <form>
-
-      </form>
-    </MDBCard>
+    <MDBContainer fluid>
+      <MDBCard>
+        <MDBCardTitle>Sign Up</MDBCardTitle>
+        <MDBCardBody>
+          <MDBValidation>
+            <MDBValidationItem className="d-flex">
+              <MDBInput
+                value={formValue.username}
+              />
+            </MDBValidationItem>
+            <MDBValidationItem>
+              <MDBInput
+                value={formValue.password}
+              />
+            </MDBValidationItem>
+          </MDBValidation>
+        </MDBCardBody>
+      </MDBCard>
+    </MDBContainer>
   );
 }
