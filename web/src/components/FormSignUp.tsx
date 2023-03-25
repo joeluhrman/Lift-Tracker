@@ -33,7 +33,7 @@ export default function FormSignUp() {
     }
 
     try {
-       var res = await axios.post("/user", data)
+       var res = await axios.post("/api/v1/user", data)
        console.log(res)
     } catch(error) {
         console.log(error)

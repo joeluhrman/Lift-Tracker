@@ -17,7 +17,7 @@ import (
 func main() {
 	var (
 		pgDriver = "pgx"
-		pgApiKey = string(storage.MustReadFile("./api_keys/api_key_test.txt"))
+		pgApiKey = string(storage.MustReadFile("./api_key_test.txt"))
 		pgURL    = "postgresql://jaluhrman:" + pgApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test"
 
 		listenaddr = flag.String("listenaddr", ":3000", "server port")
