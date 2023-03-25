@@ -41,8 +41,8 @@ export default function FormSignUp() {
   }
 
   return (
-    <MDBContainer fluid>
-      <MDBCard className="w-25">
+   // <MDBContainer fluid>
+      <MDBCard className="w-25 align-items-center justify-content-center">
         <MDBCardTitle>Sign Up</MDBCardTitle>
         <MDBCardBody>
 
@@ -85,6 +85,6 @@ export default function FormSignUp() {
 
         </MDBCardBody>
       </MDBCard>
-    </MDBContainer>
+  //  </MDBContainer>
   );
 }
