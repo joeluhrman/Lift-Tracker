@@ -148,6 +148,7 @@ func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 
 	user := &types.User{
 		Username: credentials.Username,
+		Email:    credentials.Email,
 	}
 
 	err = s.storage.CreateUser(user, credentials.Password)

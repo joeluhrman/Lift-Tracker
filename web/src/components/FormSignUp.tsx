@@ -33,7 +33,7 @@ export default function FormSignUp() {
     }
 
     try {
-       var res = await axios.post("/api/v1/user", data)
+       var res = await axios.post("/api/v1/user", JSON.stringify(data))
        console.log(res)
     } catch(error) {
         console.log(error)
@@ -41,9 +41,8 @@ export default function FormSignUp() {
   }
 
   return (
-    <MDBContainer fluid className="d-flex align-items-center justify-content-center"
-        style={{margin: "0 auto"}}>
-      <MDBCard>
+    <MDBContainer fluid>
+      <MDBCard className="w-25">
         <MDBCardTitle>Sign Up</MDBCardTitle>
         <MDBCardBody>
 
