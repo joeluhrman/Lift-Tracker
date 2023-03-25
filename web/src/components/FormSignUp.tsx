@@ -12,8 +12,9 @@ import {
   MDBCardHeader,
   MDBCardTitle,
 } from 'mdb-react-ui-kit';
+import axios from "axios"
 
-export default function SignUp() {
+export default function FormSignUp() {
   const [formValue, setFormValue] = useState({
     username: "",
     email: "",
@@ -24,8 +25,24 @@ export default function SignUp() {
     setFormValue({ ...formValue, [e.target.name]: e.target.value });
   };
 
+  const handleSubmit = async() => {
+    var data = {
+        username: formValue.username,
+        email: formValue.email,
+        password: formValue.password
+    }
+
+    try {
+       var res = await axios.post("/user", data)
+       console.log(res)
+    } catch(error) {
+        console.log(error)
+    }
+  }
+
   return (
-    <MDBContainer fluid>
+    <MDBContainer fluid className="d-flex align-items-center justify-content-center"
+        style={{margin: "0 auto"}}>
       <MDBCard>
         <MDBCardTitle>Sign Up</MDBCardTitle>
         <MDBCardBody>
@@ -63,7 +80,7 @@ export default function SignUp() {
               />
             </MDBValidationItem>
 
-            <MDBBtn type="submit" className="col-12">Sign Up</MDBBtn>
+            <MDBBtn type="submit" className="col-12" onClick={handleSubmit}>Sign Up</MDBBtn>
 
           </MDBValidation>
 
