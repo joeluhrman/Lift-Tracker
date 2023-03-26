@@ -1,6 +1,8 @@
 body {
     font-family: Roboto, Helvetica, Arial, sans-serif;
     background-color: whitesmoke;
+    margin-top: 58px;
+    padding-top: 3px;
     place-items: center,
 }
 
