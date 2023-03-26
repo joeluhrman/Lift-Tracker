@@ -1,15 +1,16 @@
 import Header from "../components/Header"
 import FormSignUp from "../components/FormSignUp"
-import { MDBContainer } from "mdb-react-ui-kit"
+import { MDBContainer, MDBCol } from "mdb-react-ui-kit"
 
 export default function PageSignUp() {
   return (
     <>
       <Header/>
-      <MDBContainer className="align-items-center justify-content-center">
+      <MDBCol className="d-flex align-items-center justify-content-center">
         <FormSignUp/>
-      </MDBContainer>
+      </MDBCol>
 
+     {/* <p>test</p>
       <p>test</p>
       <p>test</p>
       <p>test</p>
@@ -43,8 +44,7 @@ export default function PageSignUp() {
       <p>test</p>
       <p>test</p>
       <p>test</p>
-      <p>test</p>
-      <p>test</p>
+  <p>test</p>*/}
     </>
   )
 }
