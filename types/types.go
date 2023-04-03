@@ -53,8 +53,8 @@ type PPLType string
 
 const (
 	Push PPLType = "push"
-	Pull         = "pull"
-	Legs         = "legs"
+	Pull PPLType = "pull"
+	Legs PPLType = "legs"
 )
 
 type MuscleGroup string
@@ -62,18 +62,18 @@ type MuscleGroup string
 // incomplete
 const (
 	Calves     MuscleGroup = "calves"
-	Hamstrings             = "hamstrings"
-	Quads                  = "quads"
-	Adductors              = "adductors"
-	Abductors              = "abductors"
-	Core                   = "core"
-	LowBack                = "lower back"
+	Hamstrings MuscleGroup = "hamstrings"
+	Quads      MuscleGroup = "quads"
+	Adductors  MuscleGroup = "adductors"
+	Abductors  MuscleGroup = "abductors"
+	Core       MuscleGroup = "core"
+	LowBack    MuscleGroup = "lower back"
 )
 
 type ExerciseType struct {
 	ID          uint        `json:"id"`
 	Name        string      `json:"name"`
-	Image       image.Image `json:"image;omitempty"` // png only for now
+	Image       image.Image `json:"image";"omitempty"` // png only for now
 	PPLType     PPLType     `json:"ppl_type"`
 	MuscleGroup MuscleGroup `json:"muscle_group"`
 

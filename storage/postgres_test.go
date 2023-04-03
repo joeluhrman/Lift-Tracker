@@ -13,7 +13,7 @@ import (
 
 var (
 	testPGDriver = "pgx"
-	testPGApiKey = string(MustReadFile("../api_keys/api_key_test.txt"))
+	testPGApiKey = string(MustReadFile("../api_key_test.txt"))
 	testPGURL    = "postgresql://jaluhrman:" + testPGApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test"
 
 	testPGStorage = &testPostgres{
