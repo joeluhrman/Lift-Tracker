@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	// routes and endpoints
 	routeApiV1         = "/api/v1"
 	endUser            = "/user"
 	endLogin           = "/login"
@@ -21,15 +22,21 @@ const (
 	endWorkoutTemplate = "/workout-template"
 	endWorkoutLog      = "/workout-log"
 
-	keyUserID  = "user_id"
+	// key to get logged in user id from context
+	keyUserID = "user_id"
+
+	// key to get session token from cookies
 	keySession = types.SessionKey
 )
 
+// Embeds an http.Server and has a storage.Storage for DB CRUDs.
 type Server struct {
 	http.Server
 	storage storage.Storage
 }
 
+// Returns a new *server.Server set to listen on the specified port, use the specified storage.Storage, and
+// use any number of global middlewares.
 func New(port string, storage storage.Storage, middlewares ...func(http.Handler) http.Handler) *Server {
 	httpServer := http.Server{
 		Addr: port,
@@ -49,6 +56,7 @@ func New(port string, storage storage.Storage, middlewares ...func(http.Handler)
 	return s
 }
 
+// Logs the Server's port and calls Server.ListenAndServe().
 func (s *Server) MustStart() {
 	log.Println("server running on port " + s.Addr)
 	s.ListenAndServe()
