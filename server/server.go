@@ -1,4 +1,4 @@
-// Contains functionality for creating/starting an HTTP server and handling HTTP requests.
+// Contains functionality for creating/starting/shutting down an HTTP server and handling HTTP requests.
 package server
 
 import (
@@ -346,6 +346,14 @@ func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Requ
 	writeJSON(w, http.StatusCreated, nil)
 }
 
+// handleGetWorkoutTemplates retrieves all the types.WorkoutTemplate for the
+// currently logged in user.
+//
+// It responds with http.StatusFound and a []types.WorkoutTemplate JSON
+// if successful.
+//
+// If there is a storage error, it responds with http.StatusInternalServerError
+// and the error message JSON.
 func (s *Server) handleGetWorkoutTemplates(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(keyUserID).(uint)
 
@@ -358,6 +366,16 @@ func (s *Server) handleGetWorkoutTemplates(w http.ResponseWriter, r *http.Reques
 	writeJSON(w, http.StatusFound, wTemps)
 }
 
+// handleCreateWorkoutLog decodes from JSON and saves a
+// *types.WorkoutLog in storage with the logged in user's id.
+//
+// If successful, it responds with http.StatusCreated.
+//
+// If there is a JSON decoding error, responds with http.StatusBadRequest
+// and the error message JSON.
+//
+// If the log cannot be created in storage, it responds with
+// http.StatusInternalServerError and the error message JSON.
 func (s *Server) handleCreateWorkoutLog(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(keyUserID).(uint)
 
@@ -377,6 +395,14 @@ func (s *Server) handleCreateWorkoutLog(w http.ResponseWriter, r *http.Request) 
 	writeJSON(w, http.StatusCreated, nil)
 }
 
+// handleGetWorkoutLogs retrieves all types.WorkoutLog for the
+// currently logged in user.
+//
+// On success, it responds with http.StatusFound and a []types.WorkoutLog
+// JSON.
+//
+// On storage error, it responds with http.StatusInternalServerError and
+// the error message JSON.
 func (s *Server) handleGetWorkoutLogs(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(keyUserID).(uint)
 
