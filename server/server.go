@@ -1,4 +1,4 @@
-// Contains functionality for creating/starting a Server and handling HTTP requests.
+// Contains functionality for creating/starting an HTTP server and handling HTTP requests.
 package server
 
 import (
@@ -29,14 +29,14 @@ const (
 	keySession = types.SessionKey
 )
 
-// Embeds an http.Server and has a storage.Storage for DB CRUDs.
+// A Server embeds an http.Server and has a storage.Storage for DB CRUDs.
 type Server struct {
 	http.Server
 	storage storage.Storage
 }
 
-// Returns a new *server.Server set to listen on the specified port, use the specified storage.Storage, and
-// use any number of global middlewares.
+// New returns a *server.Server set to listen on the specified port, use the
+// specified storage.Storage, and use any number of global middlewares.
 func New(port string, storage storage.Storage, middlewares ...func(http.Handler) http.Handler) *Server {
 	httpServer := http.Server{
 		Addr: port,
@@ -56,12 +56,15 @@ func New(port string, storage storage.Storage, middlewares ...func(http.Handler)
 	return s
 }
 
-// Logs the Server's port and calls Server.ListenAndServe().
+// MustStart logs the Server's port and calls Server.ListenAndServe().
 func (s *Server) MustStart() {
 	log.Println("server running on port " + s.Addr)
 	s.ListenAndServe()
 }
 
+// MustShutdown calls Server.Shutdown() and logs its success,
+// and panics if an error occurs.
+// It takes a context.Context for timeouts.
 func (s *Server) MustShutdown(shutdownCtx context.Context) {
 	err := s.Shutdown(shutdownCtx)
 	if err != nil {
@@ -71,11 +74,13 @@ func (s *Server) MustShutdown(shutdownCtx context.Context) {
 	log.Println("server successfully shutdown")
 }
 
+// setupEndpoints binds a *chi.Mux to the Server's endpoints.
 func (s *Server) setupEndpoints(router *chi.Mux) {
 	router.Route(routeApiV1, func(r chi.Router) {
 		r.Post(endUser, s.handleCreateUser)
 		r.Post(endLogin, s.handleLogin)
 
+		// endpoints requiring session authentication
 		r.Group(func(auth chi.Router) {
 			auth.Use(s.middlewareAuthSession)
 			auth.Get(endUser, s.handleGetUser)
@@ -89,6 +94,8 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 	})
 }
 
+// writeJSON writes a status code and JSON data to an http.Responsewriter.
+// If an encoding error occurs, it rewrites the status with http.StatusInternalServerError.
 func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.WriteHeader(status)
 	w.Header().Add("Content-Type", "application/json")
@@ -97,10 +104,15 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 	}
 }
 
+// setSession sets a *types.Session in the cookies of an http.ResponseWriter.
+// Only the token is stored in cookies.
 func setSession(s *types.Session, w http.ResponseWriter) {
 	http.SetCookie(w, s.Cookie())
 }
 
+// getSessionToken gets the token for the current session from
+// an *http.Request.
+// Returns an error if the session cookie is not found.
 func getSessionToken(r *http.Request) (string, error) {
 	cookie, err := r.Cookie(types.SessionKey)
 	if err != nil {
@@ -110,6 +122,14 @@ func getSessionToken(r *http.Request) (string, error) {
 	return cookie.Value, nil
 }
 
+// middlewareAuthSession is a simple middleware for authenticating the
+// current session.
+//
+// If session is valid, it embeds the user id for the session into the
+// *http.Request's context and serves the next handler.
+//
+// It writes status code http.StatusUnauthorized and the error if the
+// session cookie is not found or if the session cannot be authenticated in storage.
 func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token, err := getSessionToken(r)
@@ -129,12 +149,28 @@ func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
 	})
 }
 
+// A credentials is used in the creating a user and login process to
+// prevent the client from sending more data then they should be able to,
+// which could result in unintended side-effects.
 type credentials struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
+// handleCreateUser receives a credentials json and creates the
+// corresponding types.User in storage.
+//
+// It responds with http.StatusAccepted if successful.
+//
+// If the json cannot be decoded it responds with http.StatusBadRequest
+// and the error.
+//
+// If the username or password do not meet requirements, it responds
+// with http.StatusNotAcceptable and the applicable error message.
+//
+// If there is an error creating the user in storage (assumed to be a conflict),
+// it responds with http.StatusConflict and the error message.
 func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	credentials := &credentials{}
 
@@ -168,6 +204,12 @@ func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusAccepted, nil)
 }
 
+// handleGetUser gets the user id of the current session from
+// the *http.Request's context, retrieves that user from storage,
+// and responds with http.StatusFound and the types.User.
+//
+// If the user canot be found, responds with http.StatusInternalServerError
+// and the error message.
 func (s *Server) handleGetUser(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(keyUserID).(uint)
 	user, err := s.storage.GetUser(userID)
@@ -179,6 +221,20 @@ func (s *Server) handleGetUser(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusFound, user)
 }
 
+// handleLogin receives a credentials json and creates a session that
+// is saved in storage and embedded in the the response's cookies.
+//
+// It responds with http.StatusOK on success.
+//
+// If the credentials json cannot be decoded, it responds with
+// http.StatusBadRequest and the error message.
+//
+// If the client's credentials cannot be authenticated in storage,
+// it responds with http.StatusUnauthorized and the error message.
+//
+// If the client's old session (if it exists) cannot be deleted from
+// storage or the new session cannot be created in storage, it responds
+// with http.StatusInternalServerError and the error message.
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	credentials := &credentials{}
 
@@ -212,6 +268,16 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, nil)
 }
 
+// handleLogout deletes the current client's session from storage and
+// clears it from their cookies.
+//
+// It responds with http.StatusOK on success.
+//
+// It responds with http.StatusNotFound and the error message if the
+// session token is not found in the client's cookies.
+//
+// If the session cannot be deleted from storage, it responds
+// with http.StatusInternalServerError and the error message.
 func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	token, err := getSessionToken(r)
 	if err != nil {
@@ -233,6 +299,15 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, nil)
 }
 
+// hanleGetExerciseTypes retrieves and responds with all
+// types.ExerciseType from storage.
+//
+// Responds with http.StatusFound and the []types.ExerciseType
+// json encoding on success.
+//
+// Responds with http.StatusInternalServerError and the error
+// message if the []types.exerciseType cannot be retrieved from
+// storage.
 func (s *Server) handleGetExerciseTypes(w http.ResponseWriter, r *http.Request) {
 	eTypes, err := s.storage.GetExerciseTypes()
 	if err != nil {
@@ -243,6 +318,16 @@ func (s *Server) handleGetExerciseTypes(w http.ResponseWriter, r *http.Request) 
 	writeJSON(w, http.StatusFound, eTypes)
 }
 
+// handleCreateWorkoutTemplate receives a *types.WorkoutTemplate json
+// and saves it in storage with the logged in user's id.
+//
+// It responds with http.StatusCreated on success.
+//
+// It responds with http.StatusBadRequest and the error message if the
+// json cannot be decoded.
+//
+// It responds with http.StatusInternalServerError and the error message
+// if the template cannot be created.
 func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(keyUserID).(uint)
 
