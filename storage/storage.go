@@ -8,8 +8,9 @@ import (
 // The Storage interface abstracts out the needed functionality
 // for CRUDs in the database.
 type Storage interface {
-	// CreateUser saves a *types.User in storage and returns
-	// an error if one occurred.
+	// CreateUser saves a *types.User in storage, scanning the
+	// id back into the pointer, and returns an
+	// error if one occurred.
 	// Since a types.User only has a HashedPassword field, the
 	// plaintext password must be passed in as a separate param.
 	CreateUser(user *types.User, password string) error
@@ -42,8 +43,9 @@ type Storage interface {
 	// error if the session could not be found.
 	AuthenticateSession(token string) (uint, error)
 
-	// CreateExerciseType saves a *types.ExerciseType in storage
-	// and returns an error if one occurred.
+	// CreateExerciseType saves a *types.ExerciseType in storage,
+	// scanning the id back into the pointer, and returns an error
+	// if one occurred.
 	//
 	// CURRENTLY ONLY USED FOR DEVELOPMENT B/C CUSTOM EXERCISE
 	// TYPES HAVE NOT YET BEEN IMPLEMENTED.
@@ -55,7 +57,8 @@ type Storage interface {
 	GetExerciseTypes() ([]types.ExerciseType, error)
 
 	// CreateWorkoutTemplate saves a *types.WorkoutTemplate in storage
-	// and returns an error if one occurred.
+	// and scans the id back into the pointer, and returns an error if
+	// one occurred.
 	CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error
 
 	// GetWorkoutTemplates returns a []types.WorkoutTemplate of all
@@ -63,8 +66,8 @@ type Storage interface {
 	// user id. It returns an error if one occurred.
 	GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error)
 
-	// CreateWorkoutLog saves a *types.WorkoutLog in storage and returns
-	// an error if one occurred.
+	// CreateWorkoutLog saves a *types.WorkoutLog in storage and scans
+	// the id back into the pointer, returning an error if one occurred.
 	CreateWorkoutLog(wLog *types.WorkoutLog) error
 
 	// GetWorkoutLogs returns a []types.WorkoutLog with all the
