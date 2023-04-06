@@ -11,8 +11,10 @@ type Storage interface {
 	// CreateUser saves a *types.User in storage, scanning the
 	// id back into the pointer, and returns an
 	// error if one occurred.
+	//
 	// Since a types.User only has a HashedPassword field, the
-	// plaintext password must be passed in as a separate param.
+	// plaintext password must be passed in as a separate param
+	// and is hashed before being saved.
 	CreateUser(user *types.User, password string) error
 
 	// AuthenticateUser takes a username and password and returns
