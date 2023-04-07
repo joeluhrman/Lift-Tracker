@@ -15,7 +15,7 @@ I'm focussing primarily on bare-bones functionality such as signup, login, logou
         * Maybe keep workout id and delete/redo everything every time a workout is modified
 8. Figure out what to do with exercise type images
 9. Make exercise types able to have multiple musclegroups and ppl types
-10. FRONTEND
+10. FRONTEND - switch to react w/ js instead of typescript, replace MDBoostrap w/ react-bootstrap
 
 ## Long term
 1. Custom exercise types
