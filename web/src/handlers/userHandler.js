@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const getUser = async() => {
+const handleGetUser = async() => {
     try {
         const res = await axios.get("/api/v1/user")
         return res.data
@@ -9,4 +9,4 @@ const getUser = async() => {
     }
 }
 
-export { getUser }
+export { handleGetUser }

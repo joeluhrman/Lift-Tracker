@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import {
   createBrowserRouter,
   RouterProvider,
-  useLocation,
 } from "react-router-dom"
 
 import Auth from "./routes/Auth"

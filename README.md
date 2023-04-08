@@ -5,17 +5,21 @@ I'm focussing primarily on bare-bones functionality such as signup, login, logou
 
 # ToDo
 
+## Backend
 1. Setup config file for db urls, server port, etc
 1. Editing workout logs
 2. Editing workout templates
 3. Deleting workout logs
 4. Deleting workout templates
-7. Templates/Logs
+5. Templates/Logs
     * How to keep track of order of exercises/setgroups
         * Maybe keep workout id and delete/redo everything every time a workout is modified
-8. Figure out what to do with exercise type images
-9. Make exercise types able to have multiple musclegroups and ppl types
-10. FRONTEND - switch to react w/ js instead of typescript, replace MDBoostrap w/ react-bootstrap
+6. Figure out what to do with exercise type images
+7. Make exercise types able to have multiple musclegroups and ppl types
+
+## Frontend
+1. Figure out how to change items on navbar based on logged in or not
+2. Figure out how to abstract forms so all have same appearance
 
 ## Long term
 1. Custom exercise types
