@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom/client'
 import {
   createBrowserRouter,
   RouterProvider,
+  useLocation,
 } from "react-router-dom"
 
+import Auth from "./routes/Auth"
 import Error from "./routes/Error"
 import Root from './routes/Root'
 import Login from "./routes/Login"
@@ -19,12 +21,16 @@ const router = createBrowserRouter([
     element: <Root/>, 
     errorElement: <Error/>, 
     children: [
-      // not logged in routes
       { path: "/login",     element: <Login/>     },
       { path: "/signup",    element: <SignUp/>    },
 
-      // logged in routes
-      { path: "/dashboard", element: <Dashboard/> },
+      // auth routes
+      { 
+        element: <Auth/>,
+        children: [
+          { path: "/dashboard", element: <Dashboard/> },
+        ]
+      }
     ]     
   },
 ])

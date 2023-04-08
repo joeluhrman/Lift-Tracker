@@ -83,7 +83,7 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 		// endpoints requiring session authentication
 		r.Group(func(auth chi.Router) {
 			auth.Use(s.middlewareAuthSession)
-			auth.Get(endLogin, s.handleIsLoggedIn)
+			//auth.Get(endLogin, s.handleIsLoggedIn)
 			auth.Get(endUser, s.handleGetUser)
 			auth.Get(endExerciseType, s.handleGetExerciseTypes)
 			auth.Get(endWorkoutTemplate, s.handleGetWorkoutTemplates)
@@ -150,6 +150,7 @@ func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
 	})
 }
 
+/*
 // handleIsLoggedIn responds with http.StatusOK and the data of the
 // currently logged in user. It is meant to be used in conjunction
 // with middlewareAuthSession.
@@ -167,6 +168,7 @@ func (s *Server) handleIsLoggedIn(w http.ResponseWriter, r *http.Request) {
 
 	writeJSON(w, http.StatusOK, user)
 }
+*/
 
 // A credentials is used in the creating a user and login process to
 // prevent the client from sending more data then they should be able to,
@@ -237,7 +239,7 @@ func (s *Server) handleGetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writeJSON(w, http.StatusFound, user)
+	writeJSON(w, http.StatusOK, user)
 }
 
 // handleLogin receives a credentials json and creates a session that
