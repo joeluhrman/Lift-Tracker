@@ -10,13 +10,19 @@ import Login from "./routes/Login"
 import Dashboard from "./routes/Dashboard"
 import SignUp from "./routes/SignUp"
 
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 
 const router = createBrowserRouter([
-  { path: "/",          element: <Root/>      },
-  { path: "/login",     element: <Login/>     },
-  { path: "/signup",    element: <SignUp/>    },
-  { path: "/dashboard", element: <Dashboard/> },
+  { 
+    path: "/", 
+    element: <Root/>,
+    children: [
+      { path: "/login",     element: <Login/>     },
+      { path: "/signup",    element: <SignUp/>    },
+      { path: "/dashboard", element: <Dashboard/> },
+    ]     
+  },
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(

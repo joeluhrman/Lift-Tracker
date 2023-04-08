@@ -1,5 +1,17 @@
 export default function SignUp() {
     return(
-        <div>Dashboard</div>
+        <p>
+            test
+            test
+            test
+            test
+            test
+            test
+            test
+            test
+            test
+            test
+            test
+        </p>
     )
 }
