@@ -5,7 +5,7 @@ import {
     useLocation 
 } from "react-router-dom"
 
-import { handleGetUser } from "../handlers/userHandler"
+import { handleGetUser } from "../handlers/user"
 
 export default function Auth() {
     const [currentUser, setCurrentUser] = React.useState()

@@ -1,5 +1,7 @@
+import FormLogin from "../components/forms/Login"
+
 export default function Login() {
     return(
-        <h1>Login</h1>
+        <FormLogin/>
     )
 }
