@@ -7,7 +7,7 @@ import {
 
 export default function NavHeader() {
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar fixed="top" bg="light" expand="lg">
       <Container>
         <Navbar.Brand href="/">Lift-Tracker</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

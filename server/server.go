@@ -83,6 +83,7 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 		// endpoints requiring session authentication
 		r.Group(func(auth chi.Router) {
 			auth.Use(s.middlewareAuthSession)
+			auth.Get(endLogin, s.handleIsLoggedIn)
 			auth.Get(endUser, s.handleGetUser)
 			auth.Get(endExerciseType, s.handleGetExerciseTypes)
 			auth.Get(endWorkoutTemplate, s.handleGetWorkoutTemplates)
@@ -147,6 +148,24 @@ func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), keyUserID, userID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+// handleIsLoggedIn responds with http.StatusOK and the data of the
+// currently logged in user. It is meant to be used in conjunction
+// with middlewareAuthSession.
+//
+// It responds with http.StatusInternalServerError and the error
+// message if for some reason the user id in context cannot be
+// found in storage.
+func (s *Server) handleIsLoggedIn(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value(keyUserID).(uint)
+	user, err := s.storage.GetUser(userID)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	writeJSON(w, http.StatusOK, user)
 }
 
 // A credentials is used in the creating a user and login process to

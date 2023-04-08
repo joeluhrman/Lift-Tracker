@@ -16,16 +16,21 @@ import './index.css'
 
 const router = createBrowserRouter([
   { 
-    path: "/", 
-    element: <Root/>,
-    errorElement: <Error/>,
+    element: <Root/>, 
+    errorElement: <Error/>, 
     children: [
-      { path: "login",     element: <Login/>     },
-      { path: "signup",    element: <SignUp/>    },
-      { path: "dashboard", element: <Dashboard/> },
+      // not logged in routes
+      { path: "/login",     element: <Login/>     },
+      { path: "/signup",    element: <SignUp/>    },
+
+      // logged in routes
+      { path: "/dashboard", element: <Dashboard/> },
     ]     
   },
 ])
+
+// also should figure out how to conditionally render 
+// the logout button on the navbar
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
