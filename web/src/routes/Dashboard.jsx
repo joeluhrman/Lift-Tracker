@@ -1,17 +1,19 @@
-export default function SignUp() {
+export default function Dashboard() {
     return(
-        <p>
-            test
-            test
-            test
-            test
-            test
-            test
-            test
-            test
-            test
-            test
-            test
-        </p>
+        <div>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+            <h1>Test</h1>
+        </div>
     )
 }
