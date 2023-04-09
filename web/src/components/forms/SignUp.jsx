@@ -1,20 +1,39 @@
 import React from "react"
 import {
+    Button,
     Card,
-    Form
+    Form,
+    InputGroup,
 } from "react-bootstrap"
 import UserHandler from "../../handlers/UserHandler"
 
-export default function SignUp() {
-    const [validated,       setValidated]       = React.useState(false)
-    const [username,        setUsername]        = React.useState("")
-    const [email,           setEmail]           = React.useState("")
-    const [password,        setPassword]        = React.useState("")
-    const [confirmPassword, setConfirmPassword] = React.useState("")
+const userHandler = new UserHandler()
 
-    const handleSubmit = async() => {
-        const handler = new UserHandler()
-        const status = await handler.createUser()
+export default function SignUp() {
+    const [validated, setValidated] = React.useState(false)
+    const [formValue, setFormValue] = React.useState({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+    })
+
+    const handleChange = (event) => {
+        setFormValue({ ...formValue, [event.target.name]: event.target.value });
+    }
+
+    const handleSubmit = async(event) => {
+        const form = event.currentTarget
+        if (form.checkValidity() === false) {
+            event.preventDefault()
+            event.stopPropagation()
+        }   
+
+        /*
+        const res = await userHandler.createUser(
+            formValue.username, formValue.email, formValue.password
+        )
+        console.log(res)*/
     }
 
     return (
@@ -24,8 +43,28 @@ export default function SignUp() {
                     Sign Up
                 </Card.Title>
 
-                <Form>
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                    <Form.Group>
+                        <Form.Label>Username</Form.Label>
+                        <InputGroup hasValidation>
+                            <Form.Control
+                                required
+                                name="username"
+                                type="text"
+                                placholder="Username"
+                                value={formValue.username}
+                                onChange={handleChange}
+                            />
+                            <Form.Control.Feedback type="valid">
+                                Looks good!
+                            </Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">
+                                Please provide a username.
+                            </Form.Control.Feedback>
+                        </InputGroup>
+                    </Form.Group>
 
+                    <Button type="submit">Sign Up</Button>
                 </Form>
 
                 <Card.Footer>

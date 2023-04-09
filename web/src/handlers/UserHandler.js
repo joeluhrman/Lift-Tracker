@@ -7,9 +7,9 @@ export default class UserHandler {
     getUser = async() => {
         try {
             const res = await axios.get("/api/v1/user")
-            return res.data
+            return res
         } catch(err) {
-            return null
+            return err
         }
     }
 
@@ -22,9 +22,9 @@ export default class UserHandler {
 
         try {
             const res = await axios.post("/api/v1/user", body)
-            return res.status
+            return res
         } catch(err) {
-            return err.response.status
+            return err
         }
     }
 }
