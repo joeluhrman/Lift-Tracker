@@ -5,7 +5,7 @@ import {
     useLocation 
 } from "react-router-dom"
 
-import { handleGetUser } from "../handlers/user"
+import UserHandler from "../handlers/UserHandler"
 
 export default function Auth() {
     const [currentUser, setCurrentUser] = React.useState()
@@ -13,7 +13,8 @@ export default function Auth() {
 
     React.useEffect(() => {
         const get = async() => {
-            const user = await handleGetUser()
+            const handler = new UserHandler()
+            const user = await handler.getUser()
             return user
         }
 
