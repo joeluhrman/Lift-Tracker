@@ -23,21 +23,22 @@ export default function SignUp() {
     }
 
     const handleSubmit = async(event) => {
+        event.preventDefault()
+
         const form = event.currentTarget
         if (form.checkValidity() === false) {
-            event.preventDefault()
             event.stopPropagation()
         }   
+        setValidated(true)
 
-        /*
         const res = await userHandler.createUser(
             formValue.username, formValue.email, formValue.password
         )
-        console.log(res)*/
+        console.log(res)
     }
 
     return (
-        <Card>
+        <Card className="w-25">
             <Card.Body>
                 <Card.Title className="text-center">
                     Sign Up
