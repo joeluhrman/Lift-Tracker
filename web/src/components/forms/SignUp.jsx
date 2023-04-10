@@ -81,6 +81,25 @@ export default function SignUp() {
                 </Form.Control.Feedback>
                 {/*</InputGroup>*/}
             </Form.Group>
+            <Form.Group>
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                    required
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                    value={formValue.password}
+                    onChange={handleChange}
+                    minLength="8"
+                    maxLength="25"
+                />
+                <Form.Control.Feedback type="valid">
+                    Looks good!
+                </Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                    Must be 8-25 characters.
+                </Form.Control.Feedback>
+            </Form.Group>
 
             <Button type="submit">Sign Up</Button>
         </Form>
