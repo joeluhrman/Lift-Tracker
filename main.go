@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/MadAppGang/httplog"
 	"github.com/joeluhrman/Lift-Tracker/server"
 	"github.com/joeluhrman/Lift-Tracker/storage"
 )
@@ -28,7 +28,7 @@ func main() {
 	pgStore.MustOpen()
 	defer pgStore.MustClose()
 
-	server := server.New(*listenaddr, pgStore, middleware.Logger)
+	server := server.New(*listenaddr, pgStore, httplog.Logger)
 
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())
 
