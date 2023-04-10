@@ -1,6 +1,7 @@
 import axios from "axios"
 
 export default class Handler {
+    // returns status code, headers, and body of response
     async request(method, endpoint, data) {
         var reqFunc = undefined
         switch(method) {
@@ -23,18 +24,12 @@ export default class Handler {
 
         try {
             const res = await reqFunc(endpoint, data)
-            return [true, res.data]
+            return [res.status, res.headers, res.data]
         } catch(error) {
-            if (error.response) {
-                if (error.response.data !== undefined) {
-                    return [false, "The server is not responding."]
-                }
-                return [false, err.response.data]
-            } else if (error.request) {
-                return [false, "Check your internet connection."]
-            } else {
-                return [false, "An unknown error occurred."]
-            }
+           // if (error.response) {
+                const res = error.response
+                return [res.status, res.headers, res.data]
+           // }
         }
     }
 }

@@ -24,7 +24,7 @@ export default class UserHandler extends Handler {
             password: password
         }
 
-        const [successful, data] = await this.request("POST", "/api/v1/user", body)
-        return [successful, data]
+        const res = await this.request("POST", "/api/v1/user", body)
+        return res
     }
 }

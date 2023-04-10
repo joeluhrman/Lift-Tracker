@@ -2,9 +2,8 @@ import React from "react"
 import {
     Button,
     Form,
-    InputGroup,
 } from "react-bootstrap"
-import { Link } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import UserHandler from "../../handlers/UserHandler"
 
 const userHandler = new UserHandler()
@@ -18,6 +17,7 @@ export default function SignUp() {
         confirmPassword: "",
     })
     const [submitError, setSubmitError] = React.useState(null)
+    const [toLogin, setToLogin]         = React.useState(false)
 
     const handleChange = (event) => {
         setFormValue({ ...formValue, [event.target.name]: event.target.value });
@@ -34,27 +34,32 @@ export default function SignUp() {
             return
         }   
 
-        const [successful, data] = await userHandler.createUser(
+        const [status, headers, data] = await userHandler.createUser(
             formValue.username, formValue.email, formValue.password
         )
-        console.log(data)
-        console.log(successful)
 
-        // success
-        if(successful) {
-            return
+        // successful, redirect to login
+        if (status === 202) {
+            setToLogin(true)
+        } else if (status === 409) {
+            setSubmitError("That username or email is already taken.")
+        } else if (status === 500) {
+            setSubmitError("The server is not responding.")
         } else {
-            setSubmitError(data)
-            console.log(submitError)
-            return
+            setSubmitError("Unhandled error.")
         }
+    }
+
+    if (toLogin) {
+        return (
+            <Navigate to="/login"/>
+        )
     }
 
     return (
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Group>
                 <Form.Label>Username</Form.Label>
-                {/*<InputGroup hasValidation>*/}
                 <Form.Control
                     required
                     name="username"
@@ -71,11 +76,9 @@ export default function SignUp() {
                 <Form.Control.Feedback type="invalid">
                     Must be 3-20 characters.
                 </Form.Control.Feedback>
-                {/*</InputGroup>*/}
             </Form.Group>
             <Form.Group>
                 <Form.Label>Email</Form.Label>
-                {/*<InputGroup hasValidation>*/}
                 <Form.Control 
                     required
                     name="email"
@@ -90,7 +93,6 @@ export default function SignUp() {
                 <Form.Control.Feedback type="invalid">
                     Please enter a valid email.
                 </Form.Control.Feedback>
-                {/*</InputGroup>*/}
             </Form.Group>
             <Form.Group>
                 <Form.Label>Password</Form.Label>
