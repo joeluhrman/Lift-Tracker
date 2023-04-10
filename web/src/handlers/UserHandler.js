@@ -1,9 +1,12 @@
 import axios from "axios"
-
+import Handler from "./Handler"
 
 // not sure if it makes sense to have this as a class or just
 // a colletion of functions.
-export default class UserHandler {
+//
+// All handlers should return a tuple w/ whether the
+// request was successful and the body/data/message
+export default class UserHandler extends Handler {
     getUser = async() => {
         try {
             const res = await axios.get("/api/v1/user")
@@ -13,6 +16,7 @@ export default class UserHandler {
         }
     }
 
+    // should return [status, body]
     createUser = async(username, email, password) => {
         const body = {
             username: username,
@@ -20,11 +24,7 @@ export default class UserHandler {
             password: password
         }
 
-        try {
-            const res = await axios.post("/api/v1/user", body)
-            return res
-        } catch(err) {
-            return err
-        }
+        const [successful, data] = await this.request("POST", "/api/v1/user", body)
+        return [successful, data]
     }
 }

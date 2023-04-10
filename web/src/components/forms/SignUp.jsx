@@ -34,14 +34,20 @@ export default function SignUp() {
             return
         }   
 
-        const res = await userHandler.createUser(
+        const [successful, data] = await userHandler.createUser(
             formValue.username, formValue.email, formValue.password
         )
-        
-        // conflict
-        
+        console.log(data)
+        console.log(successful)
 
-        // no server response
+        // success
+        if(successful) {
+            return
+        } else {
+            setSubmitError(data)
+            console.log(submitError)
+            return
+        }
     }
 
     return (
