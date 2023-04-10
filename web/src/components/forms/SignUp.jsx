@@ -5,6 +5,7 @@ import {
     Form,
     InputGroup,
 } from "react-bootstrap"
+import { Link } from "react-router-dom"
 import UserHandler from "../../handlers/UserHandler"
 
 const userHandler = new UserHandler()
@@ -12,10 +13,10 @@ const userHandler = new UserHandler()
 export default function SignUp() {
     const [validated, setValidated] = React.useState(false)
     const [formValue, setFormValue] = React.useState({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
+        username:        "",
+        email:           "",
+        password:        "",
+        confirmPassword: "",
     })
 
     const handleChange = (event) => {
@@ -24,12 +25,14 @@ export default function SignUp() {
 
     const handleSubmit = async(event) => {
         event.preventDefault()
+        event.stopPropagation()
+
+        setValidated(true)
 
         const form = event.currentTarget
         if (form.checkValidity() === false) {
-            event.stopPropagation()
+            return
         }   
-        setValidated(true)
 
         const res = await userHandler.createUser(
             formValue.username, formValue.email, formValue.password
@@ -52,15 +55,36 @@ export default function SignUp() {
                                 required
                                 name="username"
                                 type="text"
-                                placholder="Username"
+                                placeholder="Username"
                                 value={formValue.username}
+                                minLength="3"
+                                maxLength="20"
                                 onChange={handleChange}
                             />
                             <Form.Control.Feedback type="valid">
                                 Looks good!
                             </Form.Control.Feedback>
                             <Form.Control.Feedback type="invalid">
-                                Please provide a username.
+                                Must be 3-20 characters.
+                            </Form.Control.Feedback>
+                        </InputGroup>
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Email</Form.Label>
+                        <InputGroup hasValidation>
+                            <Form.Control 
+                                required
+                                name="email"
+                                type="email"
+                                placeholder="Email"
+                                value={formValue.email}
+                                onChange={handleChange}
+                            />
+                            <Form.Control.Feedback type="valid">
+                                Looks good!
+                            </Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">
+                                Please enter a valid email.
                             </Form.Control.Feedback>
                         </InputGroup>
                     </Form.Group>
@@ -69,7 +93,7 @@ export default function SignUp() {
                 </Form>
 
                 <Card.Footer>
-                    Already have an account? Login
+                    Already have an account? <Link to="/login">Login</Link>
                 </Card.Footer>
             </Card.Body>
         </Card>
