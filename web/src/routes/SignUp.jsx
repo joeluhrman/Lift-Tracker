@@ -2,6 +2,7 @@ import {
     Card,
     Container,
 } from "react-bootstrap"
+import { Link } from "react-router-dom"
 import FormSignUp from "../components/forms/SignUp"
 
 export default function SignUp() {
@@ -16,7 +17,7 @@ export default function SignUp() {
                     <FormSignUp/>
 
                     <Card.Footer>
-                      {/*  Already have an account? <Link to="/login">Login</Link> */}
+                        Already have an account? <Link to="/login">Login</Link>
                     </Card.Footer>
                 </Card.Body>
             </Card>
