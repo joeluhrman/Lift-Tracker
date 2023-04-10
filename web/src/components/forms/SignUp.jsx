@@ -34,7 +34,7 @@ export default function SignUp() {
             return
         }   
 
-        const [status, headers, data] = await userHandler.createUser(
+        const [status, headers, data] = await userHandler.create(
             formValue.username, formValue.email, formValue.password
         )
 

@@ -14,17 +14,17 @@ export default function Auth() {
 
     React.useEffect(() => {
         const handleGetCurrentUser = async() => {
-            const res = await userHandler.getUser()
+            const [status, headers, data] = await userHandler.get()
             const user = (
-                res.data !== undefined 
-                ? res.data 
+                data !== undefined 
+                ? data 
                 : null
             )
 
             return user
         }
 
-        const user = handleGetCurrentUser
+        const user = handleGetCurrentUser()
         setCurrentUser(user)
     }, [])
 
