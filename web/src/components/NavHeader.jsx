@@ -1,9 +1,11 @@
 import {
+    Button,
     Container,
     Nav,
     Navbar,
-    NavDropdown,
 } from "react-bootstrap"
+import UserHandler from "../handlers/UserHandler"
+const userHandler = new UserHandler()
 
 export default function NavHeader() {
   return (
@@ -13,7 +15,9 @@ export default function NavHeader() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            
+            <Nav.Item>
+              <Button onClick={userHandler.logout}>Logout</Button>
+            </Nav.Item>
           </Nav>
         </Navbar.Collapse>
       </Container>

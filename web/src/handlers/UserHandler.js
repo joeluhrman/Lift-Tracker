@@ -1,4 +1,3 @@
-import axios from "axios"
 import Handler from "./Handler"
 
 export default class UserHandler extends Handler {
@@ -25,6 +24,11 @@ export default class UserHandler extends Handler {
         }
 
         const res = await this.request("POST", "/api/v1/login", body)
-        return 
+        return res
+    }
+
+    logout = async() => {
+        const res = await this.request("POST", "/api/v1/logout")
+        return res
     }
 }

@@ -2,35 +2,24 @@ import React from "react"
 import { 
     Navigate, 
     Outlet, 
-    useLocation 
 } from "react-router-dom"
 
 import UserHandler from "../handlers/UserHandler"
 const userHandler = new UserHandler()
 
 export default function Auth() {
-    const [currentUser, setCurrentUser] = React.useState()
-    //const loc = useLocation
+    const [status, setStatus] = React.useState(undefined)
 
     React.useEffect(() => {
-        const handleGetCurrentUser = async() => {
-            const [status, headers, data] = await userHandler.get()
-            const user = (
-                data !== undefined 
-                ? data 
-                : null
-            )
-
-            return user
-        }
-
-        const user = handleGetCurrentUser()
-        setCurrentUser(user)
+        (async () => {
+            const [stat, headers, data] = await userHandler.get()
+            setStatus(stat)
+        })()
     }, [])
 
-    if (currentUser === undefined) return null
+    if (status === undefined) return null
 
-    return currentUser === null
+    return (status === 200
         ? <Outlet/>
-        : <Navigate to="/login" /*replace state={{ from: loc }}*//>
+        : <Navigate to="/login"/>)
 }
