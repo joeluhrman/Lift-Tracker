@@ -100,7 +100,6 @@ export default function SignUp() {
                     Must be 8-25 characters.
                 </Form.Control.Feedback>
             </Form.Group>
-
             <Button type="submit">Sign Up</Button>
         </Form>
     ) 
