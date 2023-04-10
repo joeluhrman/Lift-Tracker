@@ -17,6 +17,7 @@ export default function SignUp() {
         password:        "",
         confirmPassword: "",
     })
+    const [submitError, setSubmitError] = React.useState(null)
 
     const handleChange = (event) => {
         setFormValue({ ...formValue, [event.target.name]: event.target.value });
@@ -36,7 +37,11 @@ export default function SignUp() {
         const res = await userHandler.createUser(
             formValue.username, formValue.email, formValue.password
         )
-        console.log(res)
+        
+        // conflict
+        
+
+        // no server response
     }
 
     return (
@@ -100,7 +105,11 @@ export default function SignUp() {
                     Must be 8-25 characters.
                 </Form.Control.Feedback>
             </Form.Group>
+            
             <Button type="submit">Sign Up</Button>
+            <p className="text-danger">
+                {submitError}
+            </p>
         </Form>
     ) 
 }
