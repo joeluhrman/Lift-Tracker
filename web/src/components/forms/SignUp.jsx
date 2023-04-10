@@ -58,7 +58,7 @@ export default function SignUp() {
 
     return (
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <Form.Group>
+            <Form.Group className="mb-2">
                 <Form.Label>Username</Form.Label>
                 <Form.Control
                     required
@@ -77,7 +77,7 @@ export default function SignUp() {
                     Must be 3-20 characters.
                 </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-2">
                 <Form.Label>Email</Form.Label>
                 <Form.Control 
                     required
@@ -94,7 +94,7 @@ export default function SignUp() {
                     Please enter a valid email.
                 </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-2">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                     required

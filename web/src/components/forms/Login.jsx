@@ -13,7 +13,7 @@ export default function Login() {
         password: "",
     })
     const [submitError, setSubmitError] = React.useState(null)
-  //  const [toDashboard, setToDashboard] = React.useState(false)
+    const [toDashboard, setToDashboard] = React.useState(false)
 
     const handleChange = (event) => {
         setFormValue({ ...formValue, [event.target.name]: event.target.value });
@@ -24,13 +24,13 @@ export default function Login() {
         event.stopPropagation()
 
         const [status, headers, data] = await userHandler.login(
-            username, password
+            formValue.username, formValue.password
         )
 
         console.log(status, data)
     }
 
-  //  if (toDashboard) return <Navigate to="/dashboard"/>
+    if (toDashboard) return <Navigate to="/dashboard"/>
 
     return (
         <Form noValidate onSubmit={handleSubmit}>
