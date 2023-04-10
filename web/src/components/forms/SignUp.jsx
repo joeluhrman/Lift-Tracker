@@ -1,7 +1,6 @@
 import React from "react"
 import {
     Button,
-    Card,
     Form,
     InputGroup,
 } from "react-bootstrap"
@@ -41,61 +40,49 @@ export default function SignUp() {
     }
 
     return (
-        <Card className="w-25">
-            <Card.Body>
-                <Card.Title className="text-center">
-                    Sign Up
-                </Card.Title>
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+            <Form.Group>
+                <Form.Label>Username</Form.Label>
+                {/*<InputGroup hasValidation>*/}
+                <Form.Control
+                    required
+                    name="username"
+                    type="text"
+                    placeholder="Username"
+                    value={formValue.username}
+                    minLength="3"
+                    maxLength="20"
+                    onChange={handleChange}
+                />
+                <Form.Control.Feedback type="valid">
+                    Looks good!
+                </Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                    Must be 3-20 characters.
+                </Form.Control.Feedback>
+                {/*</InputGroup>*/}
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>Email</Form.Label>
+                {/*<InputGroup hasValidation>*/}
+                <Form.Control 
+                    required
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                    value={formValue.email}
+                    onChange={handleChange}
+                />
+                <Form.Control.Feedback type="valid">
+                    Looks good!
+                </Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                    Please enter a valid email.
+                </Form.Control.Feedback>
+                {/*</InputGroup>*/}
+            </Form.Group>
 
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    <Form.Group>
-                        <Form.Label>Username</Form.Label>
-                        <InputGroup hasValidation>
-                            <Form.Control
-                                required
-                                name="username"
-                                type="text"
-                                placeholder="Username"
-                                value={formValue.username}
-                                minLength="3"
-                                maxLength="20"
-                                onChange={handleChange}
-                            />
-                            <Form.Control.Feedback type="valid">
-                                Looks good!
-                            </Form.Control.Feedback>
-                            <Form.Control.Feedback type="invalid">
-                                Must be 3-20 characters.
-                            </Form.Control.Feedback>
-                        </InputGroup>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Email</Form.Label>
-                        <InputGroup hasValidation>
-                            <Form.Control 
-                                required
-                                name="email"
-                                type="email"
-                                placeholder="Email"
-                                value={formValue.email}
-                                onChange={handleChange}
-                            />
-                            <Form.Control.Feedback type="valid">
-                                Looks good!
-                            </Form.Control.Feedback>
-                            <Form.Control.Feedback type="invalid">
-                                Please enter a valid email.
-                            </Form.Control.Feedback>
-                        </InputGroup>
-                    </Form.Group>
-
-                    <Button type="submit">Sign Up</Button>
-                </Form>
-
-                <Card.Footer>
-                    Already have an account? <Link to="/login">Login</Link>
-                </Card.Footer>
-            </Card.Body>
-        </Card>
+            <Button type="submit">Sign Up</Button>
+        </Form>
     ) 
 }
