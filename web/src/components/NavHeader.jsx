@@ -13,17 +13,19 @@ import UserHandler from "../handlers/UserHandler"
 const userHandler = new UserHandler()
 
 export default function NavHeader() {
-  const [toLogin, setToLogin] = React.useState(false)
+  //const [toLogin, setToLogin] = React.useState(false)
   const navigate = useNavigate()
 
+  /*
   React.useEffect(() => {
     navigate("/login")
   }, [toLogin])
+  */
 
   const handleLogout = async() => {
     const [status, headers, data] = await userHandler.logout()
     if (status === 200) {
-      setToLogin(true)
+      navigate("/login")
     }
   }
 
