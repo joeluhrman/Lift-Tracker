@@ -16,11 +16,15 @@ export default function NavHeader() {
   const [toLogin, setToLogin] = React.useState(false)
 
   const handleLogout = async() => {
-    const res = await userHandler.logout()
-    setToLogin(true)
+    const [status, headers, data] = await userHandler.logout()
+    if (status === 200) {
+      setToLogin(true)
+    }
   }
 
-  if (toLogin) return <Navigate to="/login"/>
+  if (toLogin) {
+    return <Navigate to="/login"/>
+  }
 
   return (
     <Navbar bg="light" expand="lg" className="border-bottom" fixed="top">
