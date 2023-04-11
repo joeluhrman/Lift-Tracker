@@ -4,6 +4,7 @@ import {
     Container,
     Modal
 } from "react-bootstrap"
+import AddWTForm from "../forms/AddWorkoutTemplate"
 import WorkoutTemplateHandler from "../../handlers/WorkoutTemplateHandler"
 const wtHandler = new WorkoutTemplateHandler()
 
@@ -31,12 +32,12 @@ export default function WorkoutTemplates() {
                 Add Workout Template
             </Button>
 
-            <Modal show={showAddWTForm} onHide={handleCloseAddWTForm}>
+            <Modal fullscreen="xl-down" backdrop="static" keyboard={false} show={showAddWTForm} onHide={handleCloseAddWTForm}>
                 <Modal.Header>
                     <Modal.Title>Add Workout Template</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Form should go here
+                    <AddWTForm/>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseAddWTForm}>
