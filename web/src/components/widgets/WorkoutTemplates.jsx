@@ -20,8 +20,8 @@ export default function WorkoutTemplates() {
     if (temps === undefined) return <>Loading...</>
 
     return (
-        <Container fluid>
-            <Button className="ms-auto" variant="outline-primary">
+        <Container fluid className="d-flex">
+            <Button className="ms-auto" variant="outline-primary" size="md">
                 Add Workout Template
             </Button>
         </Container>
