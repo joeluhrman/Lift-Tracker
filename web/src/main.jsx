@@ -11,6 +11,7 @@ import Root from './routes/Root'
 import Login from "./routes/Login"
 import Dashboard from "./routes/Dashboard"
 import SignUp from "./routes/SignUp"
+import WorkoutTemplates from "./routes/WorkoutTemplates"
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
@@ -23,11 +24,12 @@ const router = createBrowserRouter([
       { path: "/login",     element: <Login/>     },
       { path: "/signup",    element: <SignUp/>    },
 
-      // auth routes
       { 
         element: <Auth/>,
         children: [
-          { path: "/dashboard", element: <Dashboard/> },
+          { path: "/",                  element: <Dashboard/>       },
+          { path: "/dashboard",         element: <Dashboard/>       },
+          { path: "/workout-templates", element: <WorkoutTemplates/>},
         ]
       }
     ]     

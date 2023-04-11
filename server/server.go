@@ -384,7 +384,7 @@ func (s *Server) handleGetWorkoutTemplates(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	writeJSON(w, http.StatusFound, wTemps)
+	writeJSON(w, http.StatusOK, wTemps)
 }
 
 // handleCreateWorkoutLog decodes from JSON and saves a

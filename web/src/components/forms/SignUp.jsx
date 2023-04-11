@@ -38,7 +38,6 @@ export default function SignUp() {
             formValue.username, formValue.email, formValue.password
         )
 
-        // successful, redirect to login
         if (status === 202) {
             setToLogin(true)
         } else if (status === 409) {

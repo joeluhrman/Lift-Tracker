@@ -387,8 +387,8 @@ func Test_GetWorkoutTemplatesEndpoint(t *testing.T) {
 	// success case
 	func() {
 		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endWorkoutTemplate, nil, testLoggedInServer.Handler)
-		if rec.Code != http.StatusFound {
-			t.Errorf(wrongCodef, rec.Code, http.StatusFound)
+		if rec.Code != http.StatusOK {
+			t.Errorf(wrongCodef, rec.Code, http.StatusOK)
 			return
 		}
 
