@@ -8,7 +8,7 @@ import {
 import {
   useNavigate
 } from "react-router-dom"
-import logoUrl from "../assets/lt.png"
+import logoUrl from "../assets/lt_nobackground.png"
 import UserHandler from "../handlers/UserHandler"
 const userHandler = new UserHandler()
 

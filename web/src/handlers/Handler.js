@@ -1,9 +1,8 @@
 import axios from "axios"
 
 export default class Handler {
-    // returns status code, headers, and body of response
     async request(method, endpoint, data) {
-        var reqFunc = undefined
+        var reqFunc
         switch(method) {
             case "GET":
                 reqFunc = axios.get
@@ -26,10 +25,8 @@ export default class Handler {
             const res = await reqFunc(endpoint, data)
             return [res.status, res.headers, res.data]
         } catch(error) {
-           // if (error.response) {
-                const res = error.response
-                return [res.status, res.headers, res.data]
-           // }
+            const res = error.response
+            return [res.status, res.headers, res.data]
         }
     }
 }

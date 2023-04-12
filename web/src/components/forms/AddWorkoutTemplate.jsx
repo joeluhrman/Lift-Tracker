@@ -1,6 +1,8 @@
 import React from "react"
 import {
-    Form
+    Button,
+    Container,
+    Form,
 } from "react-bootstrap"
 
 export default function AddWorkoutTemplate() {
@@ -26,6 +28,10 @@ export default function AddWorkoutTemplate() {
                     maxLength="25"
                     onChange={handleChange}
                 />
+            </Form.Group>
+            <Form.Group className="mb-2">
+                <Form.Label>Exercises</Form.Label>
+                <Button className="float-end" size="sm">+</Button>
             </Form.Group>
         </Form>
     )

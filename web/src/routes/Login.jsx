@@ -7,7 +7,7 @@ import FormLogin from "../components/forms/Login"
 
 export default function Login() {
     return(
-        <Container className="d-flex justify-content-center align-items-center">
+        <Container className="d-flex justify-content-center align-items-center" style={{marginTop:"4%"}}>
             <Card className="w-25">
                 <Card.Body>
                     <Card.Title className="text-center">

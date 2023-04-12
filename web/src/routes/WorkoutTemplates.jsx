@@ -45,7 +45,7 @@ export default function WorkoutTemplates() {
                         Cancel
                     </Button>
                     <Button variant="primary">
-                        Save Changes
+                        Save
                     </Button>
                 </Modal.Footer>
             </Modal>
