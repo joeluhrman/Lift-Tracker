@@ -12,15 +12,8 @@ import logoUrl from "../assets/lt.png"
 import UserHandler from "../handlers/UserHandler"
 const userHandler = new UserHandler()
 
-export default function NavHeader() {
-  //const [toLogin, setToLogin] = React.useState(false)
+export default function NavHeader(props) {
   const navigate = useNavigate()
-
-  /*
-  React.useEffect(() => {
-    navigate("/login")
-  }, [toLogin])
-  */
 
   const handleLogout = async() => {
     const [status, headers, data] = await userHandler.logout()
@@ -28,6 +21,23 @@ export default function NavHeader() {
       navigate("/login")
     }
   }
+
+  const navItems = 
+    <Nav className="container-fluid">
+      <Nav.Item>
+        <Nav.Link href="#">
+          Workout History
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link href="/workout-templates">
+          Workout Templates
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item className="ms-auto">
+        <Button onClick={handleLogout}>Logout</Button>
+      </Nav.Item>
+    </Nav>
 
   return (
     <Navbar bg="light" expand="lg" className="border-bottom" fixed="top">
@@ -43,21 +53,7 @@ export default function NavHeader() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="container-fluid">
-            <Nav.Item>
-              <Nav.Link href="#">
-                Workout History
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link href="/workout-templates">
-                Workout Templates
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item className="ms-auto">
-              <Button onClick={handleLogout}>Logout</Button>
-            </Nav.Item>
-          </Nav>
+          {props.loggedIn && navItems}
         </Navbar.Collapse>
       </Container>
     </Navbar>
