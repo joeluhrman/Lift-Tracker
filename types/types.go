@@ -13,10 +13,10 @@ import (
 // in storage.
 type Metadata struct {
 	// date/time record was created
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"createdAt"`
 
 	// date/time record was updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 // A types.User represents a user's account information
@@ -25,8 +25,8 @@ type User struct {
 	ID             uint   `json:"id"`
 	Username       string `json:"username"`
 	Email          string `json:"email"`
-	HashedPassword string `json:"hashed_password"`
-	IsAdmin        bool   `json:"is_admin"`
+	HashedPassword string `json:"hashedPassword"`
+	IsAdmin        bool   `json:"isAdmin"`
 
 	Metadata
 }
@@ -107,8 +107,8 @@ type ExerciseType struct {
 	ID          uint        `json:"id"`
 	Name        string      `json:"name"`
 	Image       image.Image `json:"image";"omitempty"` // png only for now
-	PPLType     PPLType     `json:"ppl_type"`
-	MuscleGroup MuscleGroup `json:"muscle_group"`
+	PPLType     PPLType     `json:"pplType"`
+	MuscleGroup MuscleGroup `json:"muscleGroup"`
 
 	Metadata
 }
@@ -135,7 +135,7 @@ func NewExerciseType(name string, image image.Image, pplType PPLType, mscGrp Mus
 // set/rep/weight scheme.
 type SetGroupLog struct {
 	ID            uint    `json:"id"`
-	ExerciseLogID uint    `json:"exercise_log_id"`
+	ExerciseLogID uint    `json:"exerciseLogID"`
 	Sets          uint    `json:"sets"`
 	Reps          uint    `json:"reps"`
 	Weight        float32 `json:"weight"`
@@ -147,16 +147,16 @@ type SetGroupLog struct {
 // in storage.
 type ExerciseLog struct {
 	ID           uint `json:"id"`
-	WorkoutLogID uint `json:"workout_log_id"`
+	WorkoutLogID uint `json:"workoutLogID"`
 
 	// ID of the exercise type it corresponds to
-	ExerciseTypeID uint `json:"exercise_type_id"`
+	ExerciseTypeID uint `json:"exerciseTypeID"`
 
 	// notes on how the exercise went etc.
 	Notes string `json:"notes"`
 
 	// can have multiple setgroups per exercise
-	SetGroupLogs []SetGroupLog `json:"setgroup_logs"`
+	SetGroupLogs []SetGroupLog `json:"setgroupLogs"`
 
 	Metadata
 }
@@ -165,13 +165,13 @@ type ExerciseLog struct {
 // storage.
 type WorkoutLog struct {
 	ID     uint      `json:"id"`
-	UserID uint      `json:"user_id"`
+	UserID uint      `json:"userID"`
 	Date   time.Time `json:"date"`
 	Name   string    `json:"name"`
 
 	// notes on how the workout in general went
 	Notes        string        `json:"notes"`
-	ExerciseLogs []ExerciseLog `json:"exercise_logs"`
+	ExerciseLogs []ExerciseLog `json:"exerciseLogs"`
 
 	Metadata
 }
@@ -183,7 +183,7 @@ type WorkoutLog struct {
 // of logs (it doesn't have a weight field).
 type SetGroupTemplate struct {
 	ID                 uint `json:"id"`
-	ExerciseTemplateID uint `json:"exercise_template_id"`
+	ExerciseTemplateID uint `json:"exerciseTemplateID"`
 	Sets               uint `json:"sets"`
 	Reps               uint `json:"reps"`
 
@@ -195,13 +195,13 @@ type SetGroupTemplate struct {
 // template in storage.
 type ExerciseTemplate struct {
 	ID                uint `json:"id"`
-	WorkoutTemplateID uint `json:"workout_template_id"`
+	WorkoutTemplateID uint `json:"workoutTemplateID"`
 
 	// id of the exercise type it corresponds to
-	ExerciseTypeID uint `json:"exercise_type_id"`
+	ExerciseTypeID uint `json:"exerciseTypeID"`
 
 	// can have multiple setgroups
-	SetGroupTemplates []SetGroupTemplate `json:"setgroup_templates"`
+	SetGroupTemplates []SetGroupTemplate `json:"setgroupTemplates"`
 
 	Metadata
 }
@@ -210,9 +210,9 @@ type ExerciseTemplate struct {
 // for a workout in storage.
 type WorkoutTemplate struct {
 	ID                uint               `json:"id"`
-	UserID            uint               `json:"user_id"`
+	UserID            uint               `json:"userID"`
 	Name              string             `json:"name"`
-	ExerciseTemplates []ExerciseTemplate `json:"exercise_templates"`
+	ExerciseTemplates []ExerciseTemplate `json:"exerciseTemplates"`
 
 	Metadata
 }
