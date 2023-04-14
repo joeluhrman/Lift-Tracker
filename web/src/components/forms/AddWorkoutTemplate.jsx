@@ -17,13 +17,20 @@ export default function AddWorkoutTemplate() {
     }
 
     const handleAddExercise = () => {
-        console.log("yep")
-        var temp = exerciseElements
-        temp.push(<Form.Group><Form.Label>Test element</Form.Label></Form.Group>)
-        console.log(temp)
-        setExerciseElements(temp)
+        // push new empty exercise to exercise_templates        
+        var exercises = formValue.exercise_templates
+        exercises.push({})
+        setFormValue({...formValue, exercise_templates: [...exercises]})
+
+        // push new exercise element 
+        var elements = exerciseElements
+        elements.push(<Form.Group><Form.Label>Test element</Form.Label></Form.Group>)
+        setExerciseElements([...elements])
     }
     
+    console.log(formValue.exercise_templates)
+    console.log(exerciseElements)
+
     return (
         <Form noValidate>
             <Form.Group className="mb-2">
@@ -43,7 +50,7 @@ export default function AddWorkoutTemplate() {
                 <Form.Label>Exercises</Form.Label>
                 <Container>
                     <Button className="float-end" size="sm" onClick={handleAddExercise}>+</Button>
-                    {exerciseElements}
+                    { exerciseElements }
                 </Container>
             </Form.Group>
         </Form>
