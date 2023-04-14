@@ -8,7 +8,7 @@ import {
 export default function AddWorkoutTemplate() {
     const [formValue, setFormValue] = React.useState({
         name: "",
-        exercise_templates: [],
+        exerciseTemplates: [],
     })
     const [exerciseElements, setExerciseElements] = React.useState([])
 
@@ -17,10 +17,10 @@ export default function AddWorkoutTemplate() {
     }
 
     const handleAddExercise = () => {
-        // push new empty exercise to exercise_templates        
-        var exercises = formValue.exercise_templates
+        // push new empty exercise to exerciseTemplates        
+        var exercises = formValue.exerciseTemplates
         exercises.push({})
-        setFormValue({...formValue, exercise_templates: [...exercises]})
+        setFormValue({...formValue, exerciseTemplates: [...exercises]})
 
         // push new exercise element 
         var elements = exerciseElements
@@ -28,7 +28,7 @@ export default function AddWorkoutTemplate() {
         setExerciseElements([...elements])
     }
     
-    console.log(formValue.exercise_templates)
+    console.log(formValue.exerciseTemplates)
     console.log(exerciseElements)
 
     return (
