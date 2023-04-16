@@ -26,12 +26,12 @@ export default function NavHeader(props) {
     <Nav className="container-fluid">
       <Nav.Item>
         <Nav.Link href="#">
-          Workout History
+          History
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/workout-templates">
-          Workout Templates
+          Templates
         </Nav.Link>
       </Nav.Item>
       <Nav.Item className="ms-auto">
