@@ -18,9 +18,9 @@ export default function AddWorkoutTemplate() {
 
     const handleAddExercise = () => {
         // push new empty exercise to exerciseTemplates        
-        var exercises = formValue.exerciseTemplates
-        exercises.push({})
-        setFormValue({...formValue, exerciseTemplates: [...exercises]})
+        var exerciseTemplates = formValue.exerciseTemplates
+        exerciseTemplates.push({})
+        setFormValue({...formValue, exerciseTemplates: [...exerciseTemplates]})
 
         // push new exercise element 
         var elements = exerciseElements
