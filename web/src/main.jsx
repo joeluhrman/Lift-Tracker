@@ -13,6 +13,7 @@ import Login from "./routes/Login"
 import Dashboard from "./routes/Dashboard"
 import SignUp from "./routes/SignUp"
 import WorkoutTemplates from "./routes/WorkoutTemplates"
+import AddWorkoutTemplate from "./routes/AddWorkoutTemplate"
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
@@ -36,9 +37,10 @@ const router = createBrowserRouter([
           { 
             element: <Nav loggedIn={true}/>,
             children: [
-              { path: "/",                  element: <Dashboard/>       },
-              { path: "/dashboard",         element: <Dashboard/>       },
-              { path: "/workout-templates", element: <WorkoutTemplates/>},
+              { path: "/",                     element: <Dashboard/>         },
+              { path: "/dashboard",            element: <Dashboard/>         },
+              { path: "/workout-templates",    element: <WorkoutTemplates/>  },
+              { path: "/add-workout-template", element: <AddWorkoutTemplate/>}
             ]
           }
         ]

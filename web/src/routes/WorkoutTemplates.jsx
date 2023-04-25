@@ -1,4 +1,5 @@
 import React from "react"
+import { useNavigate } from "react-router-dom"
 import {
     Button,
     Container,
@@ -9,8 +10,8 @@ import WorkoutTemplateHandler from "../handlers/WorkoutTemplateHandler"
 const wtHandler = new WorkoutTemplateHandler()
 
 export default function WorkoutTemplates() {
-    const [temps, setTemps]                 = React.useState()
-    const [showAddWTForm, setShowAddWTForm] = React.useState(false)
+    const [temps, setTemps] = React.useState()
+    const navigate = useNavigate()
 
     React.useEffect(() => {
         (async () => {
@@ -20,8 +21,7 @@ export default function WorkoutTemplates() {
         })()
     }, [])
 
-    const handleShowAddWTForm = () => setShowAddWTForm(true)
-    const handleCloseAddWTForm = () => setShowAddWTForm(false)
+    const handleToAddWT = () => navigate("/add-workout-template")
 
     if (temps === undefined) return <Container>Loading...</Container>
 
@@ -29,26 +29,9 @@ export default function WorkoutTemplates() {
         <Container>
             <Container fluid className="d-flex">
                 <Button className="ms-auto" variant="outline-primary" 
-                    size="md" onClick={handleShowAddWTForm}>
+                    size="md" onClick={handleToAddWT}>
                     Add Workout Template
                 </Button>
-
-                <Modal fullscreen="xl-down" backdrop="static" keyboard={false} show={showAddWTForm} onHide={handleCloseAddWTForm}>
-                    <Modal.Header>
-                        <Modal.Title>Add Workout Template</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <AddWTForm/>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseAddWTForm}>
-                            Cancel
-                        </Button>
-                        <Button variant="primary">
-                            Save
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
             </Container>
         </Container>
     )
