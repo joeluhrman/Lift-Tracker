@@ -1,7 +1,22 @@
 # Lift-Tracker
 Webapp (and maybe mobile in the future) for tracking lifting progress.  
-Right now I'm just working on the database and JSON API, going to start frontend soon.  
-I'm focussing primarily on bare-bones functionality such as signup, login, logout, logging workouts/exercise/setgroups, and creating workout templates. Probably need to optimize data layer functions before expanding functionality past the basics.
+It uses a Postgresql database, Golang web-server, and React frontend scaffolded with Vite.  
+
+### Structure
+#### Golang web-server (root of repository)
+Packages:
+    * `main`: just contains `main.go` which just contains main function
+    * `server`: contains functionality for handling HTTP requests/JSON API
+    * `storage`: contains functionality for data CRUDs
+    * `types`: contains types used across `storage` and `server`
+
+#### React frontend (`web` directory)
+Important folders:
+    * root: contains `index.html` entry point
+    * `/src`: contains `main.jsx` main file called by `index.html`
+    * `/src/routes`: contains components w/ client-side routes (full pages)
+    * `/src/components`: contains components like forms, etc. used to makeup full pages
+    * `/src/handlers`: contains classes for handling HTTP requests in a uniform way 
 
 # ToDo
 
