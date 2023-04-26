@@ -5,18 +5,18 @@ It uses a Postgresql database, Golang web-server, and React frontend scaffolded 
 ### Structure
 #### Golang web-server (root of repository)
 Packages:
-    * `main`: just contains `main.go` which just contains main function
-    * `server`: contains functionality for handling HTTP requests/JSON API
-    * `storage`: contains functionality for data CRUDs
-    * `types`: contains types used across `storage` and `server`
+* `main`: just contains `main.go` which just contains main function
+* `server`: contains functionality for handling HTTP requests/JSON API
+* `storage`: contains functionality for data CRUDs
+* `types`: contains types used across `storage` and `server`
 
 #### React frontend (`web` directory)
 Important folders:
-    * root: contains `index.html` entry point
-    * `/src`: contains `main.jsx` main file called by `index.html`
-    * `/src/routes`: contains components w/ client-side routes (full pages)
-    * `/src/components`: contains components like forms, etc. used to makeup full pages
-    * `/src/handlers`: contains classes for handling HTTP requests in a uniform way 
+* root: contains `index.html` entry point
+* `/src`: contains `main.jsx` main file called by `index.html`
+* `/src/routes`: contains components w/ client-side routes (full pages)
+* `/src/components`: contains components like forms, etc. used to makeup full pages
+* `/src/handlers`: contains classes for handling HTTP requests in a uniform way 
 
 # ToDo
 
