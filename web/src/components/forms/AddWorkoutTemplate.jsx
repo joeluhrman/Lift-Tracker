@@ -4,13 +4,20 @@ import {
     Container,
     Form,
 } from "react-bootstrap"
+import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
 export default function AddWorkoutTemplate() {
-    const [formValue, setFormValue] = React.useState({
-        name: "",
-        exerciseTemplates: [],
-    })
+    const [exerciseTypes, setExerciseTypes] = React.useState()
+    const [formValue, setFormValue] = React.useState({ name: "", exerciseTemplates: [], })
     const [exerciseElements, setExerciseElements] = React.useState([])
+
+    React.useEffect(() => {
+        (async () => {
+            const eTypeHandler = new ExerciseTypeHandler()
+            const [status, headers, data] = await eTypeHandler.getAll()
+            setExerciseTypes(data)
+        })()
+    }, [])
 
     const handleChange = (event) => {
         setFormValue({ ...formValue, [event.target.name]: event.target.value });
@@ -27,9 +34,8 @@ export default function AddWorkoutTemplate() {
         elements.push(<Form.Group><Form.Label>Test element</Form.Label></Form.Group>)
         setExerciseElements([...elements])
     }
-    
-    console.log(formValue.exerciseTemplates)
-    console.log(exerciseElements)
+
+    console.log(exerciseTypes)
 
     return (
         <Form noValidate>

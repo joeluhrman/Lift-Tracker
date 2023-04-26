@@ -336,7 +336,7 @@ func (s *Server) handleGetExerciseTypes(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	writeJSON(w, http.StatusFound, eTypes)
+	writeJSON(w, http.StatusOK, eTypes)
 }
 
 // handleCreateWorkoutTemplate receives a *types.WorkoutTemplate json

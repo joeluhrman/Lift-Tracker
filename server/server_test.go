@@ -357,8 +357,8 @@ func Test_GetExerciseTypesEndpoint(t *testing.T) {
 		eTypes, _ := testLoggedInServer.storage.GetExerciseTypes()
 
 		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endExerciseType, nil, testLoggedInServer.Handler)
-		if rec.Code != http.StatusFound {
-			t.Errorf(wrongCodef, rec.Code, http.StatusFound)
+		if rec.Code != http.StatusOK {
+			t.Errorf(wrongCodef, rec.Code, http.StatusOK)
 			return
 		}
 
@@ -503,32 +503,3 @@ func Test_GetUserEndpoint(t *testing.T) {
 		}
 	}()
 }
-
-/*
-func Test_IsLoggedInEndpoint(t *testing.T) {
-	// success case
-	func() {
-		correctUser, _ := testLoggedInServer.storage.GetUser(1)
-
-		rec := sendMockHTTPRequest(http.MethodGet, routeApiV1+endLogin, nil, testLoggedInServer.Handler)
-		if rec.Code != http.StatusOK {
-			t.Errorf(wrongCodef, rec.Code, http.StatusOK)
-			return
-		}
-		resUser := &types.User{}
-		if err := json.NewDecoder(rec.Body).Decode(resUser); err != nil {
-			t.Error(err)
-			return
-		}
-
-		if !cmp.Equal(correctUser, *resUser) {
-			t.Error("User in storage and json response not equal")
-		}
-	}()
-
-	// not logged in
-	func() {
-
-	}()
-}
-*/
