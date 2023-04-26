@@ -89,6 +89,8 @@ const (
 	Abductors  MuscleGroup = "abductors"
 	Core       MuscleGroup = "core"
 	LowBack    MuscleGroup = "lower back"
+	Chest      MuscleGroup = "chest"
+	Lats       MuscleGroup = "lats"
 )
 
 // A types.ExerciseType represents a specific exercise

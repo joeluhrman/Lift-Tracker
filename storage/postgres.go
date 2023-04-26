@@ -169,16 +169,20 @@ func (p *Postgres) DeleteSessionByToken(token string) error {
 
 // storage.Postgres.CreateExerciseType is the Postgresql
 // implementation of storage.Storage.CreateExerciseType.
+// Currently only used in development and does not yet
+// insert an image into storage.
 func (p *Postgres) CreateExerciseType(exerciseType *types.ExerciseType) error {
-	pngBytes, err := pngToBytes(exerciseType.Image)
-	if err != nil {
-		return err
-	}
+	/*
+		pngBytes, err := pngToBytes(exerciseType.Image)
+		if err != nil {
+			return err
+		}
+	*/
 
-	statement := "INSERT INTO " + pgTableExerciseType + " (name, image, ppl_type, muscle_group) " +
-		"VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at"
+	statement := "INSERT INTO " + pgTableExerciseType + " (name, ppl_type, muscle_group) " +
+		"VALUES ($1, $2, $3) RETURNING id, created_at, updated_at"
 
-	return p.conn.QueryRow(statement, exerciseType.Name, pngBytes, exerciseType.PPLType, exerciseType.MuscleGroup).
+	return p.conn.QueryRow(statement, exerciseType.Name, exerciseType.PPLType, exerciseType.MuscleGroup).
 		Scan(&exerciseType.ID, &exerciseType.CreatedAt, &exerciseType.UpdatedAt)
 }
 
