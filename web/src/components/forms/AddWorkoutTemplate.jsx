@@ -8,8 +8,25 @@ import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
 export default function AddWorkoutTemplate() {
     const [exerciseTypes, setExerciseTypes] = React.useState()
+    const [exerciseTypeSelect, setExerciseTypeSelect] = React.useState()
     const [formValue, setFormValue] = React.useState({ name: "", exerciseTemplates: [], })
     const [exerciseElements, setExerciseElements] = React.useState([])
+
+    const ExerciseFormGroup = (props) => {
+        return (
+            <Container className="border border-1 mb-3">
+            <Form.Group>
+                <Form.Label> {props.order} </Form.Label>
+                <br/>
+                { exerciseTypeSelect }
+            </Form.Group> 
+            </Container>
+        )
+    }
+
+    const setGroupInputGroup = (props) => {
+
+    }
 
     React.useEffect(() => {
         (async () => {
@@ -19,23 +36,33 @@ export default function AddWorkoutTemplate() {
         })()
     }, [])
 
+    React.useEffect(() => {
+        const select = (
+            <Form.Select>
+                <option>Exercise</option>
+            </Form.Select>
+        )
+
+        setExerciseTypeSelect(select)
+    }, [exerciseTypes])
+
     const handleChange = (event) => {
         setFormValue({ ...formValue, [event.target.name]: event.target.value });
     }
 
-    const handleAddExercise = () => {
-        // push new empty exercise to exerciseTemplates        
+    const handleAddExercise = () => {      
         var exerciseTemplates = formValue.exerciseTemplates
         exerciseTemplates.push({})
         setFormValue({...formValue, exerciseTemplates: [...exerciseTemplates]})
 
-        // push new exercise element 
         var elements = exerciseElements
-        elements.push(<Form.Group><Form.Label>Test element</Form.Label></Form.Group>)
+        elements.push(
+            <ExerciseFormGroup 
+                key={elements.length} 
+                order={elements.length + 1}
+            />)
         setExerciseElements([...elements])
     }
-
-    console.log(exerciseTypes)
 
     return (
         <Form noValidate>
@@ -55,8 +82,10 @@ export default function AddWorkoutTemplate() {
             <Form.Group className="mb-2">
                 <Form.Label>Exercises</Form.Label>
                 <Container>
+                    
+                        { exerciseElements }
+                    
                     <Button className="float-end" size="sm" onClick={handleAddExercise}>+</Button>
-                    { exerciseElements }
                 </Container>
             </Form.Group>
         </Form>

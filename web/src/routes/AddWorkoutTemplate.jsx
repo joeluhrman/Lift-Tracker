@@ -7,7 +7,7 @@ import FormAddWT from "../components/forms/AddWorkoutTemplate"
 export default function AddWorkoutTemplate() {
     return (
         <Container>
-            <h1>Add Workout Template</h1>
+            <h2>Add Workout Template</h2>
             <FormAddWT/>
         </Container>
     )
