@@ -49,9 +49,6 @@ const router = createBrowserRouter([
   },
 ])
 
-// also should figure out how to conditionally render 
-// the logout button on the navbar
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <RouterProvider router={router}/>

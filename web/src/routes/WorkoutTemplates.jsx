@@ -5,7 +5,6 @@ import {
     Container,
     Modal
 } from "react-bootstrap"
-import AddWTForm from "../components/forms/AddWorkoutTemplate"
 import WorkoutTemplateHandler from "../handlers/WorkoutTemplateHandler"
 const wtHandler = new WorkoutTemplateHandler()
 
