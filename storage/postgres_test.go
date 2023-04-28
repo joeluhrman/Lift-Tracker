@@ -25,7 +25,6 @@ var (
 		pgTableSession, pgTableUser}
 )
 
-// wrapper for test methods to avoid confusion
 type testPostgres struct {
 	*Postgres
 }

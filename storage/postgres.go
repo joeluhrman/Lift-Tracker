@@ -11,7 +11,6 @@ import (
 )
 
 const (
-	// Postgresql table names
 	pgTableUser             = "users"
 	pgTableSession          = "sessions"
 	pgTableExerciseType     = "exercise_types"
@@ -23,21 +22,12 @@ const (
 	pgTableWorkoutTemplate  = "workout_templates"
 )
 
-// A storage.Postgres is the Postgresql implementation
-// of the storage.Storage interface.
 type Postgres struct {
-	// connection pool
-	conn *sql.DB
-
-	// specific driver to use
+	conn   *sql.DB
 	driver string
-
-	// DB URL
-	url string
+	url    string
 }
 
-// storage.NewPostgres returns a new *storage.Postgres with the
-// provided driver and URL.
 func NewPostgres(driver string, url string) *Postgres {
 	return &Postgres{
 		driver: driver,
@@ -45,9 +35,6 @@ func NewPostgres(driver string, url string) *Postgres {
 	}
 }
 
-// storage.Postgres.MustOpen opens and pings a Postgresql
-// connection and panics if there is an error. It logs
-// the connection URL if successful.
 func (p *Postgres) MustOpen() {
 	var err error
 	p.conn, err = sql.Open(p.driver, p.url)
@@ -63,9 +50,6 @@ func (p *Postgres) MustOpen() {
 	log.Printf("connected to database %s", p.url)
 }
 
-// storage.Postgres.MustClose closes a Postgresql connection
-// and panics if there is an error. It logs the closed connection's
-// URL if successful.
 func (p *Postgres) MustClose() {
 	err := p.conn.Close()
 	if err != nil {
@@ -75,8 +59,6 @@ func (p *Postgres) MustClose() {
 	log.Printf("connection to database %s successfully closed", p.url)
 }
 
-// storage.Postgres.CreateUser is the Postgresql implementation
-// of storage.Storage.CreateUser.
 func (p *Postgres) CreateUser(user *types.User, password string) error {
 	var err error
 	user.HashedPassword, err = hashPassword(password)
@@ -93,8 +75,6 @@ func (p *Postgres) CreateUser(user *types.User, password string) error {
 		Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
 }
 
-// storage.Postgres.GetUser is the Postgresql implementation
-// of storage.Storage.GetUser.
 func (p *Postgres) GetUser(userID uint) (types.User, error) {
 	var (
 		statement = "SELECT id, username, email, is_admin, created_at, updated_at FROM " + pgTableUser +
@@ -108,8 +88,6 @@ func (p *Postgres) GetUser(userID uint) (types.User, error) {
 	return user, err
 }
 
-// storage.Postgres.AuthenticateUser is the Postgresql implementation
-// of storage.Storage.AuthenticateUser.
 func (p *Postgres) AuthenticateUser(username string, password string) (uint, error) {
 	var (
 		userID         uint
@@ -129,8 +107,6 @@ func (p *Postgres) AuthenticateUser(username string, password string) (uint, err
 	return userID, nil
 }
 
-// storage.Postgres.CreateSession is the Postgresql implementation
-// of storage.Storage.CreateSession.
 func (p *Postgres) CreateSession(s *types.Session) error {
 	statement := "INSERT INTO " + pgTableSession + " (user_id, token) VALUES ($1, $2)"
 	_, err := p.conn.Exec(statement, s.UserID, s.Token)
@@ -138,8 +114,6 @@ func (p *Postgres) CreateSession(s *types.Session) error {
 	return err
 }
 
-// storage.Postgres.AuthenticateSession is the Postgresql
-// implementation of storage.Storage.AuthenticateSession.
 func (p *Postgres) AuthenticateSession(token string) (uint, error) {
 	var userID uint
 
@@ -149,8 +123,6 @@ func (p *Postgres) AuthenticateSession(token string) (uint, error) {
 	return userID, err
 }
 
-// storage.Postgres.DeleteSessionByUserID is the Postgresql
-// implementation of storage.Storage.DeleteSessionByUserID.
 func (p *Postgres) DeleteSessionByUserID(userID uint) error {
 	statement := "DELETE FROM " + pgTableSession + " WHERE user_id = $1"
 	_, err := p.conn.Exec(statement, userID)
@@ -158,8 +130,6 @@ func (p *Postgres) DeleteSessionByUserID(userID uint) error {
 	return err
 }
 
-// storage.Postgres.DeleteSessionByToken is the Postgresql
-// implementation of storage.Storage.DeleteSessionByToken.
 func (p *Postgres) DeleteSessionByToken(token string) error {
 	statement := "DELETE FROM " + pgTableSession + " WHERE token = $1"
 	_, err := p.conn.Exec(statement, token)
@@ -167,18 +137,7 @@ func (p *Postgres) DeleteSessionByToken(token string) error {
 	return err
 }
 
-// storage.Postgres.CreateExerciseType is the Postgresql
-// implementation of storage.Storage.CreateExerciseType.
-// Currently only used in development and does not yet
-// insert an image into storage.
 func (p *Postgres) CreateExerciseType(exerciseType *types.ExerciseType) error {
-	/*
-		pngBytes, err := pngToBytes(exerciseType.Image)
-		if err != nil {
-			return err
-		}
-	*/
-
 	statement := "INSERT INTO " + pgTableExerciseType + " (name, ppl_type, muscle_group) " +
 		"VALUES ($1, $2, $3) RETURNING id, created_at, updated_at"
 
@@ -186,8 +145,6 @@ func (p *Postgres) CreateExerciseType(exerciseType *types.ExerciseType) error {
 		Scan(&exerciseType.ID, &exerciseType.CreatedAt, &exerciseType.UpdatedAt)
 }
 
-// storage.Postgres.GetExerciseTypes is the Postgresql implementation
-// of storage.Storage.GetExerciseTypes.
 func (p *Postgres) GetExerciseTypes() ([]types.ExerciseType, error) {
 	var exerciseTypes []types.ExerciseType
 
@@ -218,7 +175,6 @@ func (p *Postgres) GetExerciseTypes() ([]types.ExerciseType, error) {
 	return exerciseTypes, nil
 }
 
-// Helper function for storage.Postgres.CreateWorkoutTemplate.
 func (p *Postgres) createSetGroupTemplates(tx *sql.Tx, exTempID uint, sgTemps []types.SetGroupTemplate) error {
 	statment := "INSERT INTO " + pgTableSetGroupTemplate + " (exercise_template_id, sets, reps) " +
 		"VALUES ($1, $2, $3) RETURNING id, created_at, updated_at"
@@ -237,7 +193,6 @@ func (p *Postgres) createSetGroupTemplates(tx *sql.Tx, exTempID uint, sgTemps []
 	return nil
 }
 
-// Helper function for storage.Postgres.CreateWorkoutTemplate.
 func (p *Postgres) createExerciseTemplates(tx *sql.Tx, wTempID uint, eTemps []types.ExerciseTemplate) error {
 	statment := "INSERT INTO " + pgTableExerciseTemplate + " (workout_template_id, exercise_type_id) " +
 		"VALUES ($1, $2) RETURNING id, created_at, updated_at"
@@ -261,8 +216,6 @@ func (p *Postgres) createExerciseTemplates(tx *sql.Tx, wTempID uint, eTemps []ty
 	return nil
 }
 
-// storage.Postgres.CreateWorkoutTemplate is the Postgresql implementation
-// of storage.Storage.CreateWorkoutTemplate.
 func (p *Postgres) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate) error {
 	var (
 		wtStatement = "INSERT INTO " + pgTableWorkoutTemplate + " (user_id, name) " +
@@ -295,7 +248,6 @@ func (p *Postgres) CreateWorkoutTemplate(workoutTemplate *types.WorkoutTemplate)
 	return err
 }
 
-// Helper function for storage.Postgres.GetWorkoutTemplates.
 func (p *Postgres) getSetGroupTemplates(exerciseTemplateID uint) ([]types.SetGroupTemplate, error) {
 	var (
 		statement = "SELECT * FROM " + pgTableSetGroupTemplate + " WHERE exercise_template_id = $1"
@@ -321,7 +273,6 @@ func (p *Postgres) getSetGroupTemplates(exerciseTemplateID uint) ([]types.SetGro
 	return sgTemps, rows.Err()
 }
 
-// Helper function for storage.Postgres.GetWorkoutTemplates.
 func (p *Postgres) getExerciseTemplates(workoutTemplateID uint) ([]types.ExerciseTemplate, error) {
 	var (
 		statement = "SELECT * FROM " + pgTableExerciseTemplate + " WHERE workout_template_id = $1"
@@ -356,8 +307,6 @@ func (p *Postgres) getExerciseTemplates(workoutTemplateID uint) ([]types.Exercis
 	return eTemps, rows.Err()
 }
 
-// storage.Postgres.GetWorkoutTemplates is the Postgresql implementation
-// of storage.Storage.GetWorkoutTemplates.
 func (p *Postgres) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, error) {
 	var (
 		wTemps    []types.WorkoutTemplate
@@ -389,7 +338,6 @@ func (p *Postgres) GetWorkoutTemplates(userID uint) ([]types.WorkoutTemplate, er
 	return wTemps, rows.Err()
 }
 
-// Helper function for storage.Postgres.CreateWorkoutLog.
 func (p *Postgres) createSetGroupLogs(tx *sql.Tx, eLogID uint, sgLogs []types.SetGroupLog) error {
 	statement := "INSERT INTO " + pgTableSetGroupLog + " (exercise_log_id, sets, reps, weight) " +
 		"VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at"
@@ -408,7 +356,6 @@ func (p *Postgres) createSetGroupLogs(tx *sql.Tx, eLogID uint, sgLogs []types.Se
 	return nil
 }
 
-// Helper function for storage.Postgres.CreateWorkoutLog.
 func (p *Postgres) createExerciseLogs(tx *sql.Tx, wLogID uint, eLogs []types.ExerciseLog) error {
 	statement := "INSERT INTO " + pgTableExerciseLog + " (workout_log_id, exercise_type_id, notes) " +
 		"VALUES ($1, $2, $3) RETURNING id, created_at, updated_at"
@@ -431,8 +378,6 @@ func (p *Postgres) createExerciseLogs(tx *sql.Tx, wLogID uint, eLogs []types.Exe
 	return nil
 }
 
-// storage.Postgres.CreateWorkoutLog is the Postgresql implementation
-// of storage.Storage.CreateWorkoutLog.
 func (p *Postgres) CreateWorkoutLog(wLog *types.WorkoutLog) error {
 	statement := "INSERT INTO " + pgTableWorkoutLog + " (user_id, date, name, notes) " +
 		"VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at"
@@ -458,7 +403,6 @@ func (p *Postgres) CreateWorkoutLog(wLog *types.WorkoutLog) error {
 	return tx.Commit()
 }
 
-// Helper function for storage.Postgres.GetWorkoutLogs.
 func (p *Postgres) getSetGroupLogs(eLogID uint) ([]types.SetGroupLog, error) {
 	var (
 		statement = "SELECT * FROM " + pgTableSetGroupLog + " WHERE exercise_log_id = $1"
@@ -490,7 +434,6 @@ func (p *Postgres) getSetGroupLogs(eLogID uint) ([]types.SetGroupLog, error) {
 	return sgLogs, nil
 }
 
-// Helper function for storage.Postgres.GetWorkoutLogs.
 func (p *Postgres) getExerciseLogs(wLogID uint) ([]types.ExerciseLog, error) {
 	var (
 		statement = "SELECT * FROM " + pgTableExerciseLog + " WHERE workout_log_id = $1"
@@ -527,8 +470,6 @@ func (p *Postgres) getExerciseLogs(wLogID uint) ([]types.ExerciseLog, error) {
 	return eLogs, nil
 }
 
-// storage.Postgres.GetWorkoutLogs is the Postgresql implementation
-// of storage.Storage.GetWorkoutLogs.
 func (p *Postgres) GetWorkoutLogs(userID uint) ([]types.WorkoutLog, error) {
 	var (
 		statement = "SELECT * FROM " + pgTableWorkoutLog + " WHERE user_id = $1"
