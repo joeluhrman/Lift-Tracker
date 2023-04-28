@@ -15,7 +15,7 @@ export default function AddWorkoutTemplate() {
         return (
             <Container className="border border-1 mb-3">
             <Form.Group>
-                <Form.Label> {props.order} </Form.Label>
+                <Form.Label> Exercise {props.order} </Form.Label>
                 <br/>
                 <ExerciseTypeSelect exerciseTypes={exerciseTypes}/>
                 <Form.Label>Set Groups</Form.Label>
