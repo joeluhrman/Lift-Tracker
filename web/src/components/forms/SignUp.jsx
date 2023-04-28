@@ -23,7 +23,7 @@ export default function SignUp() {
         setFormValue({ ...formValue, [event.target.name]: event.target.value });
     }
 
-    const handleSubmit = async(event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault()
         event.stopPropagation()
 
