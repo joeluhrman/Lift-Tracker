@@ -18,6 +18,8 @@ It uses a Postgresql database, Golang web-server, and React frontend scaffolded 
 
 ## Frontend
 1. Figure out how to abstract forms so all have same appearance
+2. Add workout template form
+    - select exercise modal
 
 ## Long term
 1. Custom exercise types
