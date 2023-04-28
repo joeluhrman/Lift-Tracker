@@ -91,9 +91,7 @@ export default function AddWorkoutTemplate() {
             <Form.Group className="mb-2">
                 <Form.Label>Exercises</Form.Label>
                 <Container>
-                    
-                        { exerciseFormGroups }
-                    
+                    { exerciseFormGroups }
                     <Button className="float-end" size="sm" onClick={handleAddExercise}>+</Button>
                 </Container>
             </Form.Group>
