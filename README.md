@@ -17,8 +17,7 @@ It uses a Postgresql database, Golang web-server, and React frontend scaffolded 
 7. Make exercise types able to have multiple musclegroups and ppl types
 
 ## Frontend
-1. Figure out how to change items on navbar based on logged in or not
-2. Figure out how to abstract forms so all have same appearance
+1. Figure out how to abstract forms so all have same appearance
 
 ## Long term
 1. Custom exercise types
