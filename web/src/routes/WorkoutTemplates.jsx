@@ -39,24 +39,21 @@ export default function WorkoutTemplates() {
                     .find(eType => eType.id === eTemp.exerciseTypeID)
 
                 const setgroupElements = eTemp.setgroupTemplates.map((sg) => {
-                    return (
-                        <Container>
-                            <p>{sg.sets} x {sg.reps}</p>
-                        </Container>
-                    )
+                    return (<>
+                            {sg.sets} x {sg.reps + " "} 
+                    </>)
                 })
 
                 return (
                     <Container>
-                        <p>{exerciseType.name}</p>
-                        { setgroupElements }
+                        <p>{ exerciseType.name } { setgroupElements }</p>
                     </Container>
                 )
             })
 
             return (
                 <Container className="border border-2">
-                    <p>{ temp.name }</p>
+                    <h4>{ temp.name }</h4>
                     { exerciseElements }
                 </Container>
             )    
