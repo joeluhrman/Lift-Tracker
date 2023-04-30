@@ -12,9 +12,29 @@ export default function AddWorkoutTemplate() {
     const [exerciseFormGroups, setExerciseFormGroups] = React.useState([])
 
     const ExerciseFormGroup = (props) => {
+        const [setgroupFormGroups, setSetGroupFormGroups] = React.useState([])
+
+        const handleAddSetgroup = (exerciseIndex) => {
+            const exerciseTemplates = formValue.exerciseTemplates
+            exerciseTemplates[exerciseIndex].setgroupTemplates.push({
+                sets: 0,
+                reps: 0,
+            })
+            setFormValue({...formValue, exerciseTemplates: [...exerciseTemplates]})
+
+            const setgroupElements = setgroupFormGroups
+            setgroupElements.push(
+                <SetGroupFormGroup index={setgroupElements.length}/>
+            )
+            setSetGroupFormGroups([...setgroupElements])
+        }
+
+        console.log(setgroupFormGroups)
+
         return (
             <Container className="border border-1 mb-3">
                 <Form.Group>
+                    <Button size="sm" className="float-start">Delete</Button>
                     <h6>Exercise {props.order}</h6>
                     <Container>
                         <ExerciseTypeSelect exerciseTypes={exerciseTypes}/>
@@ -25,6 +45,7 @@ export default function AddWorkoutTemplate() {
                             onClick={(() => { handleAddSetgroup(props.index) })}>
                                 +
                         </Button>
+                        { setgroupFormGroups }
                     </Container>
                 </Form.Group> 
             </Container>
@@ -34,7 +55,7 @@ export default function AddWorkoutTemplate() {
     const SetGroupFormGroup = (props) => {
         <Container className="mb-3">
             <Form.Group>
-                <Form.Label>Setgroup {props.order}</Form.Label>
+                <Form.Label>Setgroup {props.index + 1}</Form.Label>
                 <Container>
                     <Form.Control
 
@@ -90,15 +111,6 @@ export default function AddWorkoutTemplate() {
                 order={elements.length + 1}
             />)
         setExerciseFormGroups([...elements])
-    }
-
-    const handleAddSetgroup = (exerciseIndex) => {
-        const exerciseTemplates = formValue.exerciseTemplates
-        exerciseTemplates[exerciseIndex].setgroupTemplates.push({
-            sets: 0,
-            reps: 0,
-        })
-        setFormValue({...formValue, exerciseTemplates: [...exerciseTemplates]})
     }
 
     if (exerciseTypes === undefined) return <Container>Loading...</Container>

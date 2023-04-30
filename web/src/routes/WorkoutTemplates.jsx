@@ -68,7 +68,7 @@ export default function WorkoutTemplates() {
         return <Container>Loading...</Container>
 
     return (
-        <Container>
+        <>
             <h2>Workout Templates</h2>
             <Container fluid className="d-flex mb-2">
                 <Button className="ms-auto" variant="outline-primary" 
@@ -77,6 +77,6 @@ export default function WorkoutTemplates() {
                 </Button>
             </Container>
             {tempElements}
-        </Container>
+        </>
     )
 }
