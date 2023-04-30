@@ -28,53 +28,6 @@ func main() {
 	pgStore.MustOpen()
 	defer pgStore.MustClose()
 
-	/*
-		err := pgStore.CreateWorkoutTemplate(&types.WorkoutTemplate{
-			UserID: 1,
-			Name:   "Workout A",
-			ExerciseTemplates: []types.ExerciseTemplate{
-				{
-					ExerciseTypeID: 1,
-					SetGroupTemplates: []types.SetGroupTemplate{
-						{
-							Sets: 3,
-							Reps: 5,
-						},
-						{
-							Sets: 3,
-							Reps: 3,
-						},
-					},
-				},
-				{
-					ExerciseTypeID: 2,
-					SetGroupTemplates: []types.SetGroupTemplate{
-						{
-							Sets: 5,
-							Reps: 5,
-						},
-						{
-							Sets: 3,
-							Reps: 2,
-						},
-					},
-				},
-				{
-					ExerciseTypeID: 4,
-					SetGroupTemplates: []types.SetGroupTemplate{
-						{
-							Sets: 4,
-							Reps: 8,
-						},
-					},
-				},
-			},
-		})
-		if err != nil {
-			panic(err)
-		}
-	*/
-
 	server := server.New(*listenaddr, pgStore, httplog.Logger)
 
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())

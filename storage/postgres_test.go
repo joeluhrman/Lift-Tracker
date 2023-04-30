@@ -17,7 +17,7 @@ var (
 	testPGURL    = "postgresql://jaluhrman:" + testPGApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test"
 
 	testPGStorage = &testPostgres{
-		Postgres: NewPostgres(testPGDriver, testPGURL),
+		postgres: NewPostgres(testPGDriver, testPGURL),
 	}
 
 	tables = []string{pgTableSetGroupLog, pgTableSetGroupTemplate, pgTableExerciseLog,
@@ -26,7 +26,7 @@ var (
 )
 
 type testPostgres struct {
-	*Postgres
+	*postgres
 }
 
 func (t *testPostgres) clearAllTables() {

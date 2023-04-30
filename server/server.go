@@ -24,16 +24,16 @@ const (
 	keySession = types.SessionKey
 )
 
-type Server struct {
+type server struct {
 	http.Server
 	storage storage.Storage
 }
 
-func New(port string, storage storage.Storage, middlewares ...func(http.Handler) http.Handler) *Server {
+func New(port string, storage storage.Storage, middlewares ...func(http.Handler) http.Handler) *server {
 	httpServer := http.Server{
 		Addr: port,
 	}
-	s := &Server{
+	s := &server{
 		Server:  httpServer,
 		storage: storage,
 	}
@@ -48,12 +48,12 @@ func New(port string, storage storage.Storage, middlewares ...func(http.Handler)
 	return s
 }
 
-func (s *Server) MustStart() {
+func (s *server) MustStart() {
 	log.Println("server running on port " + s.Addr)
 	s.ListenAndServe()
 }
 
-func (s *Server) MustShutdown(shutdownCtx context.Context) {
+func (s *server) MustShutdown(shutdownCtx context.Context) {
 	err := s.Shutdown(shutdownCtx)
 	if err != nil {
 		panic(err)
@@ -62,7 +62,7 @@ func (s *Server) MustShutdown(shutdownCtx context.Context) {
 	log.Println("server successfully shutdown")
 }
 
-func (s *Server) setupEndpoints(router *chi.Mux) {
+func (s *server) setupEndpoints(router *chi.Mux) {
 	router.Route(routeApiV1, func(r chi.Router) {
 		r.Post(endUser, s.handleCreateUser)
 		r.Post(endLogin, s.handleLogin)
@@ -102,7 +102,7 @@ func getSessionToken(r *http.Request) (string, error) {
 	return cookie.Value, nil
 }
 
-func (s *Server) middlewareAuthSession(next http.Handler) http.Handler {
+func (s *server) middlewareAuthSession(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token, err := getSessionToken(r)
 		if err != nil {
@@ -127,7 +127,7 @@ type credentials struct {
 	Password string `json:"password"`
 }
 
-func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
+func (s *server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	credentials := &credentials{}
 
 	err := json.NewDecoder(r.Body).Decode(credentials)
@@ -160,7 +160,7 @@ func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusAccepted, nil)
 }
 
-func (s *Server) handleGetUser(w http.ResponseWriter, r *http.Request) {
+func (s *server) handleGetUser(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(keyUserID).(uint)
 	user, err := s.storage.GetUser(userID)
 	if err != nil {
@@ -171,7 +171,7 @@ func (s *Server) handleGetUser(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, user)
 }
 
-func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
+func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	credentials := &credentials{}
 
 	err := json.NewDecoder(r.Body).Decode(credentials)
@@ -204,7 +204,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, nil)
 }
 
-func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
+func (s *server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	token, err := getSessionToken(r)
 	if err != nil {
 		writeJSON(w, http.StatusNotFound, err.Error())
@@ -225,7 +225,7 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, nil)
 }
 
-func (s *Server) handleGetExerciseTypes(w http.ResponseWriter, r *http.Request) {
+func (s *server) handleGetExerciseTypes(w http.ResponseWriter, r *http.Request) {
 	eTypes, err := s.storage.GetExerciseTypes()
 	if err != nil {
 		writeJSON(w, http.StatusInternalServerError, err.Error())
@@ -235,7 +235,7 @@ func (s *Server) handleGetExerciseTypes(w http.ResponseWriter, r *http.Request) 
 	writeJSON(w, http.StatusOK, eTypes)
 }
 
-func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Request) {
+func (s *server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(keyUserID).(uint)
 
 	wTemp := &types.WorkoutTemplate{}
@@ -253,7 +253,7 @@ func (s *Server) handleCreateWorkoutTemplate(w http.ResponseWriter, r *http.Requ
 	writeJSON(w, http.StatusCreated, nil)
 }
 
-func (s *Server) handleGetWorkoutTemplates(w http.ResponseWriter, r *http.Request) {
+func (s *server) handleGetWorkoutTemplates(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(keyUserID).(uint)
 
 	wTemps, err := s.storage.GetWorkoutTemplates(userID)
@@ -265,7 +265,7 @@ func (s *Server) handleGetWorkoutTemplates(w http.ResponseWriter, r *http.Reques
 	writeJSON(w, http.StatusOK, wTemps)
 }
 
-func (s *Server) handleCreateWorkoutLog(w http.ResponseWriter, r *http.Request) {
+func (s *server) handleCreateWorkoutLog(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(keyUserID).(uint)
 
 	wLog := &types.WorkoutLog{}
@@ -284,7 +284,7 @@ func (s *Server) handleCreateWorkoutLog(w http.ResponseWriter, r *http.Request) 
 	writeJSON(w, http.StatusCreated, nil)
 }
 
-func (s *Server) handleGetWorkoutLogs(w http.ResponseWriter, r *http.Request) {
+func (s *server) handleGetWorkoutLogs(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(keyUserID).(uint)
 
 	wLogs, err := s.storage.GetWorkoutLogs(userID)
