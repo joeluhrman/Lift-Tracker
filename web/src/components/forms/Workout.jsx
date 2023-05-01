@@ -37,8 +37,11 @@ export default function Workout() {
 
             
             const work = workout
-            workout.exerciseTemplates[props.index].setgroupTemplates.push({})
-            setWorkout(workout) 
+            workout.exerciseTemplates[props.index].setgroupTemplates.push({
+                sets: 0,
+                reps: 0,
+            })
+            setWorkout(work) 
         }
 
         return (<>
