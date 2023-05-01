@@ -4,6 +4,9 @@ import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
 // Form meant to be configurable to be adding/editing a template
 // or a log. Currently just works for templates.
+//
+// CURRENT ISSUE: Adding a new exercise removes all existing
+// set group elements (although the form's state is still intact)
 export default function Workout() {
     const Exercise = (props) => {
         const [exercise, setExercise] = React.useState({
