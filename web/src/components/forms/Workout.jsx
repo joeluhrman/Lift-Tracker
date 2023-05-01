@@ -21,6 +21,11 @@ export default function Workout() {
         })
         const [sgElements, setSGElements] = React.useState()
 
+        React.useEffect(() => {
+            const setgroupElements = mapSetgroups()
+            setSGElements(setgroupElements)
+        }, [])
+
         const handleAddSetgroup = () => {
             const setgroups = exercise.setgroupTemplates
             setgroups.push({})
@@ -30,14 +35,19 @@ export default function Workout() {
             exercises[props.index] = exercise
             setWorkout({...workout, exerciseTemplates: [...exercises]})
 
-            const sgElements = exercise.setgroupTemplates.map((sgTemp, key) => {
+            const setgroupElements = mapSetgroups()
+            setSGElements(setgroupElements)
+        }
+
+        const mapSetgroups = () => {
+            const elements = workout.exerciseTemplates[props.index].setgroupTemplates.map((sgTemp, key) => {
                 return (
                     <Setgroup 
                         key={key}
                     />
                 )
             })
-            setSGElements(sgElements)
+            return elements
         }
 
         return (<>
