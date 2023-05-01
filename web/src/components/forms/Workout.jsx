@@ -5,7 +5,7 @@ import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 // Form meant to be configurable to be adding/editing a template
 // or a log. Currently just works for templates.
 export default function Workout() {
-    const Exercise = () => {
+    const Exercise = (props) => {
         const [exercise, setExercise] = React.useState({
             exerciseTypeID: undefined,
             setgroupTemplates: []
@@ -23,17 +23,23 @@ export default function Workout() {
             setgroups.push({})
             setExercise({...exercise, setgroupTemplates: [...setgroups]})
 
-            const elements = exercise.setgroupTemplates.map((sgTemp, key) => {
+            const exercises = workout.exerciseTemplates
+            exercises[props.index] = exercise
+            setWorkout({...workout, exerciseTemplates: [...exercises]})
+
+            const sgElements = exercise.setgroupTemplates.map((sgTemp, key) => {
                 return (
-                    <Setgroup key={key}/>
+                    <Setgroup 
+                        key={key}
+                    />
                 )
             })
-            setSGElements(elements)
+            setSGElements(sgElements)
         }
 
         return (<>
             <p>Exercise</p>
-            <Button>Add Setgroup</Button>
+            <Button onClick={handleAddSetgroup}>Add Setgroup</Button>
             { sgElements }
         </>)
     }
@@ -56,17 +62,20 @@ export default function Workout() {
     const handleAddExercise = () => {
         const exercises = workout.exerciseTemplates
         exercises.push({})
-        setWorkout({...workout, exerciseTemplate: [...exercises]})
+        setWorkout({...workout, exerciseTemplates: [...exercises]})
 
         const elements = workout.exerciseTemplates.map((eTemp, key) => {
             return (
                 <Exercise
                     key={key}
+                    index={key}
                 />
             )
         })
         setExerciseElements(elements)
     }
+
+    console.log(workout)
 
     return (<>
         <p>Form</p>
