@@ -1,18 +1,25 @@
 import React from "react"
-import { Button } from "react-bootstrap"
+import { Button, Container, Form } from "react-bootstrap"
 import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
-// Form meant to be configurable to be adding/editing a template
-// or a log. Currently just works for templates.
-//
-// CURRENT ISSUE: Adding a new exercise removes all existing
-// set group elements (although the form's state is still intact)
 export default function Workout() {
     const Exercise = (props) => {
-        const Setgroup = () => {
-            return (
-                <p>Setgroup</p>
-            )
+        const Setgroup = (props) => {
+            return (<>
+                <h6> Setgroup { props.index + 1 } </h6>
+                <Container className="mb-3">
+                    <Form.Group className="mb-3">
+                        <Form.Label> Sets </Form.Label>
+                        <Form.Control
+                        
+                        />
+                        <Form.Label> Reps </Form.Label>
+                        <Form.Control
+                        
+                        />
+                    </Form.Group>
+                </Container>
+            </>)
         }
         
         const setgroupElements = workout.exerciseTemplates[props.index]
@@ -20,6 +27,7 @@ export default function Workout() {
             return (
                 <Setgroup 
                     key={key}
+                    index={key}
                 />
             )
         })
@@ -34,9 +42,14 @@ export default function Workout() {
         }
 
         return (<>
-            <p>Exercise</p>
-            <Button onClick={handleAddSetgroup}>Add Setgroup</Button>
-            { setgroupElements }
+            <Form.Label><h5> Exercise { props.index + 1 } </h5></Form.Label>
+            <Button size="sm" className="float-end" onClick={handleAddSetgroup}>Add Setgroup</Button>
+            <Container className="mb-3">
+                <Form.Select>
+                    <option>Exercise</option>
+                </Form.Select>
+                { setgroupElements }
+            </Container>
         </>)
     }
 
@@ -74,9 +87,14 @@ export default function Workout() {
 
     console.log(workout)
 
-    return (<>
-        <p>Form</p>
-        <Button onClick={handleAddExercise}>Add Exercise</Button>
-        { exerciseElements }
-    </>)
+    return (
+        <Container className="border border-2">
+            <Button className="float-end" onClick={handleAddExercise}> Add Exercise </Button>
+            <Form.Label><h5> Name </h5></Form.Label>
+            <Form.Control
+
+            />
+            { exerciseElements }
+        </Container>
+    )
 }
