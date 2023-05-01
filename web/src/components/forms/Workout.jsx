@@ -9,17 +9,17 @@ import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 // set group elements (although the form's state is still intact)
 export default function Workout() {
     const Exercise = (props) => {
-        const [exercise, setExercise] = React.useState({
-            exerciseTypeID: undefined,
-            setgroupTemplates: []
-        })
-        const [sgElements, setSGElements] = React.useState()
-
         const Setgroup = () => {
             return (
                 <p>Setgroup</p>
             )
         }
+
+        const [exercise, setExercise] = React.useState({
+            exerciseTypeID: undefined,
+            setgroupTemplates: []
+        })
+        const [sgElements, setSGElements] = React.useState()
 
         const handleAddSetgroup = () => {
             const setgroups = exercise.setgroupTemplates
