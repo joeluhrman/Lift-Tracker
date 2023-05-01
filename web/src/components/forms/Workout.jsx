@@ -14,19 +14,18 @@ export default function Workout() {
                 <p>Setgroup</p>
             )
         }
-
-        const [exercise, setExercise] = React.useState({
-            exerciseTypeID: undefined,
-            setgroupTemplates: []
+        
+        const setgroupElements = workout.exerciseTemplates[props.index]
+            .setgroupTemplates.map((sgTemp, key) => {
+            return (
+                <Setgroup 
+                    key={key}
+                />
+            )
         })
-        const [sgElements, setSGElements] = React.useState()
-
-        React.useEffect(() => {
-            const setgroupElements = mapSetgroups()
-            setSGElements(setgroupElements)
-        }, [])
 
         const handleAddSetgroup = () => {
+            /*
             const setgroups = exercise.setgroupTemplates
             setgroups.push({})
             setExercise({...exercise, setgroupTemplates: [...setgroups]})
@@ -34,26 +33,18 @@ export default function Workout() {
             const exercises = workout.exerciseTemplates
             exercises[props.index] = exercise
             setWorkout({...workout, exerciseTemplates: [...exercises]})
+            */
 
-            const setgroupElements = mapSetgroups()
-            setSGElements(setgroupElements)
-        }
-
-        const mapSetgroups = () => {
-            const elements = workout.exerciseTemplates[props.index].setgroupTemplates.map((sgTemp, key) => {
-                return (
-                    <Setgroup 
-                        key={key}
-                    />
-                )
-            })
-            return elements
+            
+            const work = workout
+            workout.exerciseTemplates[props.index].setgroupTemplates.push({})
+            setWorkout(workout) 
         }
 
         return (<>
             <p>Exercise</p>
             <Button onClick={handleAddSetgroup}>Add Setgroup</Button>
-            { sgElements }
+            { setgroupElements }
         </>)
     }
 
@@ -62,7 +53,15 @@ export default function Workout() {
         exerciseTemplates: [],
     })
     const [exerciseTypes, setExerciseTypes] = React.useState()
-    const [exerciseElements, setExerciseElements] = React.useState()
+    
+    const exerciseElements = workout.exerciseTemplates.map((eTemp, key) => {
+        return (
+            <Exercise
+                key={key}
+                index={key}
+            />
+        )
+    })
 
     React.useEffect(function getExerciseTypes() {
         (async () => {
@@ -74,18 +73,11 @@ export default function Workout() {
 
     const handleAddExercise = () => {
         const exercises = workout.exerciseTemplates
-        exercises.push({})
-        setWorkout({...workout, exerciseTemplates: [...exercises]})
-
-        const elements = workout.exerciseTemplates.map((eTemp, key) => {
-            return (
-                <Exercise
-                    key={key}
-                    index={key}
-                />
-            )
+        exercises.push({
+            exerciseTypeID: 0,
+            setgroupTemplates: [],
         })
-        setExerciseElements(elements)
+        setWorkout({...workout, exerciseTemplates: [...exercises]})
     }
 
     console.log(workout)
