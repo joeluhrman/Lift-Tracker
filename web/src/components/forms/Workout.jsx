@@ -92,7 +92,13 @@ export default function Workout() {
             <Button className="float-end" onClick={handleAddExercise}> Add Exercise </Button>
             <Form.Label><h5> Name </h5></Form.Label>
             <Form.Control
-
+                required
+                name="name"
+                type="text"
+                value={workout.name}
+                minLength="1"
+                maxLength="100"
+                onChange={e => setWorkout({...workout, [e.target.name]: e.target.value})}
             />
             { exerciseElements }
         </Container>
