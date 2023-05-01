@@ -25,23 +25,12 @@ export default function Workout() {
         })
 
         const handleAddSetgroup = () => {
-            /*
-            const setgroups = exercise.setgroupTemplates
-            setgroups.push({})
-            setExercise({...exercise, setgroupTemplates: [...setgroups]})
-
-            const exercises = workout.exerciseTemplates
-            exercises[props.index] = exercise
-            setWorkout({...workout, exerciseTemplates: [...exercises]})
-            */
-
-            
             const work = workout
             workout.exerciseTemplates[props.index].setgroupTemplates.push({
                 sets: 0,
                 reps: 0,
             })
-            setWorkout(work) 
+            setWorkout({...work}) 
         }
 
         return (<>
@@ -75,12 +64,12 @@ export default function Workout() {
     }, [])
 
     const handleAddExercise = () => {
-        const exercises = workout.exerciseTemplates
-        exercises.push({
+        const work = workout
+        work.exerciseTemplates.push({
             exerciseTypeID: 0,
             setgroupTemplates: [],
         })
-        setWorkout({...workout, exerciseTemplates: [...exercises]})
+        setWorkout({...work})
     }
 
     console.log(workout)
