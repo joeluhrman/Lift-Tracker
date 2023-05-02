@@ -1,5 +1,6 @@
 import React from "react"
 import { Button, Container, Form } from "react-bootstrap"
+import WorkoutTemplateHandler from "../../handlers/WorkoutTemplateHandler"
 import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
 export default function Workout() {
@@ -17,12 +18,10 @@ export default function Workout() {
                     .setgroupTemplates[props.index] = sg
                 
                 setWorkout({...work})
-
-                console.log(workout.exerciseTemplates[props.exerciseIndex].setgroupTemplates[props.index])
             }
 
             return (<>
-                <h6> Setgroup { props.index + 1 } </h6>
+                <Form.Label><h6> Setgroup { props.index + 1 } </h6></Form.Label>
                 <Container className="mb-3">
                     <Form.Group className="mb-3">
                         <Form.Label> Sets </Form.Label>
@@ -106,16 +105,27 @@ export default function Workout() {
     const handleAddExercise = () => {
         const work = workout
         work.exerciseTemplates.push({
-            exerciseTypeID: 0,
+            exerciseTypeID: 1,
             setgroupTemplates: [],
         })
         setWorkout({...work})
     }
 
-    console.log(workout)
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        console.log("WORKOUT ", workout)
+
+        const handler = new WorkoutTemplateHandler()
+        const [status, , data] = await handler.create(workout)
+        
+        console.log("STATUS", status)
+        console.log("DATA", data)
+    }
 
     return (
-        <Container className="border border-2">
+        <Form className="border border-2" onSubmit={handleSubmit}>
             <Button className="float-end" onClick={handleAddExercise}> Add Exercise </Button>
             <Form.Label><h5> Name </h5></Form.Label>
             <Form.Control
@@ -126,6 +136,7 @@ export default function Workout() {
                 onChange={e => setWorkout({...workout, [e.target.name]: e.target.value})}
             />
             { exerciseElements }
-        </Container>
+            <Button className="float-end" type="submit">Save</Button>
+        </Form>
     )
 }
