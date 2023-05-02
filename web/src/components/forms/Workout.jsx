@@ -3,6 +3,12 @@ import { Button, Container, Form } from "react-bootstrap"
 import WorkoutTemplateHandler from "../../handlers/WorkoutTemplateHandler"
 import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
+// Currently works for adding a workout template,
+// except exercise type selector not finished.
+//
+// Eventually want to expand this form to work for
+// adding/editing a template OR a log, depending on
+// what props are passed. 
 export default function Workout() {
     const Exercise = (props) => {
         const Setgroup = (props) => {
@@ -67,13 +73,35 @@ export default function Workout() {
             setWorkout({...work}) 
         }
 
+        const ExerciseSelect = (props) => {
+            const options = exerciseTypes.map((eType) => {
+                return <option value={eType.id}> {eType.name} </option>
+            })
+
+            const handleChange = (e) => {
+                const work = workout
+                work.exerciseTemplates[props.exerciseIndex].exerciseTypeID = e.target.value
+                setWorkout({...work})
+
+                console.log(workout.exerciseTemplates[props.exerciseIndex].exerciseTypeID)
+            }
+
+            return (
+                <Form.Select 
+                    value={workout.exerciseTemplates[props.exerciseIndex].exerciseTypeID}
+                    onChange={handleChange}
+                >
+                    <option>Exercise</option>
+                    { options }
+                </Form.Select>
+            )
+        }
+
         return (<>
             <Form.Label><h5> Exercise { props.index + 1 } </h5></Form.Label>
             <Button size="sm" className="float-end" onClick={handleAddSetgroup}>Add Setgroup</Button>
             <Container className="mb-3">
-                <Form.Select>
-                    <option>Exercise</option>
-                </Form.Select>
+                <ExerciseSelect exerciseIndex={props.index}/>
                 { setgroupElements }
             </Container>
         </>)
@@ -105,7 +133,7 @@ export default function Workout() {
     const handleAddExercise = () => {
         const work = workout
         work.exerciseTemplates.push({
-            exerciseTypeID: 1,
+            exerciseTypeID: 0,
             setgroupTemplates: [],
         })
         setWorkout({...work})
@@ -123,6 +151,8 @@ export default function Workout() {
         console.log("STATUS", status)
         console.log("DATA", data)
     }
+
+    if (exerciseTypes === undefined) return null
 
     return (
         <Form className="border border-2" onSubmit={handleSubmit}>
