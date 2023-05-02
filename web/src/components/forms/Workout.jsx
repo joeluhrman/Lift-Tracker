@@ -11,11 +11,19 @@ export default function Workout() {
                     <Form.Group className="mb-3">
                         <Form.Label> Sets </Form.Label>
                         <Form.Control
-                        
+                            required
+                            name="sets"
+                            type="number"
+                            value={workout.exerciseTemplates[props.exerciseIndex]
+                                .setgroupTemplates[props.index].sets}
                         />
                         <Form.Label> Reps </Form.Label>
                         <Form.Control
-                        
+                            required
+                            name="sets"
+                            type="number"
+                            value={workout.exerciseTemplates[props.exerciseIndex]
+                                .setgroupTemplates[props.index].reps}
                         />
                     </Form.Group>
                 </Container>
@@ -28,6 +36,7 @@ export default function Workout() {
                 <Setgroup 
                     key={key}
                     index={key}
+                    exerciseIndex={props.index}
                 />
             )
         })
@@ -96,8 +105,6 @@ export default function Workout() {
                 name="name"
                 type="text"
                 value={workout.name}
-                minLength="1"
-                maxLength="100"
                 onChange={e => setWorkout({...workout, [e.target.name]: e.target.value})}
             />
             { exerciseElements }
