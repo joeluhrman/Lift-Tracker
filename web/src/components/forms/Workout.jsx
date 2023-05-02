@@ -5,6 +5,22 @@ import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 export default function Workout() {
     const Exercise = (props) => {
         const Setgroup = (props) => {
+            // very inefficient and verbose
+            const handleChange = (e) => {
+                const work = workout
+                const setgroup = work.exerciseTemplates[props.exerciseIndex]
+                    .setgroupTemplates[props.index]
+
+                const sg = {...setgroup, [e.target.name]: e.target.value}
+                
+                work.exerciseTemplates[props.exerciseIndex]
+                    .setgroupTemplates[props.index] = sg
+                
+                setWorkout({...work})
+
+                console.log(workout.exerciseTemplates[props.exerciseIndex].setgroupTemplates[props.index])
+            }
+
             return (<>
                 <h6> Setgroup { props.index + 1 } </h6>
                 <Container className="mb-3">
@@ -16,14 +32,16 @@ export default function Workout() {
                             type="number"
                             value={workout.exerciseTemplates[props.exerciseIndex]
                                 .setgroupTemplates[props.index].sets}
+                            onChange={handleChange}
                         />
                         <Form.Label> Reps </Form.Label>
                         <Form.Control
                             required
-                            name="sets"
+                            name="reps"
                             type="number"
                             value={workout.exerciseTemplates[props.exerciseIndex]
                                 .setgroupTemplates[props.index].reps}
+                            onChange={handleChange}
                         />
                     </Form.Group>
                 </Container>
