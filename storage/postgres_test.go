@@ -240,7 +240,12 @@ func Test_CreateExerciseType(t *testing.T) {
 		image.Point{200, 100},
 	})
 
-	exType := types.NewExerciseType("random name", testImage, types.Push, types.Quads)
+	exType := &types.ExerciseType{
+		Name:         "random name",
+		Image:        testImage,
+		PPLTypes:     []types.PPLType{types.Push},
+		MuscleGroups: []types.MuscleGroup{types.Quads},
+	}
 
 	// success case
 	func() {
@@ -271,7 +276,12 @@ func Test_GetExerciseTypes(t *testing.T) {
 			image.Point{200, 100},
 		})
 
-		exType := types.NewExerciseType("random name", testImage, types.Push, types.Quads)
+		exType := &types.ExerciseType{
+			Name:         "random name",
+			Image:        testImage,
+			PPLTypes:     []types.PPLType{types.Push},
+			MuscleGroups: []types.MuscleGroup{types.Quads},
+		}
 		testPGStorage.CreateExerciseType(exType)
 
 		rExTypes, err := testPGStorage.GetExerciseTypes()
@@ -297,10 +307,10 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 
 		testImage := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}})
 		exType := &types.ExerciseType{
-			Name:        "test type",
-			Image:       testImage,
-			PPLType:     types.Push,
-			MuscleGroup: types.Calves,
+			Name:         "test type",
+			Image:        testImage,
+			PPLTypes:     []types.PPLType{types.Push},
+			MuscleGroups: []types.MuscleGroup{types.Calves},
 		}
 		testPGStorage.CreateExerciseType(exType)
 
@@ -369,10 +379,12 @@ func Test_GetWorkoutTemplates(t *testing.T) {
 
 		var wTemps []types.WorkoutTemplate
 		for i := 0; i < loops; i++ {
-			eType := types.NewExerciseType("type "+strconv.Itoa(i),
-				image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}}),
-				types.Push, types.Abductors,
-			)
+			eType := &types.ExerciseType{
+				Name:         "type " + strconv.Itoa(i),
+				Image:        image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}}),
+				PPLTypes:     []types.PPLType{types.Push},
+				MuscleGroups: []types.MuscleGroup{types.Abductors},
+			}
 			testPGStorage.CreateExerciseType(eType)
 
 			wTemp := &types.WorkoutTemplate{
@@ -429,10 +441,10 @@ func Test_CreateWorkoutLog(t *testing.T) {
 
 		testImage := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}})
 		exType := &types.ExerciseType{
-			Name:        "test type",
-			Image:       testImage,
-			PPLType:     types.Push,
-			MuscleGroup: types.Calves,
+			Name:         "test type",
+			Image:        testImage,
+			PPLTypes:     []types.PPLType{types.Push},
+			MuscleGroups: []types.MuscleGroup{types.Calves},
 		}
 		testPGStorage.CreateExerciseType(exType)
 
@@ -505,10 +517,12 @@ func Test_GetWorkoutLogs(t *testing.T) {
 
 		var wLogs []types.WorkoutLog
 		for i := 0; i < loops; i++ {
-			eType := types.NewExerciseType("type "+strconv.Itoa(i),
-				image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}}),
-				types.Push, types.Abductors,
-			)
+			eType := &types.ExerciseType{
+				Name:         "type " + strconv.Itoa(i),
+				Image:        image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}}),
+				PPLTypes:     []types.PPLType{types.Push},
+				MuscleGroups: []types.MuscleGroup{types.Abductors},
+			}
 			testPGStorage.CreateExerciseType(eType)
 
 			wLog := &types.WorkoutLog{

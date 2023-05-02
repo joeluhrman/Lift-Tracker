@@ -69,21 +69,12 @@ const (
 )
 
 type ExerciseType struct {
-	ID          uint        `json:"id,string"`
-	Name        string      `json:"name"`
-	Image       image.Image `json:"image"`
-	PPLType     PPLType     `json:"pplType"`
-	MuscleGroup MuscleGroup `json:"muscleGroup"`
+	ID           uint          `json:"id,string"`
+	Name         string        `json:"name"`
+	Image        image.Image   `json:"image"`
+	PPLTypes     []PPLType     `json:"pplTypes"`
+	MuscleGroups []MuscleGroup `json:"muscleGroups"`
 	Metadata
-}
-
-func NewExerciseType(name string, image image.Image, pplType PPLType, mscGrp MuscleGroup) *ExerciseType {
-	return &ExerciseType{
-		Name:        name,
-		Image:       image,
-		PPLType:     pplType,
-		MuscleGroup: mscGrp,
-	}
 }
 
 type SetGroupLog struct {

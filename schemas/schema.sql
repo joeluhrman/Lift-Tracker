@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS exercise_types (
   id                SERIAL PRIMARY KEY,
   name              TEXT UNIQUE NOT NULL,
   image             BYTEA,
-  ppl_type          TEXT,
-  muscle_group      TEXT,
+  ppl_types         TEXT[],
+  muscle_groups     TEXT[],
 
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()

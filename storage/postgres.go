@@ -8,6 +8,7 @@ import (
 	_ "github.com/jackc/pgx/v5"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/joeluhrman/Lift-Tracker/types"
+	"github.com/lib/pq"
 )
 
 const (
@@ -138,10 +139,10 @@ func (p *postgres) DeleteSessionByToken(token string) error {
 }
 
 func (p *postgres) CreateExerciseType(exerciseType *types.ExerciseType) error {
-	statement := "INSERT INTO " + pgTableExerciseType + " (name, ppl_type, muscle_group) " +
+	statement := "INSERT INTO " + pgTableExerciseType + " (name, ppl_types, muscle_groups) " +
 		"VALUES ($1, $2, $3) RETURNING id, created_at, updated_at"
 
-	return p.conn.QueryRow(statement, exerciseType.Name, exerciseType.PPLType, exerciseType.MuscleGroup).
+	return p.conn.QueryRow(statement, exerciseType.Name, pq.Array(exerciseType.PPLTypes), pq.Array(exerciseType.MuscleGroups)).
 		Scan(&exerciseType.ID, &exerciseType.CreatedAt, &exerciseType.UpdatedAt)
 }
 
@@ -161,8 +162,8 @@ func (p *postgres) GetExerciseTypes() ([]types.ExerciseType, error) {
 		PLACEHOLDER := new(interface{})
 
 		var exType types.ExerciseType
-		if err := rows.Scan(&exType.ID, &exType.Name, PLACEHOLDER, &exType.PPLType,
-			&exType.MuscleGroup, &exType.CreatedAt, &exType.UpdatedAt); err != nil {
+		if err := rows.Scan(&exType.ID, &exType.Name, PLACEHOLDER, pq.Array(&string(exType.PPLTypes)),
+			pq.Array(&exType.MuscleGroups), &exType.CreatedAt, &exType.UpdatedAt); err != nil {
 			return nil, err
 		}
 		exerciseTypes = append(exerciseTypes, exType)
