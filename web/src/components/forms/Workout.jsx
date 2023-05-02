@@ -9,6 +9,9 @@ import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 // Eventually want to expand this form to work for
 // adding/editing a template OR a log, depending on
 // what props are passed. 
+//
+// I'd also ideally like to figure out how to un-nest everything
+// because it is hard to read.
 export default function Workout() {
     const Exercise = (props) => {
         const Setgroup = (props) => {
@@ -54,11 +57,11 @@ export default function Workout() {
         }
         
         const setgroupElements = workout.exerciseTemplates[props.index]
-            .setgroupTemplates.map((sgTemp, key) => {
+            .setgroupTemplates.map((sgTemp, index) => {
             return (
                 <Setgroup 
-                    key={key}
-                    index={key}
+                    key={Math.random()}
+                    index={index}
                     exerciseIndex={props.index}
                 />
             )
@@ -75,7 +78,7 @@ export default function Workout() {
 
         const ExerciseSelect = (props) => {
             const options = exerciseTypes.map((eType) => {
-                return <option value={eType.id}> {eType.name} </option>
+                return <option key={Math.random()} value={eType.id}> {eType.name} </option>
             })
 
             const handleChange = (e) => {
@@ -113,11 +116,11 @@ export default function Workout() {
     })
     const [exerciseTypes, setExerciseTypes] = React.useState()
     
-    const exerciseElements = workout.exerciseTemplates.map((eTemp, key) => {
+    const exerciseElements = workout.exerciseTemplates.map((eTemp, index) => {
         return (
             <Exercise
-                key={key}
-                index={key}
+                key={Math.random()}
+                index={index}
             />
         )
     })
