@@ -129,6 +129,7 @@ export default function Workout() {
         (async () => {
             const handler = new ExerciseTypeHandler()
             const [ , , data] = await handler.getAll()
+            console.log("ETYPES", data)
             setExerciseTypes(data)
         })()
     }, [])
