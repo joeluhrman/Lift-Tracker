@@ -18,6 +18,7 @@ export default function WorkoutTemplates() {
         (async () => {
             const wtHandler = new WorkoutTemplateHandler()
             const [status, headers, data] = await wtHandler.getAll()
+            console.log("TEMPS", data)
             setTemps(data)
         })()
     }, [])
@@ -32,6 +33,7 @@ export default function WorkoutTemplates() {
 
     React.useEffect(() => {
         if (temps === undefined) return
+        if (temps === null) return
 
         const elements = temps.map((temp) => {
             const exerciseElements = temp.exerciseTemplates.map((eTemp) => {
@@ -64,7 +66,7 @@ export default function WorkoutTemplates() {
 
     const handleToAddWT = () => navigate("/add-workout-template")
 
-    if (temps === undefined || tempElements === undefined || exerciseTypes === undefined) 
+    if (temps === undefined || exerciseTypes === undefined) 
         return <Container>Loading...</Container>
 
     return (
