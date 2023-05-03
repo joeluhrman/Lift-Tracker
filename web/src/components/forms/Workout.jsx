@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, Container, Form } from "react-bootstrap"
+import { Button, Col, Container, Form, Row } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
 import WorkoutTemplateHandler from "../../handlers/WorkoutTemplateHandler"
 import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
@@ -33,28 +33,26 @@ export default function Workout() {
             }
 
             return (<>
-                <Form.Label><h6> Setgroup { props.index + 1 } </h6></Form.Label>
-                <Container className="mb-3">
-                    <Form.Group className="mb-3">
-                        <Form.Label> Sets </Form.Label>
-                        <Form.Control
-                            required
-                            name="sets"
-                            type="number"
-                            value={workout.exerciseTemplates[props.exerciseIndex]
-                                .setgroupTemplates[props.index].sets}
-                            onChange={handleChange}
-                        />
-                        <Form.Label> Reps </Form.Label>
-                        <Form.Control
-                            required
-                            name="reps"
-                            type="number"
-                            value={workout.exerciseTemplates[props.exerciseIndex]
-                                .setgroupTemplates[props.index].reps}
-                            onChange={handleChange}
-                        />
-                    </Form.Group>
+                <Container className="mb-3 d-inline-flex flex-row">
+                    <Form.Control
+                        required
+                        name="sets"
+                        type="number"
+                        value={workout.exerciseTemplates[props.exerciseIndex]
+                            .setgroupTemplates[props.index].sets}
+                        onChange={handleChange}
+                        className="w-25"
+                    /> 
+                    <Form.Label>X</Form.Label>
+                    <Form.Control
+                        required
+                        name="reps"
+                        type="number"
+                        value={workout.exerciseTemplates[props.exerciseIndex]
+                            .setgroupTemplates[props.index].reps}
+                        onChange={handleChange}
+                        className="w-25"
+                    />
                 </Container>
             </>)
         }
@@ -93,9 +91,10 @@ export default function Workout() {
             }
 
             return (
-                <Form.Select 
+                <Form.Select
                     value={workout.exerciseTemplates[props.exerciseIndex].exerciseTypeID}
                     onChange={handleChange}
+                    className="w-25"
                 >
                     <option>Exercise</option>
                     { options }
@@ -104,10 +103,14 @@ export default function Workout() {
         }
 
         return (<>
-            <Form.Label><h5> Exercise { props.index + 1 } </h5></Form.Label>
-            <Button size="sm" className="float-end" onClick={handleAddSetgroup}>Add Setgroup</Button>
+            <Button className="float-end" size="sm" onClick={handleAddSetgroup}>Add Setgroup</Button>
+            <Form.Group className="mb-3" as={Row}>
+                <Form.Label column><h5> Exercise { props.index + 1 } </h5></Form.Label>
+                <Col sm="10">
+                    <ExerciseSelect exerciseIndex={props.index}/>
+                </Col>
+            </Form.Group>
             <Container className="mb-3">
-                <ExerciseSelect exerciseIndex={props.index}/>
                 { setgroupElements }
             </Container>
         </>)
@@ -163,7 +166,7 @@ export default function Workout() {
     if (exerciseTypes === undefined) return null
 
     return (
-        <Form className="border border-2" onSubmit={handleSubmit}>
+        <Form className="border border-2 p-3" onSubmit={handleSubmit}>
             <Button className="float-end" onClick={handleAddExercise}> Add Exercise </Button>
             <Form.Label><h5> Name </h5></Form.Label>
             <Form.Control
@@ -172,9 +175,10 @@ export default function Workout() {
                 type="text"
                 value={workout.name}
                 onChange={e => setWorkout({...workout, [e.target.name]: e.target.value})}
+                className="mb-3 w-25"
             />
             { exerciseElements }
-            <Button className="float-end" type="submit">Save</Button>
+            <Button type="submit">Save</Button>
         </Form>
     )
 }
