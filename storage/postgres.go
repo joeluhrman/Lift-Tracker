@@ -162,7 +162,7 @@ func (p *postgres) GetExerciseTypes() ([]types.ExerciseType, error) {
 		PLACEHOLDER := new(interface{})
 
 		var exType types.ExerciseType
-		if err := rows.Scan(&exType.ID, &exType.Name, PLACEHOLDER, pq.Array(&string(exType.PPLTypes)),
+		if err := rows.Scan(&exType.ID, &exType.Name, PLACEHOLDER, pq.Array(&exType.PPLTypes),
 			pq.Array(&exType.MuscleGroups), &exType.CreatedAt, &exType.UpdatedAt); err != nil {
 			return nil, err
 		}
