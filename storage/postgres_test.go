@@ -233,7 +233,7 @@ func Test_AuthenticateSession(t *testing.T) {
 }
 
 func Test_CreateExerciseType(t *testing.T) {
-	defer testPGStorage.clearTable(pgTableExerciseType)
+	//defer testPGStorage.clearTable(pgTableExerciseType)
 
 	testImage := image.NewRGBA(image.Rectangle{
 		image.Point{0, 0},
@@ -243,8 +243,8 @@ func Test_CreateExerciseType(t *testing.T) {
 	exType := &types.ExerciseType{
 		Name:         "random name",
 		Image:        testImage,
-		PPLTypes:     []types.PPLType{types.Push},
-		MuscleGroups: []types.MuscleGroup{types.Quads},
+		PPLTypes:     []types.PPLType{types.Push, types.Pull},
+		MuscleGroups: []types.MuscleGroup{types.Quads, types.Chest},
 	}
 
 	// success case
