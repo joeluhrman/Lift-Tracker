@@ -1,5 +1,6 @@
 import React from "react"
 import { Button, Container, Form } from "react-bootstrap"
+import { useNavigate } from "react-router-dom"
 import WorkoutTemplateHandler from "../../handlers/WorkoutTemplateHandler"
 import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
@@ -13,6 +14,8 @@ import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 // I'd also ideally like to figure out how to un-nest everything
 // because it is hard to read.
 export default function Workout() {
+    const navigate = useNavigate()
+
     const Exercise = (props) => {
         const Setgroup = (props) => {
             // very inefficient and verbose
@@ -152,8 +155,9 @@ export default function Workout() {
         const handler = new WorkoutTemplateHandler()
         const [status, , data] = await handler.create(workout)
         
-        console.log("STATUS", status)
-        console.log("DATA", data)
+        if (status === 201) {
+            navigate("/workout-templates")
+        }
     }
 
     if (exerciseTypes === undefined) return null
