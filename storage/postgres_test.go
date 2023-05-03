@@ -279,8 +279,8 @@ func Test_GetExerciseTypes(t *testing.T) {
 		exType := &types.ExerciseType{
 			Name:         "random name",
 			Image:        testImage,
-			PPLTypes:     []types.PPLType{types.Push},
-			MuscleGroups: []types.MuscleGroup{types.Quads},
+			PPLTypes:     []types.PPLType{types.Push, types.Pull},
+			MuscleGroups: []types.MuscleGroup{types.Quads, types.Calves, types.Abductors},
 		}
 		testPGStorage.CreateExerciseType(exType)
 

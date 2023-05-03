@@ -161,11 +161,23 @@ func (p *postgres) GetExerciseTypes() ([]types.ExerciseType, error) {
 		// PLACEHOLDER UNTIL IMAGE STUFF WORKS
 		PLACEHOLDER := new(interface{})
 
+		strPPLTypes := []string{}
+		strMscGroups := []string{}
+
 		var exType types.ExerciseType
-		if err := rows.Scan(&exType.ID, &exType.Name, PLACEHOLDER, &exType.PPLTypes,
-			&exType.MuscleGroups, &exType.CreatedAt, &exType.UpdatedAt); err != nil {
+		if err := rows.Scan(&exType.ID, &exType.Name, PLACEHOLDER, pq.Array(&strPPLTypes),
+			pq.Array(&strMscGroups), &exType.CreatedAt, &exType.UpdatedAt); err != nil {
 			return nil, err
 		}
+
+		for _, str := range strPPLTypes {
+			exType.PPLTypes = append(exType.PPLTypes, types.PPLType(str))
+		}
+
+		for _, str := range strMscGroups {
+			exType.MuscleGroups = append(exType.MuscleGroups, types.MuscleGroup(str))
+		}
+
 		exerciseTypes = append(exerciseTypes, exType)
 	}
 
