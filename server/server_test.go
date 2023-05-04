@@ -56,7 +56,7 @@ func (t *mockStorage) GetUser(userID uint) (types.User, error) {
 	}, nil
 }
 
-func (t *mockStorage) CreateSession(s *types.Session) error {
+func (t *mockStorage) CreateSession(s types.Session) error {
 	return nil
 }
 

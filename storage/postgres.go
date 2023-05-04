@@ -108,9 +108,9 @@ func (p *postgres) AuthenticateUser(username string, password string) (uint, err
 	return userID, nil
 }
 
-func (p *postgres) CreateSession(s *types.Session) error {
+func (p *postgres) CreateSession(s types.Session) error {
 	statement := "INSERT INTO " + pgTableSession + " (user_id, token) VALUES ($1, $2)"
-	_, err := p.conn.Exec(statement, s.UserID, s.Token)
+	_, err := p.conn.Exec(statement, s.UserID(), s.Token())
 
 	return err
 }

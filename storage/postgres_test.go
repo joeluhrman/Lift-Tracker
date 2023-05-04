@@ -197,7 +197,7 @@ func Test_DeleteSessionByToken(t *testing.T) {
 	// success case
 	func() {
 		s := types.NewSession(userID)
-		token := s.Token
+		token := s.Token()
 
 		testPGStorage.CreateSession(s)
 		err := testPGStorage.DeleteSessionByToken(token)
@@ -222,7 +222,7 @@ func Test_AuthenticateSession(t *testing.T) {
 	func() {
 		s := types.NewSession(1)
 		testPGStorage.CreateSession(s)
-		id, err := testPGStorage.AuthenticateSession(s.Token)
+		id, err := testPGStorage.AuthenticateSession(s.Token())
 		if err != nil {
 			t.Error(err)
 		}

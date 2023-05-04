@@ -9,7 +9,7 @@ type Storage interface {
 	AuthenticateUser(username string, password string) (uint, error)
 	GetUser(userID uint) (types.User, error)
 
-	CreateSession(s *types.Session) error
+	CreateSession(s types.Session) error
 	DeleteSessionByUserID(userID uint) error
 	DeleteSessionByToken(token string) error
 	AuthenticateSession(token string) (uint, error)

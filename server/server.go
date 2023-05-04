@@ -89,7 +89,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 	}
 }
 
-func setSession(s *types.Session, w http.ResponseWriter) {
+func setSession(s types.Session, w http.ResponseWriter) {
 	http.SetCookie(w, s.Cookie())
 }
 

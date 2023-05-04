@@ -24,26 +24,40 @@ type User struct {
 
 const SessionKey = "session"
 
-type Session struct {
-	UserID uint
-	Token  string
+type Session interface {
+	Cookie() *http.Cookie
+	Token() string
+	UserID() uint
+}
+
+type session struct {
+	userID uint
+	token  string
 	Metadata
 }
 
-func NewSession(userID uint) *Session {
+func NewSession(userID uint) *session {
 	token := uuid.New().String()
 
-	return &Session{
-		Token:  token,
-		UserID: userID,
+	return &session{
+		token:  token,
+		userID: userID,
 	}
 }
 
-func (s *Session) Cookie() *http.Cookie {
+func (s *session) Cookie() *http.Cookie {
 	return &http.Cookie{
 		Name:  SessionKey,
-		Value: s.Token,
+		Value: s.token,
 	}
+}
+
+func (s *session) Token() string {
+	return s.token
+}
+
+func (s *session) UserID() uint {
+	return s.userID
 }
 
 type PPLType string
