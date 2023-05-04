@@ -2,6 +2,7 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import {
     Button,
+    Card,
     Container,
     Modal
 } from "react-bootstrap"
@@ -11,7 +12,6 @@ import ExerciseTypeHandler from "../handlers/ExerciseTypeHandler"
 export default function WorkoutTemplates() {
     const [temps, setTemps] = React.useState()
     const [exerciseTypes, setExerciseTypes] = React.useState()
-    const [tempElements, setTempElements] = React.useState()
     const navigate = useNavigate()
 
     React.useEffect(() => {
@@ -31,43 +31,36 @@ export default function WorkoutTemplates() {
         })()
     }, [])
 
-    React.useEffect(() => {
-        if (temps === undefined) return
-        if (temps === null) return
-
-        const elements = temps.map((temp) => {
-            const exerciseElements = temp.exerciseTemplates.map((eTemp) => {
-                const exerciseType = exerciseTypes
-                    .find(eType => eType.id === eTemp.exerciseTypeID)
-
-                const setgroupElements = eTemp.setgroupTemplates.map((sg) => {
-                    return (<>
-                            {sg.sets} x {sg.reps + " "} 
-                    </>)
-                })
-
-                return (
-                    <Container>
-                        <p>{ exerciseType.name } { setgroupElements }</p>
-                    </Container>
-                )
-            })
-
-            return (
-                <Container className="border border-2">
-                    <h4>{ temp.name }</h4>
-                    { exerciseElements }
-                </Container>
-            )    
-        })
-
-        setTempElements(elements)
-    }, [temps])
-
     const handleToAddWT = () => navigate("/add-workout-template")
 
     if (temps === undefined || exerciseTypes === undefined) 
         return <Container>Loading...</Container>
+
+    const templateElements = temps.map((temp) => {
+        const exerciseElements = temp.exerciseTemplates.map((eTemp) => {
+            const exerciseType = exerciseTypes
+                .find(eType => eType.id === eTemp.exerciseTypeID)
+
+            const setgroupElements = eTemp.setgroupTemplates.map((sg) => {
+                return (<>
+                        {sg.sets} x {sg.reps + " "} 
+                </>)
+            })
+
+            return (
+                <Container>
+                    <p>{ exerciseType.name } { setgroupElements }</p>
+                </Container>
+            )
+        })
+    
+        return (
+            <Card className="border border-2 w-50 align-items-center mb-2">
+                <h4>{ temp.name }</h4>
+                { exerciseElements }
+            </Card>
+        )    
+    })
 
     return (
         <>
@@ -78,7 +71,9 @@ export default function WorkoutTemplates() {
                     Add Workout Template
                 </Button>
             </Container>
-            {tempElements}
+            <Container className="row">
+                {templateElements}
+            </Container>
         </>
     )
 }

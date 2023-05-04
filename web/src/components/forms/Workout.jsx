@@ -33,7 +33,7 @@ export default function Workout() {
             }
 
             return (<>
-                <Container className="mb-3 d-inline-flex flex-row">
+                <Container className="mb-2 d-inline-flex flex-row">
                     <Form.Control
                         required
                         name="sets"
@@ -43,7 +43,7 @@ export default function Workout() {
                         onChange={handleChange}
                         className="w-25"
                     /> 
-                    <Form.Label>X</Form.Label>
+                    <Form.Label> X </Form.Label>
                     <Form.Control
                         required
                         name="reps"
@@ -104,13 +104,13 @@ export default function Workout() {
 
         return (<>
             <Button className="float-end" size="sm" onClick={handleAddSetgroup}>Add Setgroup</Button>
-            <Form.Group className="mb-3" as={Row}>
+            <Form.Group className="mb-2" as={Row}>
                 <Form.Label column><h5> Exercise { props.index + 1 } </h5></Form.Label>
                 <Col sm="10">
                     <ExerciseSelect exerciseIndex={props.index}/>
                 </Col>
             </Form.Group>
-            <Container className="mb-3">
+            <Container className="mb-2">
                 { setgroupElements }
             </Container>
         </>)
@@ -118,7 +118,13 @@ export default function Workout() {
 
     const [workout, setWorkout] = React.useState({
         name: "",
-        exerciseTemplates: [],
+        exerciseTemplates: [{
+            exerciseTypeID: 0,
+            setgroupTemplates: [{
+                sets: 0,
+                reps: 0,
+            }]
+        }],
     })
     const [exerciseTypes, setExerciseTypes] = React.useState()
     
@@ -144,7 +150,10 @@ export default function Workout() {
         const work = workout
         work.exerciseTemplates.push({
             exerciseTypeID: 0,
-            setgroupTemplates: [],
+            setgroupTemplates: [{
+                sets: 0,
+                reps: 0
+            }],
         })
         setWorkout({...work})
     }
@@ -175,7 +184,7 @@ export default function Workout() {
                 type="text"
                 value={workout.name}
                 onChange={e => setWorkout({...workout, [e.target.name]: e.target.value})}
-                className="mb-3 w-25"
+                className="mb-2 w-25"
             />
             { exerciseElements }
             <Button type="submit">Save</Button>
