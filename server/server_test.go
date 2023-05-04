@@ -369,7 +369,7 @@ func Test_GetExerciseTypesEndpoint(t *testing.T) {
 			return
 		}
 
-		if !cmp.Equal(eTypes, response) {
+		if !cmp.Equal(eTypes, response, cmp.AllowUnexported(types.ExerciseType{})) {
 			t.Error(err)
 		}
 	}()
@@ -400,7 +400,8 @@ func Test_GetWorkoutTemplatesEndpoint(t *testing.T) {
 
 		originalData, _ := testLoggedInServer.storage.GetWorkoutTemplates(1)
 
-		if !cmp.Equal(originalData, responseData) {
+		if !cmp.Equal(originalData, responseData,
+			cmp.AllowUnexported(types.WorkoutTemplate{}, types.ExerciseTemplate{}, types.SetGroupTemplate{})) {
 			t.Error("Original wTemp and response wTemp/JSON were not the same")
 		}
 	}()
@@ -457,7 +458,8 @@ func Test_GetWorkoutLogsEndpoint(t *testing.T) {
 			return
 		}
 
-		if !cmp.Equal(correctLogs, responseLogs) {
+		if !cmp.Equal(correctLogs, responseLogs, cmp.AllowUnexported(types.WorkoutLog{},
+			types.ExerciseLog{}, types.SetGroupLog{})) {
 			t.Error("logs json in response was not correct")
 		}
 	}()
@@ -488,7 +490,7 @@ func Test_GetUserEndpoint(t *testing.T) {
 			return
 		}
 
-		if !cmp.Equal(&correctData, responseData) {
+		if !cmp.Equal(&correctData, responseData, cmp.AllowUnexported(types.User{})) {
 			t.Error("original data and response were not the same")
 			return
 		}

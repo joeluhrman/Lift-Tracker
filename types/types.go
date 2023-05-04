@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type Metadata struct {
+type metadata struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -19,7 +19,7 @@ type User struct {
 	Email          string `json:"email"`
 	HashedPassword string `json:"hashedPassword"`
 	IsAdmin        bool   `json:"isAdmin"`
-	Metadata
+	metadata
 }
 
 const SessionKey = "session"
@@ -33,7 +33,7 @@ type Session interface {
 type session struct {
 	userID uint
 	token  string
-	Metadata
+	metadata
 }
 
 func NewSession(userID uint) *session {
@@ -88,7 +88,7 @@ type ExerciseType struct {
 	Image        image.Image   `json:"image"`
 	PPLTypes     []PPLType     `json:"pplTypes"`
 	MuscleGroups []MuscleGroup `json:"muscleGroups"`
-	Metadata
+	metadata
 }
 
 type SetGroupLog struct {
@@ -97,7 +97,7 @@ type SetGroupLog struct {
 	Sets          uint    `json:"sets,string"`
 	Reps          uint    `json:"reps,string"`
 	Weight        float32 `json:"weight"`
-	Metadata
+	metadata
 }
 
 type ExerciseLog struct {
@@ -106,7 +106,7 @@ type ExerciseLog struct {
 	ExerciseTypeID uint          `json:"exerciseTypeID,string"`
 	Notes          string        `json:"notes"`
 	SetGroupLogs   []SetGroupLog `json:"setgroupLogs"`
-	Metadata
+	metadata
 }
 
 type WorkoutLog struct {
@@ -116,7 +116,7 @@ type WorkoutLog struct {
 	Name         string        `json:"name"`
 	Notes        string        `json:"notes"`
 	ExerciseLogs []ExerciseLog `json:"exerciseLogs"`
-	Metadata
+	metadata
 }
 
 type SetGroupTemplate struct {
@@ -124,7 +124,7 @@ type SetGroupTemplate struct {
 	ExerciseTemplateID uint `json:"exerciseTemplateID,string"`
 	Sets               uint `json:"sets,string"`
 	Reps               uint `json:"reps,string"`
-	Metadata
+	metadata
 }
 
 type ExerciseTemplate struct {
@@ -132,7 +132,7 @@ type ExerciseTemplate struct {
 	WorkoutTemplateID uint               `json:"workoutTemplateID,string"`
 	ExerciseTypeID    uint               `json:"exerciseTypeID,string"`
 	SetGroupTemplates []SetGroupTemplate `json:"setgroupTemplates"`
-	Metadata
+	metadata
 }
 
 type WorkoutTemplate struct {
@@ -140,5 +140,5 @@ type WorkoutTemplate struct {
 	UserID            uint               `json:"userID,string"`
 	Name              string             `json:"name"`
 	ExerciseTemplates []ExerciseTemplate `json:"exerciseTemplates"`
-	Metadata
+	metadata
 }

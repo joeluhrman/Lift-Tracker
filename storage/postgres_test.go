@@ -107,7 +107,7 @@ func Test_GetUser(t *testing.T) {
 		}
 
 		user.HashedPassword = ""
-		if !cmp.Equal(user, &ret) {
+		if !cmp.Equal(user, &ret, cmp.AllowUnexported(types.User{})) {
 			t.Error("returned user was not the same as created")
 			return
 		}
@@ -290,7 +290,7 @@ func Test_GetExerciseTypes(t *testing.T) {
 			return
 		}
 
-		if cmp.Equal(rExTypes[0], exType) {
+		if cmp.Equal(rExTypes[0], exType, cmp.AllowUnexported(types.ExerciseType{})) {
 			t.Error("Returned exercise type did not equal original")
 		}
 	}()
@@ -424,7 +424,8 @@ func Test_GetWorkoutTemplates(t *testing.T) {
 			t.Errorf("returned slice had length %d, original has length %d", len(rTemps), len(wTemps))
 		}
 
-		if !(cmp.Equal(rTemps, wTemps)) {
+		if !(cmp.Equal(rTemps, wTemps, cmp.AllowUnexported(types.WorkoutTemplate{},
+			types.ExerciseTemplate{}, types.SetGroupTemplate{}))) {
 			t.Error("original and returned slices were not equal")
 		}
 	}()
@@ -563,7 +564,8 @@ func Test_GetWorkoutLogs(t *testing.T) {
 			return
 		}
 
-		if !cmp.Equal(wLogs, rLogs) {
+		if !cmp.Equal(wLogs, rLogs, cmp.AllowUnexported(types.WorkoutLog{},
+			types.ExerciseLog{}, types.SetGroupLog{})) {
 			t.Error("returned logs were not equal to original")
 			return
 		}

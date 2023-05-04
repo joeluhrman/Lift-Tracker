@@ -14,6 +14,7 @@ It uses a Postgresql database, Golang web-server, and React frontend scaffolded 
     * How to keep track of order of exercises/setgroups
         * Maybe keep workout id and delete/redo everything every time a workout is modified
 6. Remove exType images for now
+7. Better "enums" for PPLTypes and MuscleGroups
 
 ## Frontend
 1. Make one route configurable for login and signup form 
