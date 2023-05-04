@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"image"
 	"os"
 	"strconv"
 	"testing"
@@ -233,16 +232,9 @@ func Test_AuthenticateSession(t *testing.T) {
 }
 
 func Test_CreateExerciseType(t *testing.T) {
-	//defer testPGStorage.clearTable(pgTableExerciseType)
-
-	testImage := image.NewRGBA(image.Rectangle{
-		image.Point{0, 0},
-		image.Point{200, 100},
-	})
-
+	defer testPGStorage.clearTable(pgTableExerciseType)
 	exType := &types.ExerciseType{
 		Name:         "random name",
-		Image:        testImage,
 		PPLTypes:     []types.PPLType{types.PPLTypePush, types.PPLTypePull},
 		MuscleGroups: []types.MuscleGroup{types.MscGrpQuads, types.MscGrpChest},
 	}
@@ -269,16 +261,12 @@ func Test_CreateExerciseType(t *testing.T) {
 }
 
 func Test_GetExerciseTypes(t *testing.T) {
+	defer testPGStorage.clearTable(pgTableExerciseType)
+
 	// success case
 	func() {
-		testImage := image.NewRGBA(image.Rectangle{
-			image.Point{0, 0},
-			image.Point{200, 100},
-		})
-
 		exType := &types.ExerciseType{
 			Name:         "random name",
-			Image:        testImage,
 			PPLTypes:     []types.PPLType{types.PPLTypePush, types.PPLTypePull},
 			MuscleGroups: []types.MuscleGroup{types.MscGrpQuads, types.MscGrpCalves, types.MscGrpAbductors},
 		}
@@ -305,10 +293,8 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 		password := "Pringus"
 		testPGStorage.CreateUser(user, password)
 
-		testImage := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}})
 		exType := &types.ExerciseType{
 			Name:         "test type",
-			Image:        testImage,
 			PPLTypes:     []types.PPLType{types.PPLTypePush},
 			MuscleGroups: []types.MuscleGroup{types.MscGrpCalves},
 		}
@@ -381,7 +367,6 @@ func Test_GetWorkoutTemplates(t *testing.T) {
 		for i := 0; i < loops; i++ {
 			eType := &types.ExerciseType{
 				Name:         "type " + strconv.Itoa(i),
-				Image:        image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}}),
 				PPLTypes:     []types.PPLType{types.PPLTypePush},
 				MuscleGroups: []types.MuscleGroup{types.MscGrpAbductors},
 			}
@@ -440,10 +425,8 @@ func Test_CreateWorkoutLog(t *testing.T) {
 		password := "moingus"
 		testPGStorage.CreateUser(user, password)
 
-		testImage := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}})
 		exType := &types.ExerciseType{
 			Name:         "test type",
-			Image:        testImage,
 			PPLTypes:     []types.PPLType{types.PPLTypePush},
 			MuscleGroups: []types.MuscleGroup{types.MscGrpCalves},
 		}
@@ -520,7 +503,6 @@ func Test_GetWorkoutLogs(t *testing.T) {
 		for i := 0; i < loops; i++ {
 			eType := &types.ExerciseType{
 				Name:         "type " + strconv.Itoa(i),
-				Image:        image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}}),
 				PPLTypes:     []types.PPLType{types.PPLTypePush},
 				MuscleGroups: []types.MuscleGroup{types.MscGrpAbductors},
 			}

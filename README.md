@@ -6,21 +6,22 @@ It uses a Postgresql database, Golang web-server, and React frontend scaffolded 
 
 ## Backend
 1. Setup config file for db urls, server port, etc
-1. Editing workout logs
-2. Editing workout templates
-3. Deleting workout logs
-4. Deleting workout templates
-5. Templates/Logs
+2. Editing logs/templates
+3. Deleting logs/templates
+4. Templates/Logs
     * How to keep track of order of exercises/setgroups
         * Maybe keep workout id and delete/redo everything every time a workout is modified
-6. Remove exType images for now
-7. Better "enums" for PPLTypes and MuscleGroups
-    - currently they are not safe and invalid ones might make it through
-        to the db
+5. Remove exType images for now
+6. Better "enums" for PPLTypes and MuscleGroups
+    - Problems 
+        - Don't want invalid values for either making through creation endpoint
+        and into the db
+        - Don't want devs to be able to create them on the fly / accidentally 
+        convert an invalid string into one or something
+7. Finish musclegroups
 
 ## Frontend
-1. Make one route configurable for login and signup form 
-2. Add workout template form
+1. Add workout template form
     - select exercise modal
 
 ## Long term

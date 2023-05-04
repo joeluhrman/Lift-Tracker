@@ -38,7 +38,6 @@ EXECUTE PROCEDURE trigger_set_timestamp();
 CREATE TABLE IF NOT EXISTS exercise_types (
   id                SERIAL PRIMARY KEY,
   name              TEXT UNIQUE NOT NULL,
-  image             BYTEA,
   ppl_types         TEXT[],
   muscle_groups     TEXT[],
 

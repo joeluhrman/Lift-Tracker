@@ -158,14 +158,11 @@ func (p *postgres) GetExerciseTypes() ([]types.ExerciseType, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		// PLACEHOLDER UNTIL IMAGE STUFF WORKS
-		PLACEHOLDER := new(interface{})
-
 		strPPLTypes := []string{}
 		strMscGroups := []string{}
 
 		var exType types.ExerciseType
-		if err := rows.Scan(&exType.ID, &exType.Name, PLACEHOLDER, pq.Array(&strPPLTypes),
+		if err := rows.Scan(&exType.ID, &exType.Name, pq.Array(&strPPLTypes),
 			pq.Array(&strMscGroups), &exType.CreatedAt, &exType.UpdatedAt); err != nil {
 			return nil, err
 		}

@@ -1,7 +1,6 @@
 package types
 
 import (
-	"image"
 	"net/http"
 	"time"
 
@@ -85,7 +84,6 @@ const (
 type ExerciseType struct {
 	ID           uint          `json:"id,string"`
 	Name         string        `json:"name"`
-	Image        image.Image   `json:"image"`
 	PPLTypes     []PPLType     `json:"pplTypes"`
 	MuscleGroups []MuscleGroup `json:"muscleGroups"`
 	metadata
