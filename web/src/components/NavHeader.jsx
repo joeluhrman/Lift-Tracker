@@ -46,7 +46,7 @@ export default function NavHeader(props) {
           <img style={{paddingRight: "5%"}}
             src={logoUrl}
             width="50"
-            height="30"
+            height="35"
             className="d-inline-block align-top"
           />
           Lift-Tracker

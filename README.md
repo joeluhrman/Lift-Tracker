@@ -16,7 +16,7 @@ It uses a Postgresql database, Golang web-server, and React frontend scaffolded 
 6. Remove exType images for now
 
 ## Frontend
-1. Figure out how to abstract forms so all have same appearance
+1. Make one route configurable for login and signup form 
 2. Add workout template form
     - select exercise modal
 

@@ -9,9 +9,8 @@ import Nav from "./routes/Nav"
 import Auth from "./routes/Auth"
 import Error from "./routes/Error"
 import Root from './routes/Root'
-import Login from "./routes/Login"
+import Register from "./routes/Register"
 import Dashboard from "./routes/Dashboard"
-import SignUp from "./routes/SignUp"
 import WorkoutTemplates from "./routes/WorkoutTemplates"
 import AddWorkoutTemplate from "./routes/AddWorkoutTemplate"
 
@@ -26,8 +25,8 @@ const router = createBrowserRouter([
       { 
         element: <Nav loggedIn={false}/>,
         children: [
-          { path: "/login",     element: <Login/>     },
-          { path: "/signup",    element: <SignUp/>    },
+          { path: "/login",     element: <Register variant="login"/>     },
+          { path: "/signup",    element: <Register variant="signup" />     },
         ]
       },
 
