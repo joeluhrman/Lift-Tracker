@@ -63,23 +63,23 @@ func (s *session) UserID() uint {
 type PPLType string
 
 const (
-	Push PPLType = "push"
-	Pull PPLType = "pull"
-	Legs PPLType = "legs"
+	PPLTypePush PPLType = "push"
+	PPLTypePull PPLType = "pull"
+	PPLTypeLegs PPLType = "legs"
 )
 
 type MuscleGroup string
 
 const (
-	Calves     MuscleGroup = "calves"
-	Hamstrings MuscleGroup = "hamstrings"
-	Quads      MuscleGroup = "quads"
-	Adductors  MuscleGroup = "adductors"
-	Abductors  MuscleGroup = "abductors"
-	Core       MuscleGroup = "core"
-	LowBack    MuscleGroup = "lower back"
-	Chest      MuscleGroup = "chest"
-	Lats       MuscleGroup = "lats"
+	MscGrpCalves     MuscleGroup = "calves"
+	MscGrpHamstrings MuscleGroup = "hamstrings"
+	MscGrpQuads      MuscleGroup = "quads"
+	MscGrpAdductors  MuscleGroup = "adductors"
+	MscGrpAbductors  MuscleGroup = "abductors"
+	MscGrpCore       MuscleGroup = "core"
+	MscGrpLowBack    MuscleGroup = "lower back"
+	MscGrpChest      MuscleGroup = "chest"
+	MscGrpLats       MuscleGroup = "lats"
 )
 
 type ExerciseType struct {
