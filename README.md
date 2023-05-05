@@ -13,11 +13,11 @@ It uses a Postgresql database, Golang web-server, and React frontend scaffolded 
         * Maybe keep workout id and delete/redo everything every time a workout is modified
 5. Remove exType images for now
 6. Better "enums" for PPLTypes and MuscleGroups
-    - Problems 
-        - Don't want invalid values for either making through creation endpoint
-        and into the db
-        - Don't want devs to be able to create them on the fly / accidentally 
-        convert an invalid string into one or something
+    - Potential Issues
+        1. Being able to convert any string into a PPLType or mscgrp / use ones other than consts defined in types
+            a. fixed for pplType, working on mscgrp
+        2. Creation of eTypes allowing any string to be decoded from JSON into a pplType or mscgrp
+            a. only an issue if allow custom exercise type creation
 7. Finish musclegroups
 
 ## Frontend
