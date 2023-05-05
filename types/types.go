@@ -59,13 +59,34 @@ func (s *session) UserID() uint {
 	return s.userID
 }
 
-type PPLType string
+type pplType string
 
 const (
-	PPLTypePush PPLType = "push"
-	PPLTypePull PPLType = "pull"
-	PPLTypeLegs PPLType = "legs"
+	PPLTypePush pplType = "push"
+	PPLTypePull pplType = "pull"
+	PPLTypeLegs pplType = "legs"
 )
+
+func pplTypeFromString(s string) pplType {
+	var pplTypes = []pplType{PPLTypePush, PPLTypePull, PPLTypeLegs}
+
+	for _, pplType := range pplTypes {
+		if s == string(pplType) {
+			return pplType
+		}
+	}
+
+	return ""
+}
+
+func PPLTypesFromStrings(s []string) []pplType {
+	pplTypes := []pplType{}
+	for _, str := range s {
+		pplTypes = append(pplTypes, pplTypeFromString(str))
+	}
+
+	return pplTypes
+}
 
 type MuscleGroup string
 
@@ -84,7 +105,7 @@ const (
 type ExerciseType struct {
 	ID           uint          `json:"id,string"`
 	Name         string        `json:"name"`
-	PPLTypes     []PPLType     `json:"pplTypes"`
+	PPLTypes     []pplType     `json:"pplTypes"`
 	MuscleGroups []MuscleGroup `json:"muscleGroups"`
 	metadata
 }

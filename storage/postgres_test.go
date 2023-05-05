@@ -235,7 +235,7 @@ func Test_CreateExerciseType(t *testing.T) {
 	defer testPGStorage.clearTable(pgTableExerciseType)
 	exType := &types.ExerciseType{
 		Name:         "random name",
-		PPLTypes:     []types.PPLType{types.PPLTypePush, types.PPLTypePull},
+		PPLTypes:     types.PPLTypesFromStrings([]string{"push", "pull"}),
 		MuscleGroups: []types.MuscleGroup{types.MscGrpQuads, types.MscGrpChest},
 	}
 
@@ -267,7 +267,7 @@ func Test_GetExerciseTypes(t *testing.T) {
 	func() {
 		exType := &types.ExerciseType{
 			Name:         "random name",
-			PPLTypes:     []types.PPLType{types.PPLTypePush, types.PPLTypePull},
+			PPLTypes:     types.PPLTypesFromStrings([]string{"push", "pull"}),
 			MuscleGroups: []types.MuscleGroup{types.MscGrpQuads, types.MscGrpCalves, types.MscGrpAbductors},
 		}
 		testPGStorage.CreateExerciseType(exType)
@@ -295,7 +295,7 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 
 		exType := &types.ExerciseType{
 			Name:         "test type",
-			PPLTypes:     []types.PPLType{types.PPLTypePush},
+			PPLTypes:     types.PPLTypesFromStrings([]string{"push", "pull"}),
 			MuscleGroups: []types.MuscleGroup{types.MscGrpCalves},
 		}
 		testPGStorage.CreateExerciseType(exType)
@@ -367,7 +367,7 @@ func Test_GetWorkoutTemplates(t *testing.T) {
 		for i := 0; i < loops; i++ {
 			eType := &types.ExerciseType{
 				Name:         "type " + strconv.Itoa(i),
-				PPLTypes:     []types.PPLType{types.PPLTypePush},
+				PPLTypes:     types.PPLTypesFromStrings([]string{"push", "pull"}),
 				MuscleGroups: []types.MuscleGroup{types.MscGrpAbductors},
 			}
 			testPGStorage.CreateExerciseType(eType)
@@ -427,7 +427,7 @@ func Test_CreateWorkoutLog(t *testing.T) {
 
 		exType := &types.ExerciseType{
 			Name:         "test type",
-			PPLTypes:     []types.PPLType{types.PPLTypePush},
+			PPLTypes:     types.PPLTypesFromStrings([]string{"push", "pull"}),
 			MuscleGroups: []types.MuscleGroup{types.MscGrpCalves},
 		}
 		testPGStorage.CreateExerciseType(exType)
@@ -503,7 +503,7 @@ func Test_GetWorkoutLogs(t *testing.T) {
 		for i := 0; i < loops; i++ {
 			eType := &types.ExerciseType{
 				Name:         "type " + strconv.Itoa(i),
-				PPLTypes:     []types.PPLType{types.PPLTypePush},
+				PPLTypes:     types.PPLTypesFromStrings([]string{"push", "pull"}),
 				MuscleGroups: []types.MuscleGroup{types.MscGrpAbductors},
 			}
 			testPGStorage.CreateExerciseType(eType)
