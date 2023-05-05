@@ -80,10 +80,9 @@ func (t *mockStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 	var eTypes []types.ExerciseType
 	for i := 0; i < 5; i++ {
 		eType := types.ExerciseType{
-			ID:   uint(i + 1),
-			Name: "eType " + strconv.Itoa(i+1),
-			//Image:       image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{200, 100}}),
-			PPLTypes:     types.PPLTypesFromStrings([]string{"push", "pull"}),
+			ID:           uint(i + 1),
+			Name:         "eType " + strconv.Itoa(i+1),
+			PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
 			MuscleGroups: []types.MuscleGroup{types.MscGrpCalves},
 		}
 
