@@ -41,10 +41,11 @@ const router = createBrowserRouter([
               { path: "/dashboard",             element: <Dashboard/>          },
               { path: "/workout-templates",     element: <WorkoutTemplates/>   },
               { path: "/workout-history",       element: <WorkoutHistory/>     },
-              { path: "/add-workout-template",  element: <CRUDWorkoutTemplate/>},
-              { path: "/edit-workout-template", element: <CRUDWorkoutTemplate/>},
-              { path: "/add-workout-log",       element: <CRUDWorkoutTemplate/>},
-              { path: "/edit-workout-log",      element: <CRUDWorkoutTemplate/>}
+
+              { path: "/add-workout-template",  element: <CRUDWorkoutTemplate type="template" variant="create"/>},
+              { path: "/edit-workout-template", element: <CRUDWorkoutTemplate type="template" variant="update"/>},
+              { path: "/add-workout-log",       element: <CRUDWorkoutTemplate type="log"      variant="create"/>},
+              { path: "/edit-workout-log",      element: <CRUDWorkoutTemplate type="log"      variant="update"/>}
             ]
           }
         ]

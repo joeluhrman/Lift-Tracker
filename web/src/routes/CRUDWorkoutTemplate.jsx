@@ -1,16 +1,22 @@
 import React from "react"
-import {
-    Container,
-} from "react-bootstrap"
 import FormWorkout from "../components/forms/Workout"
 
 export default function CRUDWorkoutTemplate(props) {
-    // log vs temp --> variant
-    // create vs update --> type
+    let titleText
+    if (props.type === "log" && props.variant === "create")
+        titleText = "Log Workout"
+    else if (props.type === "log" && props.variant === "update")
+        titleText = "Edit Workout Log"
+    else if (props.type === "template" && props.variant === "update")
+        titleText = "Edit Workout Template"
+    else   
+        titleText = "Add Workout Template"
+
+    console.log(props)
 
     return (
         <>
-            <h2>Add Workout Template</h2>
+            <h2>{ titleText }</h2>
             <FormWorkout/>
         </>
     )
