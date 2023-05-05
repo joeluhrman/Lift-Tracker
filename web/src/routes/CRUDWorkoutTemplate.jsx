@@ -12,8 +12,6 @@ export default function CRUDWorkoutTemplate(props) {
     else   
         titleText = "Add Workout Template"
 
-    console.log(props)
-
     return (
         <>
             <h2>{ titleText }</h2>

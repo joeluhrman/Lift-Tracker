@@ -4,15 +4,7 @@ import { useNavigate } from "react-router-dom"
 import WorkoutTemplateHandler from "../../handlers/WorkoutTemplateHandler"
 import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
-// Currently works for adding a workout template,
-// except exercise type selector not finished.
-//
-// Eventually want to expand this form to work for
-// adding/editing a template OR a log, depending on
-// what props are passed. 
-//
-// I'd also ideally like to figure out how to un-nest everything
-// because it is hard to read.
+// Working on removing nested everything
 export default function Workout() {
     const navigate = useNavigate()
 
