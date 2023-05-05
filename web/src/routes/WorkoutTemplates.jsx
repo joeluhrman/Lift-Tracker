@@ -37,11 +37,11 @@ export default function WorkoutTemplates() {
         return <Container>Loading...</Container>
 
     const templateElements = temps.map((temp) => {
-        const exerciseElements = temp.exerciseTemplates.map((eTemp) => {
+        const exerciseElements = temp.exercises.map((eTemp) => {
             const exerciseType = exerciseTypes
                 .find(eType => eType.id === eTemp.exerciseTypeID)
 
-            const setgroupElements = eTemp.setgroupTemplates.map((sg) => {
+            const setgroupElements = eTemp.setgroups.map((sg) => {
                 return (<>
                         {sg.sets} x {sg.reps + " "} 
                 </>)

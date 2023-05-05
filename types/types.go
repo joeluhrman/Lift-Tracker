@@ -156,7 +156,7 @@ type ExerciseLog struct {
 	WorkoutLogID   uint          `json:"workoutLogID,string"`
 	ExerciseTypeID uint          `json:"exerciseTypeID,string"`
 	Notes          string        `json:"notes"`
-	SetGroupLogs   []SetGroupLog `json:"setgroupLogs"`
+	SetGroupLogs   []SetGroupLog `json:"setgroups"`
 	metadata
 }
 
@@ -166,7 +166,7 @@ type WorkoutLog struct {
 	Date         time.Time     `json:"date"`
 	Name         string        `json:"name"`
 	Notes        string        `json:"notes"`
-	ExerciseLogs []ExerciseLog `json:"exerciseLogs"`
+	ExerciseLogs []ExerciseLog `json:"exercises"`
 	metadata
 }
 
@@ -182,7 +182,7 @@ type ExerciseTemplate struct {
 	ID                uint               `json:"id,string"`
 	WorkoutTemplateID uint               `json:"workoutTemplateID,string"`
 	ExerciseTypeID    uint               `json:"exerciseTypeID,string"`
-	SetGroupTemplates []SetGroupTemplate `json:"setgroupTemplates"`
+	SetGroupTemplates []SetGroupTemplate `json:"setgroups"`
 	metadata
 }
 
@@ -190,6 +190,6 @@ type WorkoutTemplate struct {
 	ID                uint               `json:"id,string"`
 	UserID            uint               `json:"userID,string"`
 	Name              string             `json:"name"`
-	ExerciseTemplates []ExerciseTemplate `json:"exerciseTemplates"`
+	ExerciseTemplates []ExerciseTemplate `json:"exercises"`
 	metadata
 }

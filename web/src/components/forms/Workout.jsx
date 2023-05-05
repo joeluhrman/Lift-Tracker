@@ -21,13 +21,13 @@ export default function Workout() {
             // very inefficient and verbose
             const handleChange = (e) => {
                 const work = workout
-                const setgroup = work.exerciseTemplates[props.exerciseIndex]
-                    .setgroupTemplates[props.index]
+                const setgroup = work.exercises[props.exerciseIndex]
+                    .setgroups[props.index]
 
                 const sg = {...setgroup, [e.target.name]: e.target.value}
                 
-                work.exerciseTemplates[props.exerciseIndex]
-                    .setgroupTemplates[props.index] = sg
+                work.exercises[props.exerciseIndex]
+                    .setgroups[props.index] = sg
                 
                 setWorkout({...work})
             }
@@ -38,8 +38,8 @@ export default function Workout() {
                         required
                         name="sets"
                         type="number"
-                        value={workout.exerciseTemplates[props.exerciseIndex]
-                            .setgroupTemplates[props.index].sets}
+                        value={workout.exercises[props.exerciseIndex]
+                            .setgroups[props.index].sets}
                         onChange={handleChange}
                         className="w-25"
                     /> 
@@ -48,8 +48,8 @@ export default function Workout() {
                         required
                         name="reps"
                         type="number"
-                        value={workout.exerciseTemplates[props.exerciseIndex]
-                            .setgroupTemplates[props.index].reps}
+                        value={workout.exercises[props.exerciseIndex]
+                            .setgroups[props.index].reps}
                         onChange={handleChange}
                         className="w-25"
                     />
@@ -57,8 +57,8 @@ export default function Workout() {
             </>)
         }
         
-        const setgroupElements = workout.exerciseTemplates[props.index]
-            .setgroupTemplates.map((sgTemp, index) => {
+        const setgroupElements = workout.exercises[props.index]
+            .setgroups.map((sgTemp, index) => {
             return (
                 <Setgroup 
                     key={Math.random()}
@@ -70,7 +70,7 @@ export default function Workout() {
 
         const handleAddSetgroup = () => {
             const work = workout
-            workout.exerciseTemplates[props.index].setgroupTemplates.push({
+            workout.exercises[props.index].setgroups.push({
                 sets: 0,
                 reps: 0,
             })
@@ -84,15 +84,15 @@ export default function Workout() {
 
             const handleChange = (e) => {
                 const work = workout
-                work.exerciseTemplates[props.exerciseIndex].exerciseTypeID = e.target.value
+                work.exercises[props.exerciseIndex].exerciseTypeID = e.target.value
                 setWorkout({...work})
 
-                console.log(workout.exerciseTemplates[props.exerciseIndex].exerciseTypeID)
+                console.log(workout.exercises[props.exerciseIndex].exerciseTypeID)
             }
 
             return (
                 <Form.Select
-                    value={workout.exerciseTemplates[props.exerciseIndex].exerciseTypeID}
+                    value={workout.exercises[props.exerciseIndex].exerciseTypeID}
                     onChange={handleChange}
                     className="w-25"
                 >
@@ -118,9 +118,9 @@ export default function Workout() {
 
     const [workout, setWorkout] = React.useState({
         name: "",
-        exerciseTemplates: [{
+        exercises: [{
             exerciseTypeID: 0,
-            setgroupTemplates: [{
+            setgroups: [{
                 sets: 0,
                 reps: 0,
             }]
@@ -128,7 +128,7 @@ export default function Workout() {
     })
     const [exerciseTypes, setExerciseTypes] = React.useState()
     
-    const exerciseElements = workout.exerciseTemplates.map((eTemp, index) => {
+    const exerciseElements = workout.exercises.map((eTemp, index) => {
         return (
             <Exercise
                 key={Math.random()}
@@ -148,9 +148,9 @@ export default function Workout() {
 
     const handleAddExercise = () => {
         const work = workout
-        work.exerciseTemplates.push({
+        work.exercises.push({
             exerciseTypeID: 0,
-            setgroupTemplates: [{
+            setgroups: [{
                 sets: 0,
                 reps: 0
             }],
