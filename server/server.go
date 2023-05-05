@@ -19,9 +19,13 @@ const (
 	endExerciseType    = "/exercise-type"
 	endWorkoutTemplate = "/workout-template"
 	endWorkoutLog      = "/workout-log"
+)
 
-	keyUserID  = "user_id"
-	keySession = types.SessionKey
+type key string
+
+const (
+	keyUserID  key = "user_id"
+	keySession key = types.SessionKey
 )
 
 type server struct {
@@ -212,7 +216,7 @@ func (s *server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:  keySession,
+		Name:  string(keySession),
 		Value: "",
 	})
 
