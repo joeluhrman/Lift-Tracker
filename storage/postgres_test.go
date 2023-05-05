@@ -236,7 +236,7 @@ func Test_CreateExerciseType(t *testing.T) {
 	exType := &types.ExerciseType{
 		Name:         "random name",
 		PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
-		MuscleGroups: []types.MuscleGroup{types.MscGrpQuads, types.MscGrpChest},
+		MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 	}
 
 	// success case
@@ -268,7 +268,7 @@ func Test_GetExerciseTypes(t *testing.T) {
 		exType := &types.ExerciseType{
 			Name:         "random name",
 			PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
-			MuscleGroups: []types.MuscleGroup{types.MscGrpQuads, types.MscGrpCalves, types.MscGrpAbductors},
+			MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 		}
 		testPGStorage.CreateExerciseType(exType)
 
@@ -296,7 +296,7 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 		exType := &types.ExerciseType{
 			Name:         "test type",
 			PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
-			MuscleGroups: []types.MuscleGroup{types.MscGrpCalves},
+			MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 		}
 		testPGStorage.CreateExerciseType(exType)
 
@@ -368,7 +368,7 @@ func Test_GetWorkoutTemplates(t *testing.T) {
 			eType := &types.ExerciseType{
 				Name:         "type " + strconv.Itoa(i),
 				PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
-				MuscleGroups: []types.MuscleGroup{types.MscGrpAbductors},
+				MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 			}
 			testPGStorage.CreateExerciseType(eType)
 
@@ -428,7 +428,7 @@ func Test_CreateWorkoutLog(t *testing.T) {
 		exType := &types.ExerciseType{
 			Name:         "test type",
 			PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
-			MuscleGroups: []types.MuscleGroup{types.MscGrpCalves},
+			MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 		}
 		testPGStorage.CreateExerciseType(exType)
 
@@ -504,7 +504,7 @@ func Test_GetWorkoutLogs(t *testing.T) {
 			eType := &types.ExerciseType{
 				Name:         "type " + strconv.Itoa(i),
 				PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
-				MuscleGroups: []types.MuscleGroup{types.MscGrpAbductors},
+				MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 			}
 			testPGStorage.CreateExerciseType(eType)
 

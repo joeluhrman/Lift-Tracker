@@ -92,25 +92,53 @@ func PPLTypesFromStrings(s []string) []pplType {
 	return pplTypes
 }
 
-type MuscleGroup string
+type musclegroup string
 
 const (
-	MscGrpCalves     MuscleGroup = "calves"
-	MscGrpHamstrings MuscleGroup = "hamstrings"
-	MscGrpQuads      MuscleGroup = "quads"
-	MscGrpAdductors  MuscleGroup = "adductors"
-	MscGrpAbductors  MuscleGroup = "abductors"
-	MscGrpCore       MuscleGroup = "core"
-	MscGrpLowBack    MuscleGroup = "lower back"
-	MscGrpChest      MuscleGroup = "chest"
-	MscGrpLats       MuscleGroup = "lats"
+	MscGrpCalves     musclegroup = "calves"
+	MscGrpHamstrings musclegroup = "hamstrings"
+	MscGrpQuads      musclegroup = "quads"
+	MscGrpAdductors  musclegroup = "adductors"
+	MscGrpAbductors  musclegroup = "abductors"
+	MscGrpCore       musclegroup = "core"
+	MscGrpLowBack    musclegroup = "lower back"
+	MscGrpChest      musclegroup = "chest"
+	MscGrpLats       musclegroup = "lats"
 )
+
+func musclegroupFromString(s string) musclegroup {
+	var musclegroups = []musclegroup{
+		MscGrpCalves, MscGrpHamstrings, MscGrpQuads,
+		MscGrpAdductors, MscGrpAbductors, MscGrpCore,
+		MscGrpLowBack, MscGrpChest, MscGrpLats,
+	}
+
+	for _, mscgrp := range musclegroups {
+		if s == string(mscgrp) {
+			return mscgrp
+		}
+	}
+
+	return ""
+}
+
+func MuscleGroupsFromStrings(s []string) []musclegroup {
+	mscgrps := []musclegroup{}
+	for _, str := range s {
+		mscgrp := musclegroupFromString(str)
+		if mscgrp != "" {
+			mscgrps = append(mscgrps, mscgrp)
+		}
+	}
+
+	return mscgrps
+}
 
 type ExerciseType struct {
 	ID           uint          `json:"id,string"`
 	Name         string        `json:"name"`
 	PPLTypes     []pplType     `json:"pplTypes"`
-	MuscleGroups []MuscleGroup `json:"muscleGroups"`
+	MuscleGroups []musclegroup `json:"muscleGroups"`
 	metadata
 }
 

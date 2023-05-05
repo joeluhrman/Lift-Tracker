@@ -169,9 +169,7 @@ func (p *postgres) GetExerciseTypes() ([]types.ExerciseType, error) {
 
 		exType.PPLTypes = types.PPLTypesFromStrings(strPPLTypes)
 
-		for _, str := range strMscGroups {
-			exType.MuscleGroups = append(exType.MuscleGroups, types.MuscleGroup(str))
-		}
+		exType.MuscleGroups = types.MuscleGroupsFromStrings(strMscGroups)
 
 		exerciseTypes = append(exerciseTypes, exType)
 	}
