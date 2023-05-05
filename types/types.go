@@ -82,7 +82,11 @@ func pplTypeFromString(s string) pplType {
 func PPLTypesFromStrings(s []string) []pplType {
 	pplTypes := []pplType{}
 	for _, str := range s {
-		pplTypes = append(pplTypes, pplTypeFromString(str))
+		pplType := pplTypeFromString(str)
+
+		if pplType != "" {
+			pplTypes = append(pplTypes, pplTypeFromString(str))
+		}
 	}
 
 	return pplTypes
