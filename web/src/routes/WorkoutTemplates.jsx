@@ -64,7 +64,7 @@ export default function WorkoutTemplates() {
 
     return (
         <>
-            <h2>Workout Templates</h2>
+            <h2>Templates</h2>
             <Container fluid className="d-flex mb-2">
                 <Button className="ms-auto" variant="outline-primary" 
                     size="md" onClick={handleToAddWT}>

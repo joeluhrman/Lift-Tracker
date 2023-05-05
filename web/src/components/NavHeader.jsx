@@ -25,7 +25,7 @@ export default function NavHeader(props) {
   const navItems = 
     <Nav className="container-fluid">
       <Nav.Item>
-        <Nav.Link href="#">
+        <Nav.Link href="/workout-history">
           History
         </Nav.Link>
       </Nav.Item>

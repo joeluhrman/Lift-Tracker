@@ -21,8 +21,21 @@ It uses a Postgresql database, Golang web-server, and React frontend scaffolded 
 7. Finish musclegroups
 
 ## Frontend
-1. Add workout template form
-    - select exercise modal
+1. Make a select exercise component that can be put in a modal to show
+a nice list of each exericse type and return the chosen exercise type
+to the parent component.
+2. Refactor workout form for adding logs
+
+### Notes
+1. Workout Form (1 form component, 1 configurable route component, 4 actual routes) configurable for:
+    a. Add/Edit Workout Template
+    b. Add/Edit Workout Log
+    - Log has:
+        - setgroups have weight
+        - Notes on each exercise
+        - Notes on log
+        - Date on log
+2. Workout Templates and History are totally separate components / routes
 
 ## Long term
 1. Custom exercise types
