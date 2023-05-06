@@ -6,6 +6,18 @@ import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
 // Working on removing nested everything
 export default function Workout(props) {
+    const [workout, setWorkout] = React.useState({name: "", exercises: [newEmptyExercise()]})
+    const [exerciseTypes, setExerciseTypes] = React.useState()
+
+    React.useEffect(function getExerciseTypes() {
+        (async () => {
+            const handler = new ExerciseTypeHandler()
+            const [ , , data] = await handler.getAll()
+            console.log("ETYPES", data)
+            setExerciseTypes(data)
+        })()
+    }, [])
+
     const navigate = useNavigate()
 
     const newEmptySetgroup = () => {
@@ -22,8 +34,20 @@ export default function Workout(props) {
         }
     }
 
+    const handleAddSetgroup = (exerciseIndex) => {
+        const work = workout
+        workout.exercises[exerciseIndex].setgroups.push(newEmptySetgroup())
+        setWorkout({...work}) 
+    }
+
+    const handleAddExercise = () => {
+        const work = workout
+        work.exercises.push(newEmptyExercise())
+        setWorkout({...work})
+    }
+
     const Setgroup = (props) => {
-        return (<>
+        return (
             <Container className="mb-2 d-inline-flex flex-row">
                 <Form.Control
                     required
@@ -45,10 +69,9 @@ export default function Workout(props) {
                     className="w-25"
                 />
             </Container>
-        </>)
+        )
     }
 
-    // very inefficient and verbose
     const handleSetgroupChange = (e, setgroupIndex, exerciseIndex) => {
         const work = workout
         const setgroup = work.exercises[exerciseIndex]
@@ -74,39 +97,8 @@ export default function Workout(props) {
             )
         })
 
-        const handleAddSetgroup = () => {
-            const work = workout
-            workout.exercises[props.index].setgroups.push(newEmptySetgroup())
-            setWorkout({...work}) 
-        }
-
-        const ExerciseSelect = (props) => {
-            const options = exerciseTypes.map((eType) => {
-                return <option key={Math.random()} value={eType.id}> {eType.name} </option>
-            })
-
-            const handleChange = (e) => {
-                const work = workout
-                work.exercises[props.exerciseIndex].exerciseTypeID = e.target.value
-                setWorkout({...work})
-
-                console.log(workout.exercises[props.exerciseIndex].exerciseTypeID)
-            }
-
-            return (
-                <Form.Select
-                    value={workout.exercises[props.exerciseIndex].exerciseTypeID}
-                    onChange={handleChange}
-                    className="w-25"
-                >
-                    <option>Exercise</option>
-                    { options }
-                </Form.Select>
-            )
-        }
-
         return (<>
-            <Button className="float-end" size="sm" onClick={handleAddSetgroup}>Add Setgroup</Button>
+            <Button className="float-end" size="sm" onClick={() => handleAddSetgroup(props.index)}>Add Setgroup</Button>
             <Form.Group className="mb-2" as={Row}>
                 <Form.Label column><h5> Exercise { props.index + 1 } </h5></Form.Label>
                 <Col sm="10">
@@ -119,34 +111,29 @@ export default function Workout(props) {
         </>)
     }
 
-    const [workout, setWorkout] = React.useState({
-        name: "",
-        exercises: [newEmptyExercise()],
-    })
-    const [exerciseTypes, setExerciseTypes] = React.useState()
-    
-    const exerciseElements = workout.exercises.map((eTemp, index) => {
+    const ExerciseSelect = (props) => {
+        const options = exerciseTypes.map((eType) => {
+            return <option key={Math.random()} value={eType.id}> {eType.name} </option>
+        })      
+
         return (
-            <Exercise
-                key={Math.random()}
-                index={index}
-            />
+            <Form.Select
+                value={workout.exercises[props.exerciseIndex].exerciseTypeID}
+                onChange={e => handleExerciseSelectChange(e, props.exerciseIndex)}
+                className="w-25"
+            >
+                <option>Exercise</option>
+                { options }
+            </Form.Select>
         )
-    })
+    }
 
-    React.useEffect(function getExerciseTypes() {
-        (async () => {
-            const handler = new ExerciseTypeHandler()
-            const [ , , data] = await handler.getAll()
-            console.log("ETYPES", data)
-            setExerciseTypes(data)
-        })()
-    }, [])
-
-    const handleAddExercise = () => {
+    const handleExerciseSelectChange = (e, exerciseIndex) => {
         const work = workout
-        work.exercises.push(newEmptyExercise())
+        work.exercises[exerciseIndex].exerciseTypeID = e.target.value
         setWorkout({...work})
+
+        console.log(workout.exercises[exerciseIndex].exerciseTypeID)
     }
 
     const handleSubmit = async (e) => {
@@ -162,10 +149,12 @@ export default function Workout(props) {
             navigate("/workout-templates")
         }
     }
+    
+    const exerciseElements = workout.exercises.map((eTemp, index) => {
+        return (<Exercise key={Math.random()} index={index}/>)
+    })
 
     if (exerciseTypes === undefined) return null
-
-    console.log(workout)
 
     return (
         <Form className="border border-2 p-3" onSubmit={handleSubmit}>
