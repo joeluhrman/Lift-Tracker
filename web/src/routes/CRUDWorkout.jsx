@@ -15,7 +15,7 @@ export default function CRUDWorkout(props) {
     return (
         <>
             <h2>{ titleText }</h2>
-            <FormWorkout/>
+            <FormWorkout {...props}/>
         </>
     )
 }

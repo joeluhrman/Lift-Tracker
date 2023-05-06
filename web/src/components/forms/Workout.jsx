@@ -5,7 +5,7 @@ import WorkoutTemplateHandler from "../../handlers/WorkoutTemplateHandler"
 import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
 // Working on removing nested everything
-export default function Workout() {
+export default function Workout(props) {
     const navigate = useNavigate()
 
     const Exercise = (props) => {
