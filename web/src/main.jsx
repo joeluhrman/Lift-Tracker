@@ -2,13 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {
   createBrowserRouter,
+  Outlet,
   RouterProvider,
 } from "react-router-dom"
 
 import Nav from "./routes/Nav"
 import Auth from "./routes/Auth"
 import Error from "./routes/Error"
-import Root from './routes/Root'
 import Register from "./routes/Register"
 import Dashboard from "./routes/Dashboard"
 import WorkoutTemplates from "./routes/WorkoutTemplates"
@@ -20,7 +20,7 @@ import './index.css'
 
 const router = createBrowserRouter([
   { 
-    element: <Root/>, 
+    element: <Outlet/>, 
     errorElement: <Error/>, 
     children: [
       { 
