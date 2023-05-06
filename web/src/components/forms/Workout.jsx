@@ -1,10 +1,19 @@
 import React from "react"
 import { Button, Col, Container, Form, Row } from "react-bootstrap"
+import { Trash } from "react-bootstrap-icons"
 import { useNavigate } from "react-router-dom"
 import WorkoutTemplateHandler from "../../handlers/WorkoutTemplateHandler"
 import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
 export default function Workout(props) {
+    const newEmptySetgroup = () => {
+        return {sets: 0, reps: 0}
+    }
+
+    const newEmptyExercise = () => {
+        return {exerciseTypeID: 0, setgroups: [newEmptySetgroup()]}
+    }
+
     const [workout, setWorkout] = React.useState({name: "", exercises: [newEmptyExercise()]})
     const [exerciseTypes, setExerciseTypes] = React.useState()
 
@@ -19,20 +28,6 @@ export default function Workout(props) {
 
     const navigate = useNavigate()
 
-    const newEmptySetgroup = () => {
-        return {
-            sets: 0,
-            reps: 0
-        }
-    }
-
-    const newEmptyExercise = () => {
-        return {
-            exerciseTypeID: 0,
-            setgroups: [newEmptySetgroup()],
-        }
-    }
-
     const handleAddSetgroup = (exerciseIndex) => {
         const work = workout
         workout.exercises[exerciseIndex].setgroups.push(newEmptySetgroup())
@@ -45,9 +40,23 @@ export default function Workout(props) {
         setWorkout({...work})
     }
 
+    const handleDeleteSetgroup = (exerciseIndex, setgroupIndex) => {
+        const work = workout
+        work.exercises[exerciseIndex].setgroups.splice(setgroupIndex, 1)
+        setWorkout({...work})
+    }
+
+    const handleDeleteExercise = (exerciseIndex) => {
+        const work = workout
+        work.exercises.splice(exerciseIndex, 1)
+        setWorkout({...work})
+    }
+
     const Setgroup = (props) => {
         return (
             <Container className="mb-2 d-inline-flex flex-row">
+                <Trash width="15" height="15" className="float-start" 
+                    onClick={() => handleDeleteSetgroup(props.exerciseIndex, props.index)}/>
                 <Form.Control
                     required
                     name="sets"
@@ -98,8 +107,8 @@ export default function Workout(props) {
 
         return (<>
             <Button className="float-end" size="sm" onClick={() => handleAddSetgroup(props.index)}>Add Setgroup</Button>
+            <Trash className= "float-start" height="20" width="20" onClick={() => handleDeleteExercise(props.index)}/>
             <Form.Group className="mb-2" as={Row}>
-                <Form.Label column><h5> Exercise { props.index + 1 } </h5></Form.Label>
                 <Col sm="10">
                     <ExerciseSelect exerciseIndex={props.index}/>
                 </Col>
