@@ -1,7 +1,7 @@
 import React from "react"
 import FormWorkout from "../components/forms/Workout"
 
-export default function CRUDWorkoutTemplate(props) {
+export default function CRUDWorkout(props) {
     let titleText
     if (props.type === "log" && props.variant === "create")
         titleText = "Log Workout"
