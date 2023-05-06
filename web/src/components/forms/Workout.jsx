@@ -22,47 +22,47 @@ export default function Workout(props) {
         }
     }
 
-    const Exercise = (props) => {
-        const Setgroup = (props) => {
-            // very inefficient and verbose
-            const handleChange = (e) => {
-                const work = workout
-                const setgroup = work.exercises[props.exerciseIndex]
-                    .setgroups[props.index]
+    const Setgroup = (props) => {
+        return (<>
+            <Container className="mb-2 d-inline-flex flex-row">
+                <Form.Control
+                    required
+                    name="sets"
+                    type="number"
+                    value={workout.exercises[props.exerciseIndex]
+                        .setgroups[props.index].sets}
+                    onChange={e => handleSetgroupChange(e, props.index, props.exerciseIndex)}
+                    className="w-25"
+                /> 
+                <Form.Label> X </Form.Label>
+                <Form.Control
+                    required
+                    name="reps"
+                    type="number"
+                    value={workout.exercises[props.exerciseIndex]
+                        .setgroups[props.index].reps}
+                    onChange={e => handleSetgroupChange(e, props.index, props.exerciseIndex)}
+                    className="w-25"
+                />
+            </Container>
+        </>)
+    }
 
-                const sg = {...setgroup, [e.target.name]: e.target.value}
-                
-                work.exercises[props.exerciseIndex]
-                    .setgroups[props.index] = sg
-                
-                setWorkout({...work})
-            }
+    // very inefficient and verbose
+    const handleSetgroupChange = (e, setgroupIndex, exerciseIndex) => {
+        const work = workout
+        const setgroup = work.exercises[exerciseIndex]
+            .setgroups[setgroupIndex]
 
-            return (<>
-                <Container className="mb-2 d-inline-flex flex-row">
-                    <Form.Control
-                        required
-                        name="sets"
-                        type="number"
-                        value={workout.exercises[props.exerciseIndex]
-                            .setgroups[props.index].sets}
-                        onChange={handleChange}
-                        className="w-25"
-                    /> 
-                    <Form.Label> X </Form.Label>
-                    <Form.Control
-                        required
-                        name="reps"
-                        type="number"
-                        value={workout.exercises[props.exerciseIndex]
-                            .setgroups[props.index].reps}
-                        onChange={handleChange}
-                        className="w-25"
-                    />
-                </Container>
-            </>)
-        }
+        const sg = {...setgroup, [e.target.name]: e.target.value}
         
+        work.exercises[exerciseIndex]
+            .setgroups[setgroupIndex] = sg
+        
+        setWorkout({...work})
+    }
+
+    const Exercise = (props) => {
         const setgroupElements = workout.exercises[props.index]
             .setgroups.map((sgTemp, index) => {
             return (
@@ -164,6 +164,8 @@ export default function Workout(props) {
     }
 
     if (exerciseTypes === undefined) return null
+
+    console.log(workout)
 
     return (
         <Form className="border border-2 p-3" onSubmit={handleSubmit}>
