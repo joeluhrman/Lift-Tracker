@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom"
 import WorkoutTemplateHandler from "../../handlers/WorkoutTemplateHandler"
 import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
-// Working on removing nested everything
 export default function Workout(props) {
     const [workout, setWorkout] = React.useState({name: "", exercises: [newEmptyExercise()]})
     const [exerciseTypes, setExerciseTypes] = React.useState()

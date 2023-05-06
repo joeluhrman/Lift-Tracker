@@ -35,6 +35,7 @@ to the parent component.
         - Notes on each exercise
         - Notes on log
         - Date on log
+    - Also need to add buttons to remove and exercise and setgroup inputs from the form
 2. Workout Templates and History are totally separate components / routes
 
 ## Long term
