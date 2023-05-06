@@ -6,22 +6,38 @@ import WorkoutTemplateHandler from "../../handlers/WorkoutTemplateHandler"
 import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 
 export default function Workout(props) {
+    // logs have a few more fields than templates
+    // and submit to a different api endpoint
+    const isLog = props.type === "log"
+
     const newEmptySetgroup = () => {
-        return {sets: 0, reps: 0}
+        const sg = {sets: 0, reps: 0}
+        if (isLog) sg.weight = 0
+        return sg
     }
 
     const newEmptyExercise = () => {
-        return {exerciseTypeID: 0, setgroups: [newEmptySetgroup()]}
+        const ex = {exerciseTypeID: 0, setgroups: [newEmptySetgroup()]}
+        if (isLog) ex.notes = ""
+        return ex
     }
 
-    const [workout, setWorkout] = React.useState({name: "", exercises: [newEmptyExercise()]})
+    const newEmptyWorkout = () => {
+        const w = {name: "", exercises: [newEmptyExercise()]}
+        if (isLog) {
+            w.notes = ""
+            w.date = ""
+        }
+        return w
+    }
+
+    const [workout, setWorkout] = React.useState(newEmptyWorkout())
     const [exerciseTypes, setExerciseTypes] = React.useState()
 
     React.useEffect(function getExerciseTypes() {
         (async () => {
             const handler = new ExerciseTypeHandler()
             const [ , , data] = await handler.getAll()
-            console.log("ETYPES", data)
             setExerciseTypes(data)
         })()
     }, [])
@@ -76,6 +92,20 @@ export default function Workout(props) {
                     onChange={e => handleSetgroupChange(e, props.index, props.exerciseIndex)}
                     className="w-25"
                 />
+                { 
+                    isLog && <>
+                    <Form.Control
+                        required
+                        name="weight"
+                        type="number"
+                        value={workout.exercises[props.exerciseIndex]
+                        .setgroups[props.index].weight}
+                        onChange={e => handleSetgroupChange(e, props.index, props.exerciseIndex)}
+                        className="w-25"
+                    />
+                    <Form.Label>lbs</Form.Label>
+                    </>
+                }
             </Container>
         )
     }
@@ -105,18 +135,32 @@ export default function Workout(props) {
             )
         })
 
-        return (<>
-            <Button className="float-end" size="sm" onClick={() => handleAddSetgroup(props.index)}>Add Setgroup</Button>
-            <Trash className= "float-start" height="20" width="20" onClick={() => handleDeleteExercise(props.index)}/>
-            <Form.Group className="mb-2" as={Row}>
-                <Col sm="10">
-                    <ExerciseSelect exerciseIndex={props.index}/>
-                </Col>
-            </Form.Group>
-            <Container className="mb-2">
-                { setgroupElements }
+        return (
+            <Container className="border border-2 mb-2">
+                <Button className="float-end" size="sm" onClick={() => handleAddSetgroup(props.index)}>Add Setgroup</Button>
+                <Trash className= "float-start" height="20" width="20" onClick={() => handleDeleteExercise(props.index)}/>
+                <Form.Group className="mb-2" as={Row}>
+                    <Col sm="10">
+                        <ExerciseSelect exerciseIndex={props.index}/>
+                    </Col>
+                </Form.Group>
+                <Container className="mb-2">
+                    { setgroupElements }
+                    { 
+                        isLog && <>
+                        <Form.Label>Notes</Form.Label>
+                        <Form.Control 
+                            as="textarea"
+                            name="notes"
+                            type="text"
+                            value={workout.exercises[props.index].notes}
+                            className="w-50"
+                        />
+                        </>
+                    }   
+                </Container>
             </Container>
-        </>)
+        )
     }
 
     const ExerciseSelect = (props) => {
@@ -163,6 +207,8 @@ export default function Workout(props) {
     })
 
     if (exerciseTypes === undefined) return null
+
+    console.log(workout)
 
     return (
         <Form className="border border-2 p-3" onSubmit={handleSubmit}>

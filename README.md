@@ -36,7 +36,9 @@ to the parent component.
         - Notes on log
         - Date on log
     - Also need to add buttons to remove and exercise and setgroup inputs from the form
-2. Workout Templates and History are totally separate components / routes
+2. Combine routes WorkoutTemplates and WorkoutHistory into one modular component
+    - At least the headers, maybe make bodies into separate components (wTemps are displayed
+    as cards, wLogs as a vertical list)
 
 ## Long term
 1. Custom exercise types
