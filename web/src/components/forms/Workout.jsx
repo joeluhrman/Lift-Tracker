@@ -8,6 +8,20 @@ import ExerciseTypeHandler from "../../handlers/ExerciseTypeHandler"
 export default function Workout(props) {
     const navigate = useNavigate()
 
+    const newEmptySetgroup = () => {
+        return {
+            sets: 0,
+            reps: 0
+        }
+    }
+
+    const newEmptyExercise = () => {
+        return {
+            exerciseTypeID: 0,
+            setgroups: [newEmptySetgroup()],
+        }
+    }
+
     const Exercise = (props) => {
         const Setgroup = (props) => {
             // very inefficient and verbose
@@ -62,10 +76,7 @@ export default function Workout(props) {
 
         const handleAddSetgroup = () => {
             const work = workout
-            workout.exercises[props.index].setgroups.push({
-                sets: 0,
-                reps: 0,
-            })
+            workout.exercises[props.index].setgroups.push(newEmptySetgroup())
             setWorkout({...work}) 
         }
 
@@ -110,13 +121,7 @@ export default function Workout(props) {
 
     const [workout, setWorkout] = React.useState({
         name: "",
-        exercises: [{
-            exerciseTypeID: 0,
-            setgroups: [{
-                sets: 0,
-                reps: 0,
-            }]
-        }],
+        exercises: [newEmptyExercise()],
     })
     const [exerciseTypes, setExerciseTypes] = React.useState()
     
@@ -140,13 +145,7 @@ export default function Workout(props) {
 
     const handleAddExercise = () => {
         const work = workout
-        work.exercises.push({
-            exerciseTypeID: 0,
-            setgroups: [{
-                sets: 0,
-                reps: 0
-            }],
-        })
+        work.exercises.push(newEmptyExercise())
         setWorkout({...work})
     }
 
