@@ -46,35 +46,33 @@ func writeJSON(w http.ResponseWriter, status int, v any) error {
 	return json.NewEncoder(w).Encode(v)
 }
 
+func executeAPIFunc(f apiFunc, w http.ResponseWriter, r *http.Request) error {
+	err := f(w, r)
+	if err != nil {
+		a, ok := err.(apiError)
+		if ok {
+			writeJSON(w, a.status, a.msg)
+		} else {
+			writeJSON(w, http.StatusInternalServerError, err.Error())
+		}
+		return err
+	}
+	return nil
+}
+
 func makeHandler(f apiFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := f(w, r)
-		if err != nil {
-			a, ok := err.(apiError)
-			if ok {
-				writeJSON(w, a.status, a.msg)
-			} else {
-				writeJSON(w, http.StatusInternalServerError, err.Error())
-			}
-		}
+		executeAPIFunc(f, w, r)
 	}
 }
 
 func makeMiddleware(f apiFunc) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			err := f(w, r)
-			if err != nil {
-				a, ok := err.(apiError)
-				if ok {
-					writeJSON(w, a.status, a.msg)
-				} else {
-					writeJSON(w, http.StatusInternalServerError, err.Error())
-				}
-				return
+			err := executeAPIFunc(f, w, r)
+			if err == nil {
+				next.ServeHTTP(w, r)
 			}
-
-			next.ServeHTTP(w, r)
 		})
 	}
 }
