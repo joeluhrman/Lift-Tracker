@@ -60,9 +60,6 @@ func makeHandler(f apiFunc) http.HandlerFunc {
 	}
 }
 
-// not used anywhere and just an idea, would like to get it to work
-// using makeHandler but idk if it will.
-// Basically want to turn any apiFunc into a middleware
 func makeMiddleware(f apiFunc) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -99,7 +96,7 @@ func (s *server) setupEndpoints(middlewares []func(http.Handler) http.Handler) {
 		r.Post(endLogin, makeHandler(s.handleLogin))
 
 		r.Group(func(auth chi.Router) {
-			auth.Use(s.middlewareAuthSession)
+			auth.Use(makeMiddleware(s.handleAuthSession))
 			//auth.Get(endLogin, s.handleIsLoggedIn)
 			auth.Get(endUser, makeHandler(s.handleGetUser))
 			auth.Get(endExerciseType, makeHandler(s.handleGetExerciseTypes))
@@ -150,23 +147,20 @@ func getSessionToken(r *http.Request) (string, error) {
 	return cookie.Value, nil
 }
 
-func (s *server) middlewareAuthSession(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		token, err := getSessionToken(r)
-		if err != nil {
-			writeJSON(w, http.StatusUnauthorized, err.Error())
-			return
-		}
+func (s *server) handleAuthSession(w http.ResponseWriter, r *http.Request) error {
+	token, err := getSessionToken(r)
+	if err != nil {
+		return apiError{http.StatusUnauthorized, err.Error()}
+	}
 
-		userID, err := s.storage.AuthenticateSession(token)
-		if err != nil {
-			writeJSON(w, http.StatusUnauthorized, err.Error())
-			return
-		}
+	userID, err := s.storage.AuthenticateSession(token)
+	if err != nil {
+		return apiError{http.StatusUnauthorized, err.Error()}
+	}
 
-		ctx := context.WithValue(r.Context(), keyUserID, userID)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+	ctx := context.WithValue(r.Context(), keyUserID, userID)
+	r.Clone(ctx)
+	return nil
 }
 
 type credentials struct {

@@ -29,7 +29,7 @@ var (
 		func(next http.Handler) http.Handler {
 			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				r.AddCookie(types.NewSession(1).Cookie())
-				ctx := context.WithValue(r.Context(), keyUserID, 1)
+				ctx := context.WithValue(r.Context(), keyUserID, uint(1))
 				next.ServeHTTP(w, r.WithContext(ctx))
 			})
 		},
