@@ -60,6 +60,17 @@ func makeHandler(f apiFunc) http.HandlerFunc {
 	}
 }
 
+// not used anywhere and just an idea, would like to get it to work
+// using makeHandler but idk if it will.
+// Basically want to turn any apiFunc into a middleware
+func makeMiddleware(f apiFunc) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			makeHandler(f)
+		})
+	}
+}
+
 type server struct {
 	http.Server
 	storage storage.Storage
