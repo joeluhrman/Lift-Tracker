@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -86,7 +85,6 @@ func (s *server) setupEndpoints(middlewares []func(http.Handler) http.Handler) {
 	router := chi.NewRouter()
 	for i := range middlewares {
 		router.Use(middlewares[i])
-		fmt.Println("afasdfasdfasdfasdfasdfasdfasdfasdfasdf")
 	}
 
 	router.Route(routeApiV1, func(r chi.Router) {
@@ -95,7 +93,6 @@ func (s *server) setupEndpoints(middlewares []func(http.Handler) http.Handler) {
 
 		r.Group(func(auth chi.Router) {
 			auth.Use(makeMiddleware(s.handleAuthSession))
-			//auth.Get(endLogin, s.handleIsLoggedIn)
 			auth.Get(endUser, makeHandler(s.handleGetUser))
 			auth.Get(endExerciseType, makeHandler(s.handleGetExerciseTypes))
 			auth.Get(endWorkoutTemplate, makeHandler(s.handleGetWorkoutTemplates))
