@@ -66,7 +66,18 @@ func makeHandler(f apiFunc) http.HandlerFunc {
 func makeMiddleware(f apiFunc) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			makeHandler(f)
+			err := f(w, r)
+			if err != nil {
+				a, ok := err.(apiError)
+				if ok {
+					writeJSON(w, a.status, a.msg)
+				} else {
+					writeJSON(w, http.StatusInternalServerError, err.Error())
+				}
+				return
+			}
+
+			next.ServeHTTP(w, r)
 		})
 	}
 }
