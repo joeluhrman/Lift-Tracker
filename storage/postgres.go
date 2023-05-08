@@ -61,6 +61,16 @@ func (p *postgres) MustClose() {
 }
 
 func (p *postgres) CreateUser(user *types.User, password string) error {
+	log.Println("---------------------", password)
+
+	if !usernameMeetsRequirements(user.Username) {
+		return errors.New("username does not meet requirements")
+	}
+
+	if !passwordMeetsRequirements(password) {
+		return errors.New("password does not meet requirements")
+	}
+
 	var err error
 	user.HashedPassword, err = hashPassword(password)
 	if err != nil {

@@ -55,7 +55,7 @@ func Test_CreateUser(t *testing.T) {
 	// Success case
 	func() {
 		user := &types.User{Username: "jaluhrman", Email: "goober@goober.com"}
-		password := "goober"
+		password := "goober123"
 
 		err := testPGStorage.CreateUser(user, password)
 		if err != nil {
@@ -70,7 +70,7 @@ func Test_CreateUser(t *testing.T) {
 	// username already exists
 	func() {
 		user := &types.User{Username: "jaluhrman", Email: "goober@goober.com"}
-		password := "123"
+		password := "12345678"
 
 		err := testPGStorage.CreateUser(user, password)
 		if err == nil {
@@ -290,7 +290,7 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 	// success case
 	func() {
 		user := &types.User{Username: "Bingus"}
-		password := "Pringus"
+		password := "Pringus27"
 		testPGStorage.CreateUser(user, password)
 
 		exType := &types.ExerciseType{
@@ -422,7 +422,7 @@ func Test_CreateWorkoutLog(t *testing.T) {
 	// success case
 	func() {
 		user := &types.User{Username: "spoingus"}
-		password := "moingus"
+		password := "moingus12"
 		testPGStorage.CreateUser(user, password)
 
 		exType := &types.ExerciseType{

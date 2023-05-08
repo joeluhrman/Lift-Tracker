@@ -81,7 +81,7 @@ type server struct {
 	storage storage.Storage
 }
 
-func (s *server) setupEndpoints(middlewares []func(http.Handler) http.Handler) {
+func (s *server) setupHandler(middlewares []func(http.Handler) http.Handler) {
 	router := chi.NewRouter()
 	for i := range middlewares {
 		router.Use(middlewares[i])
@@ -114,7 +114,7 @@ func New(port string, storage storage.Storage, middlewares ...func(http.Handler)
 		Server:  httpServer,
 		storage: storage,
 	}
-	s.setupEndpoints(middlewares)
+	s.setupHandler(middlewares)
 
 	return s
 }
@@ -172,14 +172,6 @@ func (s *server) handleCreateUser(w http.ResponseWriter, r *http.Request) error 
 		return apiError{http.StatusBadRequest, err.Error()}
 	}
 
-	if !storage.UsernameMeetsRequirements(credentials.Username) {
-		return apiError{http.StatusNotAcceptable, "username does not meet requirements"}
-	}
-
-	if !storage.PasswordMeetsRequirements(credentials.Password) {
-		return apiError{http.StatusNotAcceptable, "password does not meet requirements"}
-	}
-
 	user := &types.User{
 		Username: credentials.Username,
 		Email:    credentials.Email,
@@ -187,7 +179,7 @@ func (s *server) handleCreateUser(w http.ResponseWriter, r *http.Request) error 
 
 	err = s.storage.CreateUser(user, credentials.Password)
 	if err != nil {
-		return apiError{http.StatusConflict, err.Error()}
+		return apiError{http.StatusBadRequest, err.Error()}
 	}
 
 	return writeJSON(w, http.StatusAccepted, nil)

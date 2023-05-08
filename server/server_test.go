@@ -199,30 +199,12 @@ func Test_CreateUserEndpoint(t *testing.T) {
 	endpoint := routeApiV1 + endUser
 	successCode := http.StatusAccepted
 	badJSONCode := http.StatusBadRequest
-	badPasswordCode := http.StatusNotAcceptable
 
 	// Bad JSON
 	func() {
 		rec := sendMockHTTPRequest(method, endpoint, nil, testServer.Handler)
 		if rec.Code != badJSONCode {
 			t.Errorf(wrongCodef, rec.Code, badJSONCode)
-		}
-	}()
-
-	// Password doesn't meet requirements
-	func() {
-		credentials := &credentials{
-			Username: "jaluhrman",
-			Email:    "jaluhrman@gober.com",
-			Password: "",
-		}
-
-		json, _ := json.Marshal(credentials)
-		body := bytes.NewBuffer(json)
-
-		rec := sendMockHTTPRequest(method, endpoint, body, testServer.Handler)
-		if rec.Code != badPasswordCode {
-			t.Errorf(wrongCodef, rec.Code, badPasswordCode)
 		}
 	}()
 
