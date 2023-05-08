@@ -26,12 +26,9 @@ export default function Register(props) {
 
     return(
         <Container className="d-inline-flex flex-row justify-content-center align-items-center" style={{marginTop:"4%"}}>
-            <Card className="d-inline-flex flex-row p-3 w-75 align-items-center">
+            <Card className="d-inline-flex flex-row p-2 border border-2 w-75 align-items-center">
                 <Col>
-                    <Card.Img src={logoURL}/>
-                </Col>
-                <Col>
-                    <Card.Body className="border border-2">
+                    <Card.Body>
                         <Card.Title className="text-center">
                             { titleText }
                         </Card.Title>
@@ -40,6 +37,9 @@ export default function Register(props) {
                             { Footer }
                         </Card.Footer>
                     </Card.Body>
+                </Col>
+                <Col>
+                    <Card.Img src={logoURL}/>
                 </Col>
             </Card>
         </Container>
