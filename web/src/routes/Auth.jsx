@@ -8,18 +8,20 @@ import UserHandler from "../handlers/UserHandler"
 const userHandler = new UserHandler()
 
 export default function Auth() {
-    const [status, setStatus] = React.useState(undefined)
+    const [status, setStatus] = React.useState()
+    const [user, setUser] = React.useState()
 
     React.useEffect(() => {
         (async () => {
             const [stat, headers, data] = await userHandler.get()
             setStatus(stat)
+            setUser(data)
         })()
     }, [])
 
-    if (status === undefined) return null
+    if (user === undefined) return null
 
     return (status === 200
-        ? <Outlet/>
+        ? <Outlet context={user}/>
         : <Navigate to="/login"/>)
 }

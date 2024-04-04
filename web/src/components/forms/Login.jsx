@@ -27,8 +27,6 @@ export default function Login() {
             formValue.username, formValue.password
         )
 
-        console.log(status, data)
-
         if (status === 200) setToDashboard(true)
         else if (status === 401) setSubmitError("Username and/or password are invalid.")
         else if (status === 500) setSubmitError("The server is not responding.")

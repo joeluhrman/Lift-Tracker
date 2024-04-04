@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     errorElement: <Error/>, 
     children: [
       { 
-        element: <Nav loggedIn={false}/>,
+        element: <Nav/>,
         children: [
           { path: "/login",     element: <Register variant="login"/>     },
           { path: "/signup",    element: <Register variant="signup" />     },
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
         element: <Auth/>,
         children: [
           { 
-            element: <Nav loggedIn={true}/>,
+            element: <Nav/>,
             children: [
               { path: "/",                      element: <Dashboard/>          },
               { path: "/dashboard",             element: <Dashboard/>          },

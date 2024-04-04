@@ -4,6 +4,7 @@ import {
     Container,
     Nav,
     Navbar,
+    NavDropdown,
 } from "react-bootstrap"
 import {
   useNavigate
@@ -22,7 +23,7 @@ export default function NavHeader(props) {
     }
   }
 
-  const navItems = 
+  const navItems = props.user &&
     <Nav className="container-fluid">
       <Nav.Item>
         <Nav.Link href="/workout-history">
@@ -34,9 +35,14 @@ export default function NavHeader(props) {
           Templates
         </Nav.Link>
       </Nav.Item>
-      <Nav.Item className="ms-auto">
-        <Button onClick={handleLogout}>Logout</Button>
-      </Nav.Item>
+      <NavDropdown className="ms-auto" title={props.user.username}>
+        <NavDropdown.Item>
+          Profile
+        </NavDropdown.Item>
+        <NavDropdown.Item>
+          <Button onClick={handleLogout}>Logout</Button>
+        </NavDropdown.Item>
+      </NavDropdown>
     </Nav>
 
   return (
@@ -53,7 +59,7 @@ export default function NavHeader(props) {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          {props.loggedIn && navItems}
+          {navItems}
         </Navbar.Collapse>
       </Container>
     </Navbar>

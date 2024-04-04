@@ -2,3 +2,8 @@ body {
     background-color: whitesmoke;
     padding-top: 4%;
 }
+
+.navbar {
+    padding-left: 4%;
+    padding-right:10%;
+}
