@@ -18,7 +18,6 @@ export default function WorkoutTemplates() {
         (async () => {
             const wtHandler = new WorkoutTemplateHandler()
             const [status, headers, data] = await wtHandler.getAll()
-            console.log("TEMPS", data)
             setTemps(data)
         })()
     }, [])
@@ -27,40 +26,47 @@ export default function WorkoutTemplates() {
         (async () => {
             const eTypeHandler = new ExerciseTypeHandler()
             const [status, headers, data] = await eTypeHandler.getAll()
+            console.log(data)
             setExerciseTypes(data)
         })()
     }, [])
 
     const handleToAddWT = () => navigate("/add-workout-template")
 
+    const renderWorkoutTemplates = () => {
+        return temps.map((temp) => {
+            const exerciseElements = temp.exercises.map((eTemp) => {
+                const exerciseType = exerciseTypes
+                    .find(eType => eType.id === eTemp.exerciseTypeID)
+    
+                const setgroupElements = eTemp.setgroups.map((sg) => {
+                    return (<>
+                            {sg.sets} x {sg.reps + " "} 
+                    </>)
+                })
+    
+                return (
+                    <Container>
+                        <p>{ exerciseType.name } { setgroupElements }</p>
+                    </Container>
+                )
+            })
+        
+            return (
+                <Card className="border border-2 w-50 align-items-center mb-2">
+                    <h4>{ temp.name }</h4>
+                    { exerciseElements }
+                </Card>
+            )    
+        })
+    }
+
     if (temps === undefined || exerciseTypes === undefined) 
         return <Container>Loading...</Container>
 
-    const templateElements = temps.map((temp) => {
-        const exerciseElements = temp.exercises.map((eTemp) => {
-            const exerciseType = exerciseTypes
-                .find(eType => eType.id === eTemp.exerciseTypeID)
-
-            const setgroupElements = eTemp.setgroups.map((sg) => {
-                return (<>
-                        {sg.sets} x {sg.reps + " "} 
-                </>)
-            })
-
-            return (
-                <Container>
-                    <p>{ exerciseType.name } { setgroupElements }</p>
-                </Container>
-            )
-        })
-    
-        return (
-            <Card className="border border-2 w-50 align-items-center mb-2">
-                <h4>{ temp.name }</h4>
-                { exerciseElements }
-            </Card>
-        )    
-    })
+    const templateElements = temps === null
+        ? "You have not created any workout templates."
+        : renderWorkoutTemplates()
 
     return (
         <>
