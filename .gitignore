@@ -3,5 +3,5 @@
 *.yaml
 *.yml
 
-api_key_main.txt
-api_key_test.txt
+pg_main_conn_string.txt
+pg_test_conn_string.txt
