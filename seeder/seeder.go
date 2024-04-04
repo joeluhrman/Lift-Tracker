@@ -19,21 +19,24 @@ func main() {
 }
 
 func seedExerciseTypes(store storage.Storage) {
+	pplTypes, _ := types.PPLTypesFromStrings([]string{string(types.PPLTypeLegs)})
 	store.CreateExerciseType(&types.ExerciseType{
 		Name:         "Barbell Squat",
-		PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypeLegs)}),
+		PPLTypes:     pplTypes,
 		MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpQuads)}),
 	})
 
+	pplTypes, _ = types.PPLTypesFromStrings([]string{string(types.PPLTypePush)})
 	store.CreateExerciseType(&types.ExerciseType{
 		Name:         "Barbell Bench",
-		PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush)}),
+		PPLTypes:     pplTypes,
 		MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpChest)}),
 	})
 
+	pplTypes, _ = types.PPLTypesFromStrings([]string{string(types.PPLTypeLegs), string(types.PPLTypePull)})
 	store.CreateExerciseType(&types.ExerciseType{
 		Name:         "Deadlift",
-		PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypeLegs), string(types.PPLTypePull)}),
+		PPLTypes:     pplTypes,
 		MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpHamstrings)}),
 	})
 }

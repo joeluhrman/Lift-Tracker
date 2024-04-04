@@ -231,9 +231,11 @@ func Test_AuthenticateSession(t *testing.T) {
 
 func Test_CreateExerciseType(t *testing.T) {
 	defer testPGStorage.clearTable(pgTableExerciseType)
+
+	pplTypes, _ := types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)})
 	exType := &types.ExerciseType{
 		Name:         "random name",
-		PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
+		PPLTypes:     pplTypes,
 		MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 	}
 
@@ -260,12 +262,13 @@ func Test_CreateExerciseType(t *testing.T) {
 
 func Test_GetExerciseTypes(t *testing.T) {
 	defer testPGStorage.clearTable(pgTableExerciseType)
+	pplTypes, _ := types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)})
 
 	// success case
 	func() {
 		exType := &types.ExerciseType{
 			Name:         "random name",
-			PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
+			PPLTypes:     pplTypes,
 			MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 		}
 		testPGStorage.CreateExerciseType(exType)
@@ -291,9 +294,10 @@ func Test_CreateWorkoutTemplate(t *testing.T) {
 		password := "Pringus27"
 		testPGStorage.CreateUser(user, password)
 
+		pplTypes, _ := types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)})
 		exType := &types.ExerciseType{
 			Name:         "test type",
-			PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
+			PPLTypes:     pplTypes,
 			MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 		}
 		testPGStorage.CreateExerciseType(exType)
@@ -362,10 +366,11 @@ func Test_GetWorkoutTemplates(t *testing.T) {
 		testPGStorage.CreateUser(testUser, password)
 
 		var wTemps []types.WorkoutTemplate
+		pplTypes, _ := types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)})
 		for i := 0; i < loops; i++ {
 			eType := &types.ExerciseType{
 				Name:         "type " + strconv.Itoa(i),
-				PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
+				PPLTypes:     pplTypes,
 				MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 			}
 			testPGStorage.CreateExerciseType(eType)
@@ -423,9 +428,10 @@ func Test_CreateWorkoutLog(t *testing.T) {
 		password := "moingus12"
 		testPGStorage.CreateUser(user, password)
 
+		pplTypes, _ := types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)})
 		exType := &types.ExerciseType{
 			Name:         "test type",
-			PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
+			PPLTypes:     pplTypes,
 			MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 		}
 		testPGStorage.CreateExerciseType(exType)
@@ -500,10 +506,11 @@ func Test_GetWorkoutLogs(t *testing.T) {
 		testPGStorage.CreateUser(testUser, password)
 
 		var wLogs []types.WorkoutLog
+		pplTypes, _ := types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)})
 		for i := 0; i < loops; i++ {
 			eType := &types.ExerciseType{
 				Name:         "type " + strconv.Itoa(i),
-				PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
+				PPLTypes:     pplTypes,
 				MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 			}
 			testPGStorage.CreateExerciseType(eType)

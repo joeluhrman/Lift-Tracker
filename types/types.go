@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"net/http"
 	"time"
 
@@ -67,29 +68,30 @@ const (
 	PPLTypeLegs pplType = "legs"
 )
 
-func pplTypeFromString(s string) pplType {
+func pplTypeFromString(s string) (pplType, error) {
 	var pplTypes = []pplType{PPLTypePush, PPLTypePull, PPLTypeLegs}
 
 	for _, pplType := range pplTypes {
 		if s == string(pplType) {
-			return pplType
+			return pplType, nil
 		}
 	}
 
-	return ""
+	return "", errors.New("Invalid PPLType: " + s)
 }
 
-func PPLTypesFromStrings(s []string) []pplType {
+func PPLTypesFromStrings(s []string) ([]pplType, error) {
 	pplTypes := []pplType{}
 	for _, str := range s {
-		pplType := pplTypeFromString(str)
-
-		if pplType != "" {
-			pplTypes = append(pplTypes, pplTypeFromString(str))
+		pplType, err := pplTypeFromString(str)
+		if err != nil {
+			return nil, err
 		}
+
+		pplTypes = append(pplTypes, pplType)
 	}
 
-	return pplTypes
+	return pplTypes, nil
 }
 
 type musclegroup string

@@ -78,11 +78,12 @@ func (t *mockStorage) CreateExerciseType(exerciseType *types.ExerciseType) error
 
 func (t *mockStorage) GetExerciseTypes() ([]types.ExerciseType, error) {
 	var eTypes []types.ExerciseType
+	pplTypes, _ := types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)})
 	for i := 0; i < 5; i++ {
 		eType := types.ExerciseType{
 			ID:           uint(i + 1),
 			Name:         "eType " + strconv.Itoa(i+1),
-			PPLTypes:     types.PPLTypesFromStrings([]string{string(types.PPLTypePush), string(types.PPLTypePull)}),
+			PPLTypes:     pplTypes,
 			MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpCalves), string(types.MscGrpChest)}),
 		}
 
