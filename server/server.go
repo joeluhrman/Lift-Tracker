@@ -154,7 +154,7 @@ func (s *server) handleAuthSession(w http.ResponseWriter, r *http.Request) error
 	}
 
 	ctx := context.WithValue(r.Context(), keyUserID, userID)
-	r.Clone(ctx)
+	*r = *r.Clone(ctx)
 	return nil
 }
 
