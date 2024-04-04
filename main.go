@@ -17,7 +17,7 @@ import (
 func main() {
 	var (
 		pgDriver = "pgx"
-		pgURL    = string(storage.MustReadFile("./pg_main_conn_string.txt"))
+		pgURL    = string(storage.MustReadFile("./pg_conn_string.txt"))
 
 		listenaddr = flag.String("listenaddr", ":3000", "server port")
 	)
