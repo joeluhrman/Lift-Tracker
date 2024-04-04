@@ -1,8 +1,8 @@
 build: 
 	go build -o ./Lift-Tracker.exe
 
-runtest: build
-	./Lift-Tracker.exe 
+run: build
+	./Lift-Tracker.exe
 
 clean:
 	go clean
@@ -10,3 +10,7 @@ clean:
 test: 
 	go clean -testcache
 	go test ./... -cover
+
+seed:
+	go build -o ./seeder.exe ./seeder/seeder.go
+	./seeder.exe
