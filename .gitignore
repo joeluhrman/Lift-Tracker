@@ -1,3 +1,4 @@
 *.exe
 
 pg_conn_string.txt
+test_pg_conn_string.txt

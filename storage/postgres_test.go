@@ -12,8 +12,7 @@ import (
 
 var (
 	testPGDriver = "pgx"
-	testPGApiKey = string(MustReadFile("../api_key_test.txt"))
-	testPGURL    = "postgresql://jaluhrman:" + testPGApiKey + "@db.bit.io/jaluhrman/Lift-Tracker-Test"
+	testPGURL    = string(MustReadFile("../test_pg_conn_string.txt"))
 
 	testPGStorage = &testPostgres{
 		postgres: NewPostgres(testPGDriver, testPGURL),
@@ -43,7 +42,6 @@ func (t *testPostgres) clearTable(tName string) {
 
 func TestMain(m *testing.M) {
 	testPGStorage.MustOpen()
-	testPGStorage.clearAllTables()
 	code := m.Run()
 	testPGStorage.MustClose()
 	os.Exit(code)
@@ -491,6 +489,8 @@ func Test_CreateWorkoutLog(t *testing.T) {
 }
 
 func Test_GetWorkoutLogs(t *testing.T) {
+	defer testPGStorage.clearAllTables()
+
 	// success case
 	func() {
 		const loops = 3
