@@ -11,13 +11,12 @@ import {
 } from "react-router-dom"
 import logoUrl from "../assets/lt_nobackground.png"
 import UserHandler from "../handlers/UserHandler"
-const userHandler = new UserHandler()
 
 export default function NavHeader(props) {
   const navigate = useNavigate()
 
   const handleLogout = async() => {
-    const [status, headers, data] = await userHandler.logout()
+    const [status, headers, data] = await UserHandler.logout()
     if (status === 200) {
       navigate("/login")
     }

@@ -6,8 +6,6 @@ import {
 import { Navigate } from "react-router-dom"
 import UserHandler from "../../handlers/UserHandler"
 
-const userHandler = new UserHandler()
-
 export default function SignUp() {
     const [validated, setValidated] = React.useState(false)
     const [formValue, setFormValue] = React.useState({
@@ -34,7 +32,7 @@ export default function SignUp() {
             return
         }   
 
-        const [status, headers, data] = await userHandler.create(
+        const [status, headers, data] = await UserHandler.create(
             formValue.username, formValue.email, formValue.password
         )
 

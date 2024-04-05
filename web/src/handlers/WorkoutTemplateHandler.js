@@ -1,13 +1,18 @@
 import Handler from "./Handler"
 
-export default class WorkoutTemplateHandler extends Handler {
-    async getAll() {
-        const res = await this.request("GET", "/api/v1/workout-template")
-        return res
-    }
-
-    async create(workoutTemplate) {
-        const res = await this.request("POST", "/api/v1/workout-template", workoutTemplate)
-        return res
-    }
+const getAll = async() => {
+    const res = await Handler.request("GET", "/api/v1/workout-template")
+    return res
 }
+
+const create = async(workoutTemplate) => {
+    const res = await Handler.request("POST", "/api/v1/workout-template", workoutTemplate)
+    return res
+}
+
+const workoutTemplateHandler = {
+    getAll,
+    create,
+}
+
+export default workoutTemplateHandler

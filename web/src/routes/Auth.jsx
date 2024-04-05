@@ -5,7 +5,6 @@ import {
 } from "react-router-dom"
 
 import UserHandler from "../handlers/UserHandler"
-const userHandler = new UserHandler()
 
 export default function Auth() {
     const [status, setStatus] = React.useState()
@@ -13,7 +12,7 @@ export default function Auth() {
 
     React.useEffect(() => {
         (async () => {
-            const [stat, headers, data] = await userHandler.get()
+            const [stat, headers, data] = await UserHandler.get()
             setStatus(stat)
             setUser(data)
         })()

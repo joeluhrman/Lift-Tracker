@@ -4,7 +4,6 @@ import {
     Button,
     Card,
     Container,
-    Modal
 } from "react-bootstrap"
 import WorkoutTemplateHandler from "../handlers/WorkoutTemplateHandler"
 import ExerciseTypeHandler from "../handlers/ExerciseTypeHandler"
@@ -16,16 +15,14 @@ export default function WorkoutTemplates() {
 
     React.useEffect(() => {
         (async () => {
-            const wtHandler = new WorkoutTemplateHandler()
-            const [status, headers, data] = await wtHandler.getAll()
+            const [status, headers, data] = await WorkoutTemplateHandler.getAll()
             setTemps(data)
         })()
     }, [])
 
     React.useEffect(() => {
         (async () => {
-            const eTypeHandler = new ExerciseTypeHandler()
-            const [status, headers, data] = await eTypeHandler.getAll()
+            const [status, headers, data] = await ExerciseTypeHandler.getAll()
             console.log(data)
             setExerciseTypes(data)
         })()

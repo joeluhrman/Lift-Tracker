@@ -5,7 +5,6 @@ import {
     Button,
 } from "react-bootstrap"
 import UserHandler from "../../handlers/UserHandler"
-const userHandler = new UserHandler()
 
 export default function Login() {
     const [formValue, setFormValue] = React.useState({
@@ -23,7 +22,7 @@ export default function Login() {
         event.preventDefault()
         event.stopPropagation()
 
-        const [status, headers, data] = await userHandler.login(
+        const [status, headers, data] = await UserHandler.login(
             formValue.username, formValue.password
         )
 
