@@ -36,8 +36,7 @@ export default function Workout(props) {
 
     React.useEffect(function getExerciseTypes() {
         (async () => {
-            const handler = new ExerciseTypeHandler()
-            const [ , , data] = await handler.getAll()
+            const [ , , data] = await ExerciseTypeHandler.getAll()
             setExerciseTypes(data)
         })()
     }, [])
