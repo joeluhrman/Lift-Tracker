@@ -22,6 +22,10 @@ export default function NavHeader(props) {
     }
   }
 
+  const handleToProfile = () => {
+    navigate("/profile")
+  }
+
   const navItems = props.user &&
     <Nav className="container-fluid">
       <Nav.Item>
@@ -40,7 +44,7 @@ export default function NavHeader(props) {
         </Nav.Link>
       </Nav.Item>
       <NavDropdown className="ms-auto" title={props.user.username}>
-        <NavDropdown.Item>
+        <NavDropdown.Item onClick={handleToProfile}>
           Profile
         </NavDropdown.Item>
         <NavDropdown.Item>

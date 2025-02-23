@@ -14,7 +14,9 @@ import Dashboard from "./routes/Dashboard"
 import WorkoutTemplates from "./routes/WorkoutTemplates"
 import WorkoutHistory from "./routes/WorkoutHistory"
 import Exercises from './routes/Exercises'
-import CRUDWorkout from "./routes/CRUDWorkout"
+import AddEditWorkout from "./routes/AddEditWorkout"
+import AddEditExerciseType from './routes/AddEditExerciseType'
+import Profile from './routes/Profile'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
@@ -38,16 +40,19 @@ const router = createBrowserRouter([
           { 
             element: <Nav/>,
             children: [
-              { path: "/",                      element: <Dashboard/>          },
-              { path: "/dashboard",             element: <Dashboard/>          },
-              { path: "/workout-templates",     element: <WorkoutTemplates/>   },
-              { path: "/workout-history",       element: <WorkoutHistory/>     },
-              { path: "/exercises",       element: <Exercises/>     },
+              { path: "/",                  element: <Dashboard/>},
+              { path: "/dashboard",         element: <Dashboard/>},
+              { path: "/profile",           element: <Profile/>},
+              { path: "/workout-templates", element: <WorkoutTemplates/>},
+              { path: "/workout-history",   element: <WorkoutHistory/>},
+              { path: "/exercises",         element: <Exercises/>},
 
-              { path: "/add-workout-template",  element: <CRUDWorkout type="template" variant="create"/>},
-              { path: "/edit-workout-template", element: <CRUDWorkout type="template" variant="update"/>},
-              { path: "/add-workout-log",       element: <CRUDWorkout type="log"      variant="create"/>},
-              { path: "/edit-workout-log",      element: <CRUDWorkout type="log"      variant="update"/>}
+              { path: "/add-workout-template",  element: <AddEditWorkout type="template" variant="add"/>},
+              { path: "/edit-workout-template", element: <AddEditWorkout  type="template" variant="edit"/>},
+              { path: "/add-workout-log",       element: <AddEditWorkout  type="log"      variant="add"/>},
+              { path: "/edit-workout-log",      element: <AddEditWorkout  type="log"      variant="edit"/>},
+
+              { path: "/add-exercise-type", element: <AddEditExerciseType variant="add"/>}
             ]
           }
         ]
