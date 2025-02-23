@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom"
 import { Button, Container } from "react-bootstrap"
-import CRUDWorkout from "./CRUDWorkout"
 
 export default function WorkoutHistory() {
     const navigate = useNavigate()

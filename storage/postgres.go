@@ -147,10 +147,10 @@ func (p *postgres) DeleteSessionByToken(token string) error {
 }
 
 func (p *postgres) CreateExerciseType(exerciseType *types.ExerciseType) error {
-	statement := "INSERT INTO " + pgTableExerciseType + " (name, ppl_types, muscle_groups) " +
-		"VALUES ($1, $2, $3) RETURNING id, created_at, updated_at"
+	statement := "INSERT INTO " + pgTableExerciseType + " (name, ppl_types, muscle_groups, is_default) " +
+		"VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at"
 
-	return p.conn.QueryRow(statement, exerciseType.Name, pq.Array(exerciseType.PPLTypes), pq.Array(exerciseType.MuscleGroups)).
+	return p.conn.QueryRow(statement, exerciseType.Name, pq.Array(exerciseType.PPLTypes), pq.Array(exerciseType.MuscleGroups), exerciseType.IsDefault).
 		Scan(&exerciseType.ID, &exerciseType.CreatedAt, &exerciseType.UpdatedAt)
 }
 
@@ -171,7 +171,7 @@ func (p *postgres) GetExerciseTypes() ([]types.ExerciseType, error) {
 
 		var exType types.ExerciseType
 		if err := rows.Scan(&exType.ID, &exType.Name, pq.Array(&strPPLTypes),
-			pq.Array(&strMscGroups), &exType.CreatedAt, &exType.UpdatedAt); err != nil {
+			pq.Array(&strMscGroups), &exType.IsDefault, &exType.CreatedAt, &exType.UpdatedAt); err != nil {
 			return nil, err
 		}
 

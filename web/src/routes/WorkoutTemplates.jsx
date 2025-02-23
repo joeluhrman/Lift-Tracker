@@ -15,14 +15,14 @@ export default function WorkoutTemplates() {
 
     React.useEffect(() => {
         (async () => {
-            const [status, headers, data] = await WorkoutTemplateHandler.getAll()
+            const [,, data] = await WorkoutTemplateHandler.getAll()
             setTemps(data)
         })()
     }, [])
 
     React.useEffect(() => {
         (async () => {
-            const [status, headers, data] = await ExerciseTypeHandler.getAll()
+            const [,, data] = await ExerciseTypeHandler.getAll()
             console.log(data)
             setExerciseTypes(data)
         })()

@@ -108,6 +108,7 @@ const (
 	MscGrpLats       musclegroup = "lats"
 )
 
+// should be refactored to return an error like pplTypesFromString
 func musclegroupFromString(s string) musclegroup {
 	var musclegroups = []musclegroup{
 		MscGrpCalves, MscGrpHamstrings, MscGrpQuads,
@@ -124,6 +125,7 @@ func musclegroupFromString(s string) musclegroup {
 	return ""
 }
 
+// should be refactored to return an error like pplTypesFromStrings
 func MuscleGroupsFromStrings(s []string) []musclegroup {
 	mscgrps := []musclegroup{}
 	for _, str := range s {
@@ -141,6 +143,7 @@ type ExerciseType struct {
 	Name         string        `json:"name"`
 	PPLTypes     []pplType     `json:"pplTypes"`
 	MuscleGroups []musclegroup `json:"muscleGroups"`
+	IsDefault    bool          `json:"isDefault"`
 	metadata
 }
 

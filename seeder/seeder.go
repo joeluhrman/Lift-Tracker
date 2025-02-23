@@ -8,7 +8,7 @@ import (
 func main() {
 	var (
 		pgDriver = "pgx"
-		pgURL    = string(storage.MustReadFile("./pg_conn_string.txt"))
+		pgURL    = string(storage.MustReadFile("../pg_conn_string.txt"))
 	)
 
 	pgStore := storage.NewPostgres(pgDriver, pgURL)
@@ -24,6 +24,7 @@ func seedExerciseTypes(store storage.Storage) {
 		Name:         "Barbell Squat",
 		PPLTypes:     pplTypes,
 		MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpQuads)}),
+		IsDefault:    true,
 	})
 
 	pplTypes, _ = types.PPLTypesFromStrings([]string{string(types.PPLTypePush)})
@@ -31,6 +32,7 @@ func seedExerciseTypes(store storage.Storage) {
 		Name:         "Barbell Bench",
 		PPLTypes:     pplTypes,
 		MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpChest)}),
+		IsDefault:    true,
 	})
 
 	pplTypes, _ = types.PPLTypesFromStrings([]string{string(types.PPLTypeLegs), string(types.PPLTypePull)})
@@ -38,5 +40,6 @@ func seedExerciseTypes(store storage.Storage) {
 		Name:         "Deadlift",
 		PPLTypes:     pplTypes,
 		MuscleGroups: types.MuscleGroupsFromStrings([]string{string(types.MscGrpHamstrings)}),
+		IsDefault:    true,
 	})
 }

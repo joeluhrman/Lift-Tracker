@@ -34,6 +34,11 @@ export default function NavHeader(props) {
           Templates
         </Nav.Link>
       </Nav.Item>
+      <Nav.Item>
+        <Nav.Link href="exercises">
+          Exercises
+        </Nav.Link>
+      </Nav.Item>
       <NavDropdown className="ms-auto" title={props.user.username}>
         <NavDropdown.Item>
           Profile

@@ -70,7 +70,7 @@ export default function Workout(props) {
     const Setgroup = (props) => {
         return (
             <Container className="mb-2 d-inline-flex flex-row">
-                <Trash width="15" height="15" className="float-start" 
+                <Trash width="15" height="15" className="float-start clickable" 
                     onClick={() => handleDeleteSetgroup(props.exerciseIndex, props.index)}/>
                 <Form.Control
                     required
@@ -137,7 +137,7 @@ export default function Workout(props) {
         return (
             <Container className="border border-2 mb-2">
                 <Button className="float-end" size="sm" onClick={() => handleAddSetgroup(props.index)}>Add Setgroup</Button>
-                <Trash className= "float-start" height="20" width="20" onClick={() => handleDeleteExercise(props.index)}/>
+                <Trash className= "float-start clickable" height="20" width="20" onClick={() => handleDeleteExercise(props.index)}/>
                 <Form.Group className="mb-2" as={Row}>
                     <Col sm="10">
                         <ExerciseSelect exerciseIndex={props.index}/>
@@ -164,7 +164,7 @@ export default function Workout(props) {
 
     const ExerciseSelect = (props) => {
         const options = exerciseTypes.map((eType) => {
-            return <option key={Math.random()} value={eType.id}> {eType.name} </option>
+            return <option key={Math.random()} value={eType.id}> {eType.name + (eType.isDefault ? " -- [DEFAULT]" : "")} </option>
         })      
 
         return (
@@ -191,10 +191,7 @@ export default function Workout(props) {
         e.preventDefault()
         e.stopPropagation()
 
-        console.log("WORKOUT ", workout)
-
-        const handler = new WorkoutTemplateHandler()
-        const [status, , data] = await handler.create(workout)
+        const [status,,] = await WorkoutTemplateHandler.create(workout)
         
         if (status === 201) {
             navigate("/workout-templates")

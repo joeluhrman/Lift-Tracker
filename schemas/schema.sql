@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS exercise_types (
   name              TEXT UNIQUE NOT NULL,
   ppl_types         TEXT[],
   muscle_groups     TEXT[],
+  is_default        BOOLEAN DEFAULT FALSE,
 
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
